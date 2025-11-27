@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Filter,
   Search,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -86,7 +87,7 @@ const sessionTypeFilters = [
   { id: "physical", label: "In-Person", icon: MapPin },
 ];
 
-export default function SelectExpertPage() {
+function SelectExpertContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const serviceId = searchParams.get("service");
@@ -265,5 +266,13 @@ export default function SelectExpertPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SelectExpertPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><Loader2 className="h-6 w-6 animate-spin" /></div>}>
+      <SelectExpertContent />
+    </Suspense>
   );
 }

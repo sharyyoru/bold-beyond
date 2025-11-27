@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { format } from "date-fns";
@@ -15,6 +15,7 @@ import {
   AlertCircle,
   ChevronRight,
   Plus,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -132,7 +133,7 @@ function getStatusBadge(status: AppointmentStatus) {
   }
 }
 
-export default function MyAppointmentsPage() {
+function MyAppointmentsContent() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
@@ -311,5 +312,13 @@ export default function MyAppointmentsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function MyAppointmentsPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><Loader2 className="h-6 w-6 animate-spin" /></div>}>
+      <MyAppointmentsContent />
+    </Suspense>
   );
 }
