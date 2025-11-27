@@ -149,6 +149,179 @@ export const queries = {
     },
     advice
   }`,
+
+  // Testimonials
+  allTestimonials: `*[_type == "testimonial" && featured == true] | order(publishedAt desc) {
+    _id,
+    clientName,
+    clientNameAr,
+    clientPhoto,
+    rating,
+    content,
+    contentAr,
+    service-> { title },
+    expert-> { name }
+  }`,
+
+  // FAQ
+  allFaqs: `*[_type == "faq" && isActive == true] | order(order asc) {
+    _id,
+    question,
+    questionAr,
+    answer,
+    answerAr,
+    category
+  }`,
+
+  faqsByCategory: `*[_type == "faq" && isActive == true && category == $category] | order(order asc) {
+    _id,
+    question,
+    questionAr,
+    answer,
+    answerAr,
+    category
+  }`,
+
+  // Clinics
+  allClinics: `*[_type == "clinic" && isActive == true] | order(name asc) {
+    _id,
+    name,
+    nameAr,
+    slug,
+    logo,
+    description,
+    descriptionAr,
+    address,
+    area,
+    phone,
+    featured
+  }`,
+
+  clinicBySlug: `*[_type == "clinic" && slug.current == $slug][0] {
+    _id,
+    name,
+    nameAr,
+    slug,
+    logo,
+    images,
+    description,
+    descriptionAr,
+    address,
+    addressAr,
+    area,
+    city,
+    coordinates,
+    phone,
+    email,
+    website,
+    openingHours,
+    amenities,
+    "services": services[]-> { _id, title, slug },
+    "experts": experts[]-> { _id, name, slug, photo, title }
+  }`,
+
+  // Products
+  allProducts: `*[_type == "product" && isActive == true] | order(featured desc, name asc) {
+    _id,
+    name,
+    nameAr,
+    slug,
+    images,
+    category,
+    price,
+    salePrice,
+    featured
+  }`,
+
+  productBySlug: `*[_type == "product" && slug.current == $slug][0] {
+    _id,
+    name,
+    nameAr,
+    slug,
+    description,
+    descriptionAr,
+    images,
+    category,
+    price,
+    salePrice,
+    sku,
+    stock,
+    features,
+    "relatedServices": relatedServices[]-> { _id, title, slug }
+  }`,
+
+  // Collections
+  allCollections: `*[_type == "collection" && isActive == true] | order(order asc) {
+    _id,
+    name,
+    nameAr,
+    slug,
+    description,
+    image,
+    type
+  }`,
+
+  collectionBySlug: `*[_type == "collection" && slug.current == $slug][0] {
+    _id,
+    name,
+    nameAr,
+    slug,
+    description,
+    descriptionAr,
+    image,
+    type,
+    "services": services[]-> { _id, title, slug, description, icon },
+    "experts": experts[]-> { _id, name, slug, photo, title },
+    "products": products[]-> { _id, name, slug, images, price },
+    "blogPosts": blogPosts[]-> { _id, title, slug, excerpt, featuredImage }
+  }`,
+
+  // Specializations
+  allSpecializations: `*[_type == "specialization" && isActive == true] | order(order asc) {
+    _id,
+    name,
+    nameAr,
+    slug,
+    description,
+    icon,
+    color
+  }`,
+
+  // Onboarding Questions
+  onboardingQuestions: `*[_type == "onboardingQuestion" && isActive == true] | order(order asc) {
+    _id,
+    question,
+    questionAr,
+    type,
+    answers[] {
+      answer,
+      answerAr,
+      collection-> { _id, slug },
+      tags,
+      score
+    },
+    category,
+    required
+  }`,
+
+  // Test Questions
+  testQuestions: `*[_type == "testQuestion" && isActive == true && testName == $testName] | order(order asc) {
+    _id,
+    question,
+    questionAr,
+    type,
+    answers[] {
+      answer,
+      answerAr,
+      score,
+      flagRisk
+    },
+    category
+  }`,
+
+  allTestNames: `*[_type == "testQuestion" && isActive == true] {
+    testName
+  } | unique`,
 };
 
 // Fetch helper
