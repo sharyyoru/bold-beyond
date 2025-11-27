@@ -216,3 +216,57 @@ npx cap open android
 ## License
 
 Private - Bold & Beyond LLC
+
+## Where everything lives
+
+- **App entry & global config**  
+  `app/layout.tsx` – root layout, fonts, Toaster.  
+  `app/globals.css` – Tailwind base styles and gradients.
+
+- **Public marketing site (no auth)** – under `app/(explore)`  
+  - `page.tsx` – homepage / hero.  
+  - `services/` – list + detail pages powered by Sanity `service` docs.  
+  - `experts/` – list + detail pages powered by Sanity `expert` docs.  
+  - `partners/` – partner directory powered by Sanity `partner` docs.  
+  - `blog/` – blog listing & post pages powered by Sanity `blogPost` docs.  
+  - Static pages: `about`, `help`, `contact`, `careers`, `privacy`, `terms`, `cancellation`.
+
+- **Client app (authenticated)** – under `app/(platform)`  
+  - `dashboard/` – main client dashboard with wellness score and recommendations.  
+  - `booking/` – booking flow: `select-service` → `select-expert` → `calendar` → `checkout`.  
+  - `my-appointments/` – upcoming & past sessions.  
+  - `perks/` – partner perks view.  
+  - `profile/` – basic account details.  
+  - Bottom navigation: `components/layout/bottom-nav.tsx`.
+
+- **Therapist portal** – under `app/portal`  
+  - `page.tsx` – therapist dashboard.  
+  - `schedule/` – today’s sessions.  
+  - `patients/` – patient list.  
+  - `services/` – therapist service/pricing management.  
+  - `orders/` – basic earnings view.  
+  - Portal bottom navigation: `PortalBottomNav` in `components/layout/bottom-nav.tsx`.
+
+- **Admin dashboard** – under `app/admin`  
+  - `page.tsx` – high‑level metrics and actions.  
+  - `users/`, `therapists/`, `partners/` – management views.  
+  - `content/` – link into Sanity Studio.  
+  - `reports/` – KPI cards.  
+  - `settings/` – feature toggles.
+
+- **Authentication**  
+  - `app/(auth)/login/page.tsx` – email/password + Google login.  
+  - `app/(auth)/signup/page.tsx` – registration.  
+  - `app/auth/callback/route.ts` – Supabase OAuth callback.  
+  - `middleware.ts` and `lib/supabase/middleware.ts` – session handling and route protection.
+
+- **APIs & integrations**  
+  - `app/api/checkout/route.ts` – creates Stripe Checkout sessions (test mode ready).  
+  - `lib/supabase/server.ts`, `lib/supabase.ts` – Supabase clients for server and browser.  
+  - `lib/sanity.ts` – Sanity client, image builder, and GROQ queries used across marketing pages.  
+  - `supabase/migrations/001_initial_schema.sql` – full database schema for Supabase.
+
+- **Sanity Studio**  
+  - `sanity.config.ts` – Sanity v3 configuration.  
+  - `sanity/schemas/*` – document schemas for `service`, `expert`, `partner`, `blogPost`, `wellnessQuestion`.  
+  - `app/studio/[[...index]]/page.tsx` – Studio mounted at `/studio`.
