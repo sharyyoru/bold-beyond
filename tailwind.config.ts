@@ -50,14 +50,20 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Brand colors
+        // Brand colors - Updated to match Figma
         brand: {
-          gold: "#D4AF37",
-          "gold-light": "#E8C547",
+          teal: "#5BB5B0",
+          "teal-dark": "#4A9A96",
+          "teal-light": "#7BC8C4",
+          gold: "#C9A227",
+          "gold-light": "#D4B84A",
           navy: "#1B365D",
           "navy-light": "#2A4A7A",
-          cream: "#F5F1E8",
+          cream: "#F7F5F0",
+          "cream-dark": "#EBE8E1",
           sage: "#87A878",
+          blue: "#3B82C4",
+          purple: "#8B5CF6",
         },
         wellness: {
           excellent: "#22C55E",
