@@ -293,61 +293,56 @@ export default function AppXPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [sheetY, setSheetY] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStartY, setDragStartY] = useState(0);
-  const [dragStartScroll, setDragStartScroll] = useState(0);
+  const [sheetPosition, setSheetPosition] = useState(0); // 0 = expanded, positive = collapsed
+  const [isHandleDragging, setIsHandleDragging] = useState(false);
+  const [handleDragStartY, setHandleDragStartY] = useState(0);
+  const [handleDragStartPos, setHandleDragStartPos] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
 
   const slides = defaultSlides.filter(s => s.isActive);
   
-  // Header heights: uncollapsed +25% (280 -> 350), collapsed +20% (60 -> 72)
+  // Header heights
   const HEADER_EXPANDED = 350;
   const HEADER_COLLAPSED = 72;
+  const COLLAPSE_THRESHOLD = 150; // Drag distance to trigger collapse
 
-  // Handle drag scrolling (app-like behavior)
-  const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    setIsDragging(true);
-    setDragStartY(e.clientY);
-    setDragStartScroll(contentRef.current?.scrollTop || 0);
+  // Handle bar drag to collapse/expand
+  const handleHandlePointerDown = useCallback((e: React.PointerEvent) => {
+    e.preventDefault();
+    setIsHandleDragging(true);
+    setHandleDragStartY(e.clientY);
+    setHandleDragStartPos(sheetPosition);
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  }, []);
+  }, [sheetPosition]);
 
-  const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!isDragging || !contentRef.current) return;
-    const deltaY = dragStartY - e.clientY;
-    contentRef.current.scrollTop = dragStartScroll + deltaY;
-  }, [isDragging, dragStartY, dragStartScroll]);
+  const handleHandlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isHandleDragging) return;
+    const deltaY = handleDragStartY - e.clientY; // Negative = dragging up, Positive = dragging down
+    const newPosition = Math.max(0, Math.min(COLLAPSE_THRESHOLD, handleDragStartPos - deltaY));
+    setSheetPosition(newPosition);
+  }, [isHandleDragging, handleDragStartY, handleDragStartPos]);
 
-  const handlePointerUp = useCallback((e: React.PointerEvent) => {
-    setIsDragging(false);
+  const handleHandlePointerUp = useCallback((e: React.PointerEvent) => {
+    setIsHandleDragging(false);
     (e.target as HTMLElement).releasePointerCapture(e.pointerId);
-  }, []);
-
-  // Handle scroll to collapse header
-  useEffect(() => {
-    const handleScroll = () => {
-      if (contentRef.current) {
-        const scrollTop = contentRef.current.scrollTop;
-        setSheetY(scrollTop);
-        setIsCollapsed(scrollTop > 60);
-      }
-    };
-
-    const contentElement = contentRef.current;
-    if (contentElement) {
-      contentElement.addEventListener("scroll", handleScroll, { passive: true });
-      return () => contentElement.removeEventListener("scroll", handleScroll);
+    
+    // Snap to collapsed or expanded based on position
+    if (sheetPosition > COLLAPSE_THRESHOLD / 2) {
+      setSheetPosition(COLLAPSE_THRESHOLD);
+      setIsCollapsed(true);
+    } else {
+      setSheetPosition(0);
+      setIsCollapsed(false);
     }
-  }, []);
+  }, [sheetPosition]);
 
-  // Auto-rotate the 3 stacked promo cards (like Careem)
+  // Auto-rotate the 3 stacked promo cards (like Careem) - 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentPromoCard((prev) => (prev + 1) % promoItems.length);
-    }, 2000); // Rotate every 2 seconds for animated feel
+    }, 3000); // Rotate every 3 seconds
     return () => clearInterval(interval);
   }, []);
   
@@ -391,18 +386,18 @@ export default function AppXPage() {
           }`}
         >
           <div className="p-6 pt-8">
-            {/* Logo and Close */}
-            <div className="flex items-center justify-between mb-8">
+            {/* Logo centered, Close on right */}
+            <div className="flex items-center justify-center relative mb-8">
               <Image 
                 src="/images/bold-beyond-logo.png" 
                 alt="Bold & Beyond" 
-                width={140} 
-                height={40}
-                className="h-10 w-auto"
+                width={50} 
+                height={50}
+                className="h-12 w-12 object-contain"
               />
               <button 
                 onClick={() => setIsMenuOpen(false)}
-                className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center"
+                className="absolute right-0 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center"
               >
                 <X className="h-5 w-5 text-gray-600" />
               </button>
@@ -541,45 +536,50 @@ export default function AppXPage() {
       {/* Draggable Sheet Content Container */}
       <div
         ref={sheetRef}
-        className={`flex-1 bg-white rounded-t-[2rem] overflow-hidden relative z-10 transition-all duration-300 ${
-          isCollapsed ? 'rounded-t-none' : ''
-        }`}
-        style={{ marginTop: isCollapsed ? 0 : -28 }}
+        className={`flex-1 bg-white rounded-t-[2rem] overflow-hidden relative z-10 transition-all ${
+          isHandleDragging ? 'duration-0' : 'duration-300'
+        } ${isCollapsed ? 'rounded-t-none' : ''}`}
+        style={{ 
+          marginTop: isCollapsed ? 0 : -28,
+          transform: `translateY(${sheetPosition}px)`
+        }}
       >
-        {/* Drag Handle */}
-        {!isCollapsed && (
-          <div className="flex justify-center py-3">
-            <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
-          </div>
-        )}
+        {/* Drag Handle - Functional */}
+        <div 
+          className="flex justify-center py-4 cursor-grab active:cursor-grabbing touch-none"
+          onPointerDown={handleHandlePointerDown}
+          onPointerMove={handleHandlePointerMove}
+          onPointerUp={handleHandlePointerUp}
+          onPointerLeave={handleHandlePointerUp}
+        >
+          <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+        </div>
         
-        {/* Scrollable Content - No scrollbars, drag to scroll */}
+        {/* Scrollable Content */}
         <div
           ref={contentRef}
-          className="h-full overflow-y-auto overflow-x-hidden scrollbar-none cursor-grab active:cursor-grabbing"
+          className="h-full overflow-y-auto overflow-x-hidden scrollbar-none"
           style={{ 
             scrollbarWidth: 'none', 
             msOverflowStyle: 'none',
             WebkitOverflowScrolling: 'touch'
           }}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerLeave={handlePointerUp}
         >
           <div className={`pb-8 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #FDFBF7 0%, #F8F6F0 100%)' }}>
-            {/* Combined Wellness Charts + Service Grid - 2 Rows, Horizontal Scroll */}
+            {/* Wellness Charts + Service Buttons - Charts first, then buttons - 2 Rows, Horizontal Scroll */}
             <div className="mb-5">
               <div 
-                className="flex gap-4 overflow-x-auto pb-2 px-4 cursor-grab active:cursor-grabbing"
+                className="flex gap-3 overflow-x-auto pb-2 px-4"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
-                {/* Wellness Chart Column 1 (Mind) */}
-                <div className="flex flex-col gap-3 flex-shrink-0 items-center">
-                  <WellnessChart value={wellnessMetrics[0].value} label={wellnessMetrics[0].label} color={wellnessMetrics[0].color} delay={0} icon={wellnessMetrics[0].icon} />
-                </div>
+                {/* All 6 Wellness Charts First */}
+                {wellnessMetrics.map((metric, i) => (
+                  <div key={metric.id} className="flex flex-col gap-3 flex-shrink-0 items-center">
+                    <WellnessChart value={metric.value} label={metric.label} color={metric.color} delay={i * 100} icon={metric.icon} />
+                  </div>
+                ))}
                 
-                {/* Service Column 1 */}
+                {/* Then All Service Buttons (4 columns of 2 rows each) */}
                 <div className="flex flex-col gap-3 flex-shrink-0">
                   {serviceCategories.slice(0, 2).map((service) => (
                     <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5">
@@ -596,12 +596,6 @@ export default function AppXPage() {
                   ))}
                 </div>
                 
-                {/* Wellness Chart Column 2 (Body) */}
-                <div className="flex flex-col gap-3 flex-shrink-0 items-center">
-                  <WellnessChart value={wellnessMetrics[1].value} label={wellnessMetrics[1].label} color={wellnessMetrics[1].color} delay={100} icon={wellnessMetrics[1].icon} />
-                </div>
-                
-                {/* Service Column 2 */}
                 <div className="flex flex-col gap-3 flex-shrink-0">
                   {serviceCategories.slice(2, 4).map((service) => (
                     <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5">
@@ -618,12 +612,6 @@ export default function AppXPage() {
                   ))}
                 </div>
                 
-                {/* Wellness Chart Column 3 (Sleep) */}
-                <div className="flex flex-col gap-3 flex-shrink-0 items-center">
-                  <WellnessChart value={wellnessMetrics[2].value} label={wellnessMetrics[2].label} color={wellnessMetrics[2].color} delay={200} icon={wellnessMetrics[2].icon} />
-                </div>
-                
-                {/* Service Column 3 */}
                 <div className="flex flex-col gap-3 flex-shrink-0">
                   {serviceCategories.slice(4, 6).map((service) => (
                     <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5">
@@ -640,12 +628,6 @@ export default function AppXPage() {
                   ))}
                 </div>
                 
-                {/* Wellness Chart Column 4 (Energy) */}
-                <div className="flex flex-col gap-3 flex-shrink-0 items-center">
-                  <WellnessChart value={wellnessMetrics[3].value} label={wellnessMetrics[3].label} color={wellnessMetrics[3].color} delay={300} icon={wellnessMetrics[3].icon} />
-                </div>
-                
-                {/* Service Column 4 */}
                 <div className="flex flex-col gap-3 flex-shrink-0">
                   {serviceCategories.slice(6, 8).map((service) => (
                     <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5">
@@ -660,16 +642,6 @@ export default function AppXPage() {
                       <span className="text-xs font-medium text-gray-600">{service.label}</span>
                     </Link>
                   ))}
-                </div>
-                
-                {/* Wellness Chart Column 5 (Mood) */}
-                <div className="flex flex-col gap-3 flex-shrink-0 items-center">
-                  <WellnessChart value={wellnessMetrics[4].value} label={wellnessMetrics[4].label} color={wellnessMetrics[4].color} delay={400} icon={wellnessMetrics[4].icon} />
-                </div>
-                
-                {/* Wellness Chart Column 6 (Focus) */}
-                <div className="flex flex-col gap-3 flex-shrink-0 items-center">
-                  <WellnessChart value={wellnessMetrics[5].value} label={wellnessMetrics[5].label} color={wellnessMetrics[5].color} delay={500} icon={wellnessMetrics[5].icon} />
                 </div>
               </div>
             </div>
