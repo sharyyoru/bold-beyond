@@ -70,7 +70,7 @@ const serviceCategories = [
   { id: "support", label: "Support", icon: MessageCircle, color: "bg-[#7DD3D3]", gradient: "from-[#7DD3D3] to-[#6BC4C4]" },
 ];
 
-// Promo items for header carousel (3 stacked cards, auto-rotating)
+// Promo items for header carousel (center big, left/right smaller)
 const promoItems = [
   { id: 1, title: "Rides", subtitle: "Book now", bgColor: "bg-[#E0F4F4]", icon: Activity },
   { id: 2, title: "Food", subtitle: "Order fresh", bgColor: "bg-[#F5E6D3]", icon: Coffee },
@@ -85,7 +85,7 @@ const navMenuItems = [
   { id: "profile", label: "Profile", icon: User, href: "/appx/profile" },
 ];
 
-// Wellness metrics for charts
+// Wellness metrics for charts (8 charts)
 const wellnessMetrics = [
   { id: "mind", label: "Mind", value: 72, color: "#0D9488", icon: Brain },
   { id: "body", label: "Body", value: 85, color: "#D4AF37", icon: Activity },
@@ -93,6 +93,8 @@ const wellnessMetrics = [
   { id: "energy", label: "Energy", value: 79, color: "#F4A261", icon: Zap },
   { id: "mood", label: "Mood", value: 88, color: "#E9967A", icon: Smile },
   { id: "focus", label: "Focus", value: 65, color: "#7DD3D3", icon: Sun },
+  { id: "stress", label: "Stress", value: 42, color: "#B8A4C9", icon: TrendingUp },
+  { id: "hydration", label: "Hydration", value: 76, color: "#6B9BC3", icon: Coffee },
 ];
 
 // Slide type interface
@@ -308,7 +310,7 @@ export default function AppXPage() {
   const HEADER_COLLAPSED = 72;
   const COLLAPSE_THRESHOLD = 150; // Drag distance to trigger collapse
 
-  // Handle bar drag to collapse/expand
+  // Handle bar drag to collapse/expand - drag UP to collapse, drag DOWN to expand
   const handleHandlePointerDown = useCallback((e: React.PointerEvent) => {
     e.preventDefault();
     setIsHandleDragging(true);
@@ -319,7 +321,9 @@ export default function AppXPage() {
 
   const handleHandlePointerMove = useCallback((e: React.PointerEvent) => {
     if (!isHandleDragging) return;
-    const deltaY = handleDragStartY - e.clientY; // Negative = dragging up, Positive = dragging down
+    // Drag UP (negative deltaY) = increase position = collapse
+    // Drag DOWN (positive deltaY) = decrease position = expand
+    const deltaY = e.clientY - handleDragStartY;
     const newPosition = Math.max(0, Math.min(COLLAPSE_THRESHOLD, handleDragStartPos - deltaY));
     setSheetPosition(newPosition);
   }, [isHandleDragging, handleDragStartY, handleDragStartPos]);
@@ -481,36 +485,36 @@ export default function AppXPage() {
               </Link>
             </div>
             
-            {/* 3 Stacked Promo Cards - Right Side (Auto-rotating) */}
-            <div className="relative w-36 h-40 flex-shrink-0">
+            {/* Rotating Carousel - Center big, Left/Right smaller behind */}
+            <div className="relative w-44 h-28 flex-shrink-0 flex items-center justify-center">
               {promoItems.map((item, index) => {
                 const offset = (index - currentPromoCard + promoItems.length) % promoItems.length;
-                const isTop = offset === 0;
-                const isMiddle = offset === 1;
-                const isBottom = offset === 2;
+                const isCenter = offset === 0;
+                const isRight = offset === 1;
+                const isLeft = offset === 2;
                 
                 return (
                   <div
                     key={item.id}
                     className={`absolute rounded-2xl shadow-lg transition-all duration-500 ease-out cursor-pointer overflow-hidden ${item.bgColor}`}
                     style={{
-                      width: isTop ? 130 : isMiddle ? 115 : 100,
-                      height: isTop ? 100 : isMiddle ? 85 : 70,
-                      top: isTop ? 0 : isMiddle ? 10 : 20,
-                      right: isTop ? 0 : isMiddle ? 8 : 16,
-                      zIndex: isTop ? 3 : isMiddle ? 2 : 1,
-                      opacity: isBottom ? 0.6 : isMiddle ? 0.85 : 1,
-                      transform: `scale(${isTop ? 1 : isMiddle ? 0.95 : 0.9})`,
+                      width: isCenter ? 100 : 70,
+                      height: isCenter ? 90 : 65,
+                      left: isCenter ? '50%' : isLeft ? '0%' : 'auto',
+                      right: isRight ? '0%' : 'auto',
+                      transform: isCenter ? 'translateX(-50%) scale(1)' : isLeft ? 'translateX(0) scale(0.85)' : 'translateX(0) scale(0.85)',
+                      zIndex: isCenter ? 3 : 1,
+                      opacity: isCenter ? 1 : 0.7,
                     }}
                   >
-                    <div className="h-full p-3 flex flex-col justify-between">
+                    <div className="h-full p-2 flex flex-col justify-between">
                       <div className="flex items-start justify-between">
-                        <span className="text-xs font-semibold text-gray-700">{item.title}</span>
-                        <div className="w-8 h-8 rounded-lg bg-white/70 flex items-center justify-center">
-                          <item.icon className="h-4 w-4 text-gray-600" />
+                        <span className="text-[10px] font-semibold text-gray-700">{item.title}</span>
+                        <div className="w-6 h-6 rounded-lg bg-white/70 flex items-center justify-center">
+                          <item.icon className="h-3 w-3 text-gray-600" />
                         </div>
                       </div>
-                      <p className="text-[10px] text-gray-500">{item.subtitle}</p>
+                      <p className="text-[8px] text-gray-500">{item.subtitle}</p>
                     </div>
                   </div>
                 );
@@ -518,8 +522,8 @@ export default function AppXPage() {
             </div>
           </div>
 
-          {/* Slide Progress Indicators */}
-          <div className="absolute bottom-4 left-5 flex items-center gap-2">
+          {/* Slide Progress Indicators - Positioned higher */}
+          <div className="absolute bottom-12 left-5 flex items-center gap-2">
             {slides.map((_, i) => (
               <button
                 key={i}
@@ -566,83 +570,39 @@ export default function AppXPage() {
           }}
         >
           <div className={`pb-8 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #FDFBF7 0%, #F8F6F0 100%)' }}>
-            {/* Wellness Charts + Service Buttons - Charts first, then buttons - 2 Rows, Horizontal Scroll */}
+            {/* Row 1: 8 Wellness Charts - Horizontal Scroll */}
+            <div className="mb-4">
+              <div 
+                className="flex gap-3 overflow-x-auto pb-2 px-4"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {wellnessMetrics.map((metric, i) => (
+                  <div key={metric.id} className="flex-shrink-0">
+                    <WellnessChart value={metric.value} label={metric.label} color={metric.color} delay={i * 100} icon={metric.icon} />
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Row 2: All Service Buttons - Horizontal Scroll */}
             <div className="mb-5">
               <div 
                 className="flex gap-3 overflow-x-auto pb-2 px-4"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
-                {/* All 6 Wellness Charts First */}
-                {wellnessMetrics.map((metric, i) => (
-                  <div key={metric.id} className="flex flex-col gap-3 flex-shrink-0 items-center">
-                    <WellnessChart value={metric.value} label={metric.label} color={metric.color} delay={i * 100} icon={metric.icon} />
-                  </div>
+                {serviceCategories.map((service) => (
+                  <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5 flex-shrink-0">
+                    <div className="relative">
+                      <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
+                        <service.icon className="h-8 w-8 text-white" />
+                      </div>
+                      {service.badge && (
+                        <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">{service.badge}</span>
+                      )}
+                    </div>
+                    <span className="text-xs font-medium text-gray-600">{service.label}</span>
+                  </Link>
                 ))}
-                
-                {/* Then All Service Buttons (4 columns of 2 rows each) */}
-                <div className="flex flex-col gap-3 flex-shrink-0">
-                  {serviceCategories.slice(0, 2).map((service) => (
-                    <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5">
-                      <div className="relative">
-                        <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
-                          <service.icon className="h-8 w-8 text-white" />
-                        </div>
-                        {service.badge && (
-                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">{service.badge}</span>
-                        )}
-                      </div>
-                      <span className="text-xs font-medium text-gray-600">{service.label}</span>
-                    </Link>
-                  ))}
-                </div>
-                
-                <div className="flex flex-col gap-3 flex-shrink-0">
-                  {serviceCategories.slice(2, 4).map((service) => (
-                    <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5">
-                      <div className="relative">
-                        <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
-                          <service.icon className="h-8 w-8 text-white" />
-                        </div>
-                        {service.badge && (
-                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">{service.badge}</span>
-                        )}
-                      </div>
-                      <span className="text-xs font-medium text-gray-600">{service.label}</span>
-                    </Link>
-                  ))}
-                </div>
-                
-                <div className="flex flex-col gap-3 flex-shrink-0">
-                  {serviceCategories.slice(4, 6).map((service) => (
-                    <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5">
-                      <div className="relative">
-                        <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
-                          <service.icon className="h-8 w-8 text-white" />
-                        </div>
-                        {service.badge && (
-                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">{service.badge}</span>
-                        )}
-                      </div>
-                      <span className="text-xs font-medium text-gray-600">{service.label}</span>
-                    </Link>
-                  ))}
-                </div>
-                
-                <div className="flex flex-col gap-3 flex-shrink-0">
-                  {serviceCategories.slice(6, 8).map((service) => (
-                    <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5">
-                      <div className="relative">
-                        <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
-                          <service.icon className="h-8 w-8 text-white" />
-                        </div>
-                        {service.badge && (
-                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">{service.badge}</span>
-                        )}
-                      </div>
-                      <span className="text-xs font-medium text-gray-600">{service.label}</span>
-                    </Link>
-                  ))}
-                </div>
               </div>
             </div>
 
