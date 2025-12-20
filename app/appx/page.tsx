@@ -291,17 +291,55 @@ const featuredExperts = [
   },
 ];
 
+// User profile type
+interface UserProfile {
+  id: string;
+  email: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  role: string;
+  onboarding_complete: boolean;
+}
+
 export default function AppXPage() {
   const [currentPromoCard, setCurrentPromoCard] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
 
   const slides = defaultSlides.filter(s => s.isActive);
+
+  // Fetch user profile
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const { createSupabaseClient } = await import("@/lib/supabase");
+      const supabase = createSupabaseClient();
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+        
+        if (profile) {
+          setUserProfile(profile);
+        }
+      }
+    };
+    
+    fetchUserProfile();
+  }, []);
+
+  // Get user display name and initials
+  const userName = userProfile?.full_name || userProfile?.email?.split("@")[0] || "User";
+  const userInitials = userName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
   
   // Header heights
   const HEADER_EXPANDED = 350;
@@ -431,12 +469,20 @@ export default function AppXPage() {
 
             {/* User Profile Section */}
             <div className="flex items-center gap-4 mb-6">
-              {/* Avatar */}
+              {/* Avatar - Shows photo or initials */}
               <div className="relative">
-                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-[#0D9488] to-[#0D4F4F] flex items-center justify-center overflow-hidden">
-                  <div className="h-14 w-14 rounded-full bg-gray-200 flex items-center justify-center">
-                    <User className="h-8 w-8 text-gray-400" />
-                  </div>
+                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-[#0D9488] to-[#0D4F4F] p-0.5">
+                  {userProfile?.avatar_url ? (
+                    <img 
+                      src={userProfile.avatar_url} 
+                      alt={userName}
+                      className="h-full w-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-full w-full rounded-full bg-[#F5E6D3] flex items-center justify-center">
+                      <span className="text-xl font-bold text-[#0D4F4F]">{userInitials}</span>
+                    </div>
+                  )}
                 </div>
                 {/* Teal accent */}
                 <div className="absolute -bottom-1 -left-1 h-6 w-6 bg-[#0D9488] rounded-full" />
@@ -444,12 +490,12 @@ export default function AppXPage() {
               
               {/* Name & Stats */}
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-gray-900 mb-1">Hi, User!</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">Hi, {userName.split(" ")[0]}!</h2>
                 <div className="flex items-center gap-2 flex-wrap">
                   {/* Pro Member Badge */}
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#D4AF37] text-white text-xs font-bold rounded-full">
                     <Star className="h-3 w-3 fill-white" />
-                    Pro Member
+                    {userProfile?.role === 'admin' ? 'Admin' : 'Pro Member'}
                   </span>
                   {/* Mood Stats */}
                   <span className="inline-flex items-center gap-1 text-sm text-gray-600">
