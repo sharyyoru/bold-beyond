@@ -126,6 +126,20 @@
   display: none;
 }
 
+/* Progress bar animation for carousel */
+@keyframes progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}
+
+.animate-progress {
+  animation: progress 5s linear forwards;
+}
+
 /* App container - no scrollbars anywhere */
 [data-app="true"],
 [data-app="true"] * {

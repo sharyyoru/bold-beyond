@@ -20,20 +20,69 @@ import {
   Leaf,
   Activity,
   TrendingUp,
+  Moon,
+  Sun,
+  Zap,
+  Smile,
+  Coffee,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Service categories like Careem
+// Sand/Water/Air color palette for welcoming feel
+const colors = {
+  sand: {
+    light: "#F5E6D3",
+    medium: "#E8D5C4",
+    dark: "#D4B896",
+  },
+  water: {
+    light: "#E0F4F4",
+    medium: "#7DD3D3",
+    dark: "#0D9488",
+  },
+  air: {
+    light: "#F0F7FF",
+    medium: "#B8D4E8",
+    dark: "#6B9BC3",
+  },
+  warmth: {
+    gold: "#D4AF37",
+    coral: "#F4A261",
+    rose: "#E9967A",
+  },
+};
+
+// Service categories with welcoming colors
 const serviceCategories = [
-  { id: "therapy", label: "Therapy", icon: Brain, color: "bg-brand-navy" },
-  { id: "coaching", label: "Coaching", icon: Sparkles, color: "bg-brand-gold" },
-  { id: "wellness", label: "Wellness", icon: Leaf, color: "bg-green-500", badge: "New" },
-  { id: "groups", label: "Groups", icon: Users, color: "bg-purple-500" },
-  { id: "clinics", label: "Clinics", icon: Stethoscope, color: "bg-brand-teal" },
-  { id: "fitness", label: "Fitness", icon: Dumbbell, color: "bg-orange-500" },
-  { id: "perks", label: "Perks", icon: Gift, color: "bg-pink-500" },
-  { id: "support", label: "Support", icon: MessageCircle, color: "bg-blue-500" },
+  { id: "therapy", label: "Therapy", icon: Brain, color: "bg-[#6B9BC3]", gradient: "from-[#6B9BC3] to-[#5A8AB2]" },
+  { id: "coaching", label: "Coaching", icon: Sparkles, color: "bg-[#D4AF37]", gradient: "from-[#D4AF37] to-[#C9A42E]" },
+  { id: "wellness", label: "Wellness", icon: Leaf, color: "bg-[#7DD3D3]", gradient: "from-[#7DD3D3] to-[#0D9488]", badge: "New" },
+  { id: "groups", label: "Groups", icon: Users, color: "bg-[#B8A4C9]", gradient: "from-[#B8A4C9] to-[#9B8BB5]" },
+  { id: "clinics", label: "Clinics", icon: Stethoscope, color: "bg-[#0D9488]", gradient: "from-[#0D9488] to-[#0B7B71]" },
+  { id: "fitness", label: "Fitness", icon: Dumbbell, color: "bg-[#F4A261]", gradient: "from-[#F4A261] to-[#E8914F]" },
+  { id: "perks", label: "Perks", icon: Gift, color: "bg-[#E9967A]", gradient: "from-[#E9967A] to-[#D88568]" },
+  { id: "support", label: "Support", icon: MessageCircle, color: "bg-[#7DD3D3]", gradient: "from-[#7DD3D3] to-[#6BC4C4]" },
+];
+
+// Promo items for carousel (3 items per slide)
+const promoItems = [
+  { id: 1, title: "Therapy", subtitle: "Talk to experts", image: "/promo/therapy.png", bgColor: "bg-[#E0F4F4]" },
+  { id: 2, title: "Wellness", subtitle: "Daily check-ins", image: "/promo/wellness.png", bgColor: "bg-[#F5E6D3]" },
+  { id: 3, title: "Groups", subtitle: "Join community", image: "/promo/groups.png", bgColor: "bg-[#F0F7FF]" },
+  { id: 4, title: "Coaching", subtitle: "Life goals", image: "/promo/coaching.png", bgColor: "bg-[#FFF8E7]" },
+  { id: 5, title: "Fitness", subtitle: "Move & groove", image: "/promo/fitness.png", bgColor: "bg-[#FFF0E6]" },
+  { id: 6, title: "Perks", subtitle: "Exclusive deals", image: "/promo/perks.png", bgColor: "bg-[#F5E6D3]" },
+];
+
+// Wellness metrics for charts
+const wellnessMetrics = [
+  { id: "mind", label: "Mind", value: 72, color: "#0D9488", icon: Brain },
+  { id: "body", label: "Body", value: 85, color: "#D4AF37", icon: Activity },
+  { id: "sleep", label: "Sleep", value: 68, color: "#6B9BC3", icon: Moon },
+  { id: "energy", label: "Energy", value: 79, color: "#F4A261", icon: Zap },
+  { id: "mood", label: "Mood", value: 88, color: "#E9967A", icon: Smile },
+  { id: "focus", label: "Focus", value: 65, color: "#7DD3D3", icon: Sun },
 ];
 
 // Slide type interface
@@ -86,8 +135,8 @@ const defaultSlides: CarouselSlide[] = [
   },
 ];
 
-// Animated Wellness Chart Component
-function WellnessChart({ value, label, color, delay }: { value: number; label: string; color: string; delay: number }) {
+// Animated Wellness Chart Component - Bigger size
+function WellnessChart({ value, label, color, delay, icon: Icon }: { value: number; label: string; color: string; delay: number; icon?: any }) {
   const [animatedValue, setAnimatedValue] = useState(0);
   
   useEffect(() => {
@@ -107,51 +156,80 @@ function WellnessChart({ value, label, color, delay }: { value: number; label: s
   }, [value, delay]);
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative h-14 w-14">
-        <svg className="h-14 w-14 -rotate-90 transform">
-          <circle cx="28" cy="28" r="24" stroke="#E5E7EB" strokeWidth="4" fill="none" />
+    <div className="flex flex-col items-center flex-shrink-0 p-2 rounded-2xl bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+      style={{ minWidth: 80 }}
+    >
+      <div className="relative h-16 w-16">
+        <svg className="h-16 w-16 -rotate-90 transform">
+          <circle cx="32" cy="32" r="28" stroke="#F5E6D3" strokeWidth="5" fill="none" />
           <circle
-            cx="28" cy="28" r="24"
+            cx="32" cy="32" r="28"
             stroke={color}
-            strokeWidth="4"
+            strokeWidth="5"
             fill="none"
-            strokeDasharray={150.8}
-            strokeDashoffset={150.8 * (1 - animatedValue / 100)}
+            strokeDasharray={175.9}
+            strokeDashoffset={175.9 * (1 - animatedValue / 100)}
             strokeLinecap="round"
-            className="transition-all duration-300"
+            className="transition-all duration-500"
           />
         </svg>
-        <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-700">
+        <span className="absolute inset-0 flex items-center justify-center text-sm font-bold" style={{ color }}>
           {animatedValue}%
         </span>
       </div>
-      <span className="text-[10px] text-gray-500 mt-1 text-center">{label}</span>
+      <div className="flex items-center gap-1 mt-1">
+        {Icon && <Icon className="h-3 w-3" style={{ color }} />}
+        <span className="text-xs font-medium text-gray-600">{label}</span>
+      </div>
     </div>
   );
 }
 
-// Mini Line Chart Component
-function MiniLineChart({ data, color }: { data: number[]; color: string }) {
-  const maxVal = Math.max(...data);
-  const points = data.map((val, i) => {
-    const x = (i / (data.length - 1)) * 50;
-    const y = 24 - (val / maxVal) * 20;
-    return `${x},${y}`;
-  }).join(' ');
+// Promo Card Component for carousel
+function PromoCard({ item }: { item: typeof promoItems[0] }) {
+  return (
+    <div className={`${item.bgColor} rounded-2xl p-3 h-24 w-24 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer`}>
+      <div className="w-12 h-12 rounded-xl bg-white/60 flex items-center justify-center mb-1">
+        <Sparkles className="h-6 w-6 text-gray-600" />
+      </div>
+      <p className="text-[10px] font-semibold text-gray-700 truncate w-full">{item.title}</p>
+      <p className="text-[8px] text-gray-500 truncate w-full">{item.subtitle}</p>
+    </div>
+  );
+}
+
+// Timer Progress Bar Component
+function SlideProgressBar({ duration, isActive, onComplete }: { duration: number; isActive: boolean; onComplete: () => void }) {
+  const [progress, setProgress] = useState(0);
+  
+  useEffect(() => {
+    if (!isActive) {
+      setProgress(0);
+      return;
+    }
+    
+    const startTime = Date.now();
+    const interval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const newProgress = Math.min((elapsed / (duration * 1000)) * 100, 100);
+      setProgress(newProgress);
+      
+      if (newProgress >= 100) {
+        clearInterval(interval);
+        onComplete();
+      }
+    }, 50);
+    
+    return () => clearInterval(interval);
+  }, [isActive, duration, onComplete]);
 
   return (
-    <svg viewBox="0 0 50 28" className="w-full h-7">
-      <polyline
-        points={points}
-        fill="none"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="animate-pulse"
+    <div className="h-1 bg-white/20 rounded-full overflow-hidden flex-1">
+      <div 
+        className="h-full bg-white rounded-full transition-all duration-100"
+        style={{ width: `${progress}%` }}
       />
-    </svg>
+    </div>
   );
 }
 
@@ -253,15 +331,18 @@ export default function AppXPage() {
     }
   }, []);
 
+  // Calculate total promo slides (3 items per slide)
+  const totalPromoSlides = Math.ceil(promoItems.length / 3);
+  
   // Auto-rotate carousel with dynamic duration
   useEffect(() => {
-    if (slides.length === 0) return;
-    const currentDuration = (slides[currentSlide]?.duration || 5) * 1000;
+    if (totalPromoSlides === 0) return;
+    const currentDuration = (slides[currentSlide % slides.length]?.duration || 5) * 1000;
     const interval = setTimeout(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
+      setCurrentSlide((prev) => (prev + 1) % totalPromoSlides);
     }, currentDuration);
     return () => clearTimeout(interval);
-  }, [currentSlide, slides]);
+  }, [currentSlide, slides, totalPromoSlides]);
 
   const headerHeight = isCollapsed ? HEADER_COLLAPSED : HEADER_EXPANDED;
   const currentSlideData = slides[currentSlide] || defaultSlides[0];
@@ -296,61 +377,71 @@ export default function AppXPage() {
           </div>
         </div>
 
-        {/* Carousel Content with Square Slider - Hidden when collapsed */}
+        {/* Carousel Content with 3 Promo Items - Hidden when collapsed */}
         <div
-          className={`absolute inset-0 pt-20 transition-opacity duration-300 ${
+          className={`absolute inset-0 pt-16 transition-opacity duration-300 ${
             isCollapsed ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
         >
-          <div className="h-full flex items-center px-5 pb-10">
+          <div className="h-full flex flex-col justify-center px-5 pb-12">
             {/* Text Content */}
-            <div className="flex-1 pr-4">
-              <h1 className="text-3xl font-display font-bold text-white mb-2">
+            <div className="mb-4">
+              <h1 className="text-2xl font-display font-bold text-white mb-1">
                 {currentSlideData.title}
               </h1>
-              <p className="text-white/90 text-base mb-4">
+              <p className="text-white/90 text-sm mb-3">
                 {currentSlideData.subtitle}
               </p>
               <Link 
                 href={currentSlideData.ctaLink || "#"}
-                className="inline-flex items-center gap-2 text-white font-medium hover:underline"
+                className="inline-flex items-center gap-2 text-white text-sm font-medium hover:underline"
               >
                 {currentSlideData.ctaText}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
             
-            {/* Square Promotional Slider Image */}
-            <div className="w-36 h-36 rounded-2xl bg-white/10 backdrop-blur-sm overflow-hidden shadow-2xl flex-shrink-0">
-              {currentSlideData.backgroundImage ? (
-                <Image 
-                  src={`/api/sanity/image/${currentSlideData.backgroundImage}`}
-                  alt={currentSlideData.title}
-                  width={144}
-                  height={144}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center">
-                  <div className="text-center text-white/60">
-                    <Sparkles className="h-10 w-10 mx-auto mb-2" />
-                    <span className="text-xs">Promo</span>
+            {/* 3 Promo Cards per Slide */}
+            <div className="flex gap-3">
+              {promoItems.slice(currentSlide * 3, currentSlide * 3 + 3).map((item) => (
+                <div 
+                  key={item.id}
+                  className={`${item.bgColor} rounded-2xl p-3 flex-1 flex flex-col items-center justify-center text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer`}
+                  style={{ minHeight: 100 }}
+                >
+                  <div className="w-12 h-12 rounded-xl bg-white/70 flex items-center justify-center mb-2 shadow-sm">
+                    <Sparkles className="h-6 w-6 text-gray-600" />
                   </div>
+                  <p className="text-xs font-semibold text-gray-700">{item.title}</p>
+                  <p className="text-[10px] text-gray-500">{item.subtitle}</p>
                 </div>
-              )}
+              ))}
             </div>
           </div>
 
-          {/* Carousel Dots */}
-          <div className="absolute bottom-5 left-5 flex gap-2">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentSlide(i)}
-                className={`h-2 transition-all duration-300 rounded-full ${
-                  i === currentSlide ? "w-6 bg-white" : "w-2 bg-white/40"
-                }`}
-              />
+          {/* Slide Progress Indicators */}
+          <div className="absolute bottom-4 left-5 right-5 flex items-center gap-3">
+            {Array.from({ length: Math.ceil(promoItems.length / 3) }).map((_, i) => (
+              <div key={i} className="flex-1 flex items-center gap-2">
+                <div 
+                  className={`h-1.5 rounded-full overflow-hidden flex-1 transition-all ${
+                    i === currentSlide ? 'bg-white/30' : 'bg-white/10'
+                  }`}
+                >
+                  {i === currentSlide && (
+                    <div 
+                      className="h-full bg-white rounded-full animate-progress"
+                      style={{ 
+                        animation: `progress ${currentSlideData.duration}s linear`,
+                        width: '100%'
+                      }}
+                    />
+                  )}
+                  {i < currentSlide && (
+                    <div className="h-full bg-white/60 rounded-full w-full" />
+                  )}
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -385,63 +476,143 @@ export default function AppXPage() {
           onPointerUp={handlePointerUp}
           onPointerLeave={handlePointerUp}
         >
-          <div className={`pb-8 ${isCollapsed ? 'pt-4' : 'pt-2'}`}>
-            {/* Wellness Indicators + Service Grid Row */}
-            <div className="px-4 mb-6">
-              <div className="flex gap-4 items-start">
-                {/* Animated Wellness Charts */}
+          <div className={`pb-8 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #FDFBF7 0%, #F8F6F0 100%)' }}>
+            {/* Wellness Charts - Horizontal Scroll (6 charts) */}
+            <div className="mb-5">
+              <div className="flex items-center justify-between px-4 mb-3">
+                <h3 className="text-sm font-semibold text-gray-700">Your Wellness</h3>
+                <Link href="/appx/wellness" className="text-xs text-[#0D9488] font-medium">View All</Link>
+              </div>
+              <div 
+                className="flex gap-3 overflow-x-auto pb-2 px-4 cursor-grab active:cursor-grabbing"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {wellnessMetrics.map((metric, i) => (
+                  <WellnessChart 
+                    key={metric.id}
+                    value={metric.value} 
+                    label={metric.label} 
+                    color={metric.color} 
+                    delay={i * 100}
+                    icon={metric.icon}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Service Grid - 2 Rows Max, Horizontal Scroll */}
+            <div className="mb-5">
+              <div 
+                className="flex gap-3 overflow-x-auto pb-2 px-4 cursor-grab active:cursor-grabbing"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {/* First column of 2 */}
                 <div className="flex flex-col gap-3 flex-shrink-0">
-                  <WellnessChart value={72} label="Mind" color="#0D9488" delay={0} />
-                  <WellnessChart value={85} label="Body" color="#D4AF37" delay={200} />
-                  <div className="bg-gray-50 rounded-xl p-2">
-                    <MiniLineChart data={[30, 45, 35, 60, 50, 70, 65]} color="#8B5CF6" />
-                    <span className="text-[9px] text-gray-500 block text-center mt-1">Weekly</span>
-                  </div>
-                </div>
-                
-                {/* Service Grid */}
-                <div className="flex-1 grid grid-cols-4 gap-3">
-                  {serviceCategories.map((service) => (
+                  {serviceCategories.slice(0, 2).map((service) => (
                     <Link
                       key={service.id}
                       href={`/appx/${service.id}`}
                       className="flex flex-col items-center gap-1.5"
                     >
                       <div className="relative">
-                        <div className={`h-14 w-14 rounded-2xl ${service.color} flex items-center justify-center shadow-md`}>
-                          <service.icon className="h-7 w-7 text-white" />
+                        <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
+                          <service.icon className="h-8 w-8 text-white" />
                         </div>
                         {service.badge && (
-                          <span className="absolute -top-1 -right-1 bg-green-400 text-[9px] font-bold text-white px-1.5 py-0.5 rounded">
+                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">
                             {service.badge}
                           </span>
                         )}
                       </div>
-                      <span className="text-[11px] font-medium text-gray-700 text-center">
-                        {service.label}
-                      </span>
+                      <span className="text-xs font-medium text-gray-600">{service.label}</span>
+                    </Link>
+                  ))}
+                </div>
+                {/* Second column of 2 */}
+                <div className="flex flex-col gap-3 flex-shrink-0">
+                  {serviceCategories.slice(2, 4).map((service) => (
+                    <Link
+                      key={service.id}
+                      href={`/appx/${service.id}`}
+                      className="flex flex-col items-center gap-1.5"
+                    >
+                      <div className="relative">
+                        <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
+                          <service.icon className="h-8 w-8 text-white" />
+                        </div>
+                        {service.badge && (
+                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">
+                            {service.badge}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs font-medium text-gray-600">{service.label}</span>
+                    </Link>
+                  ))}
+                </div>
+                {/* Third column of 2 */}
+                <div className="flex flex-col gap-3 flex-shrink-0">
+                  {serviceCategories.slice(4, 6).map((service) => (
+                    <Link
+                      key={service.id}
+                      href={`/appx/${service.id}`}
+                      className="flex flex-col items-center gap-1.5"
+                    >
+                      <div className="relative">
+                        <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
+                          <service.icon className="h-8 w-8 text-white" />
+                        </div>
+                        {service.badge && (
+                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">
+                            {service.badge}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs font-medium text-gray-600">{service.label}</span>
+                    </Link>
+                  ))}
+                </div>
+                {/* Fourth column of 2 */}
+                <div className="flex flex-col gap-3 flex-shrink-0">
+                  {serviceCategories.slice(6, 8).map((service) => (
+                    <Link
+                      key={service.id}
+                      href={`/appx/${service.id}`}
+                      className="flex flex-col items-center gap-1.5"
+                    >
+                      <div className="relative">
+                        <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
+                          <service.icon className="h-8 w-8 text-white" />
+                        </div>
+                        {service.badge && (
+                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">
+                            {service.badge}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs font-medium text-gray-600">{service.label}</span>
                     </Link>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Quick Actions - Horizontal Drag Scroll */}
-            <div className="px-4 mb-6">
+            {/* Quick Actions - Horizontal Scroll, Taller */}
+            <div className="mb-5">
               <div 
-                className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 cursor-grab active:cursor-grabbing"
+                className="flex gap-3 overflow-x-auto pb-2 px-4 cursor-grab active:cursor-grabbing"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 {quickActions.map((action, i) => (
                   <button
                     key={i}
-                    className="flex-shrink-0 flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border border-gray-100 active:scale-95 transition-transform"
+                    className="flex-shrink-0 flex items-center gap-3 bg-white rounded-2xl px-5 py-4 shadow-sm hover:shadow-md border border-[#E8D5C4] active:scale-95 transition-all duration-300"
                   >
-                    <div className="h-10 w-10 rounded-full bg-brand-gold/10 flex items-center justify-center">
-                      <action.icon className="h-5 w-5 text-brand-gold" />
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#F5E6D3] to-[#E8D5C4] flex items-center justify-center">
+                      <action.icon className="h-6 w-6 text-[#D4AF37]" />
                     </div>
                     <div className="text-left">
-                      <p className="text-sm font-medium text-gray-900">{action.label}</p>
+                      <p className="text-sm font-semibold text-gray-800">{action.label}</p>
                       <p className="text-xs text-gray-500">{action.sublabel}</p>
                     </div>
                   </button>
@@ -449,13 +620,13 @@ export default function AppXPage() {
               </div>
             </div>
 
-          {/* Promo Banner */}
-          <div className="px-4 mb-6">
-            <div className="bg-gradient-to-r from-brand-teal to-brand-teal-light rounded-2xl p-5 text-white">
+          {/* Promo Banner - Sand/Water colors */}
+          <div className="px-4 mb-5">
+            <div className="bg-gradient-to-r from-[#0D9488] via-[#7DD3D3] to-[#B8D4E8] rounded-2xl p-5 text-white shadow-lg">
               <p className="text-sm opacity-90">Book your first session</p>
               <h3 className="text-xl font-bold mb-2">AED 50 OFF</h3>
               <p className="text-xs opacity-80 mb-3">Use code: BOLDSTART</p>
-              <Button size="sm" className="bg-white text-brand-teal hover:bg-gray-100 rounded-full">
+              <Button size="sm" className="bg-white text-[#0D9488] hover:bg-[#F5E6D3] rounded-full shadow-md">
                 Book Now
               </Button>
             </div>
