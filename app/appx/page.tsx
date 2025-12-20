@@ -580,7 +580,7 @@ export default function AppXPage() {
             WebkitOverflowScrolling: 'touch'
           }}
         >
-          <div className={`pb-8 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #FDFBF7 0%, #F8F6F0 100%)' }}>
+          <div className={`pb-32 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #FDFBF7 0%, #F8F6F0 100%)' }}>
             {/* Row 1: 8 Wellness Charts - Horizontal Scroll */}
             <div className="mb-4">
               <div 

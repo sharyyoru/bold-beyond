@@ -2,9 +2,10 @@ import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
 // Routes that require authentication
-const protectedRoutes = ["/dashboard", "/booking", "/my-appointments", "/perks", "/profile"];
+const protectedRoutes = ["/dashboard", "/booking", "/my-appointments", "/perks", "/profile", "/appx"];
 const portalRoutes = ["/portal"];
 const adminRoutes = ["/admin"];
+const onboardingRoute = "/onboarding";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -67,7 +68,8 @@ export async function middleware(request: NextRequest) {
   // Redirect authenticated users away from auth pages
   const isAuthPage = pathname === "/login" || pathname === "/signup" || pathname === "/welcome";
   if (isAuthPage && user) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    // Check if user has completed onboarding (stored in user metadata or localStorage check on client)
+    return NextResponse.redirect(new URL("/appx", request.url));
   }
 
   return response;
