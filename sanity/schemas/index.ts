@@ -11,6 +11,7 @@ import product from "./product";
 import specialization from "./specialization";
 import onboardingQuestion from "./onboardingQuestion";
 import testQuestion from "./testQuestion";
+import homepage from "./homepage";
 
 export const schemaTypes = [
   service,
@@ -26,4 +27,5 @@ export const schemaTypes = [
   specialization,
   onboardingQuestion,
   testQuestion,
+  homepage,
 ];

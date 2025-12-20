@@ -322,6 +322,58 @@ export const queries = {
   allTestNames: `*[_type == "testQuestion" && isActive == true] {
     testName
   } | unique`,
+
+  // Homepage
+  homepage: `*[_type == "homepage"][0] {
+    heroTagline,
+    heroTaglineAr,
+    heroHeadline,
+    heroHeadlineAr,
+    heroHighlightedText,
+    heroHighlightedTextAr,
+    heroDescription,
+    heroDescriptionAr,
+    heroPrimaryCta,
+    heroPrimaryCtaAr,
+    heroSecondaryCta,
+    heroSecondaryCtaAr,
+    heroImage,
+    servicesTitle,
+    servicesTitleAr,
+    servicesDescription,
+    servicesDescriptionAr,
+    featuredServices,
+    featuresTagline,
+    featuresTaglineAr,
+    featuresTitle,
+    featuresTitleAr,
+    featuresDescription,
+    featuresDescriptionAr,
+    featuresList,
+    featuresImage,
+    stats,
+    testimonialsTitle,
+    testimonialsTitleAr,
+    testimonialsDescription,
+    testimonialsDescriptionAr,
+    featuredTestimonials[]-> {
+      _id,
+      clientName,
+      clientNameAr,
+      clientPhoto,
+      rating,
+      content,
+      contentAr
+    },
+    ctaTitle,
+    ctaTitleAr,
+    ctaDescription,
+    ctaDescriptionAr,
+    ctaPrimaryButton,
+    ctaPrimaryButtonAr,
+    ctaSecondaryButton,
+    ctaSecondaryButtonAr
+  }`,
 };
 
 // Fetch helper
