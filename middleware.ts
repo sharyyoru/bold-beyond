@@ -1,11 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
-// Routes that require authentication
-const protectedRoutes = ["/dashboard", "/booking", "/my-appointments", "/perks", "/profile", "/appx"];
+// Routes that require authentication (main app only, not auth pages within appx)
+const protectedRoutes = ["/dashboard", "/booking", "/my-appointments", "/perks", "/profile"];
 const portalRoutes = ["/portal"];
 const adminRoutes = ["/admin"];
-const onboardingRoute = "/onboarding";
+
+// App routes - /appx main page requires auth, but /appx/welcome, /appx/login, /appx/signup don't
+const appxAuthPages = ["/appx/welcome", "/appx/login", "/appx/signup", "/appx/terms", "/appx/privacy"];
+const appxProtectedPages = ["/appx"];
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -56,20 +59,28 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith(route)
   );
 
-  // For protected routes, check if user is authenticated
+  // Check if this is an appx auth page (public) or appx main page (protected)
+  const isAppxAuthPage = appxAuthPages.some((route) => pathname === route || pathname.startsWith(route + "/"));
+  const isAppxMainPage = pathname === "/appx" || (pathname.startsWith("/appx/") && !isAppxAuthPage && !pathname.startsWith("/appx/onboarding"));
+
+  // For protected routes, redirect to appropriate welcome page
   if (isProtectedRoute || isPortalRoute || isAdminRoute) {
     if (!user) {
-      // Redirect to welcome page for the auth flow
       const welcomeUrl = new URL("/welcome", request.url);
       welcomeUrl.searchParams.set("redirect", pathname);
       return NextResponse.redirect(welcomeUrl);
     }
   }
 
-  // Redirect authenticated users away from auth pages
-  const isAuthPage = pathname === "/login" || pathname === "/signup" || pathname === "/welcome";
-  if (isAuthPage && user) {
-    // Check if user has completed onboarding (stored in user metadata or localStorage check on client)
+  // For appx main page, redirect to /appx/welcome if not authenticated
+  if (isAppxMainPage && !user) {
+    const welcomeUrl = new URL("/appx/welcome", request.url);
+    welcomeUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(welcomeUrl);
+  }
+
+  // Redirect authenticated users away from appx auth pages to appx main
+  if (isAppxAuthPage && user) {
     return NextResponse.redirect(new URL("/appx", request.url));
   }
 
