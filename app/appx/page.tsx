@@ -7,6 +7,7 @@ import {
   Search,
   Menu,
   ArrowRight,
+  ChevronRight,
   Heart,
   Star,
   Brain,
@@ -421,6 +422,24 @@ export default function AppXPage() {
               </button>
             </div>
             
+            {/* Finish Profile Reminder - Shows if onboarding was skipped */}
+            {typeof window !== 'undefined' && localStorage.getItem('onboarding_skipped') === 'true' && !localStorage.getItem('onboarding_complete') && (
+              <Link
+                href="/onboarding"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-3 p-4 mb-4 bg-gradient-to-r from-[#FFF3E0] to-[#FFE0B2] rounded-2xl border border-[#FFB74D]"
+              >
+                <div className="h-10 w-10 rounded-full bg-[#FF9800] flex items-center justify-center">
+                  <span className="text-white text-lg">⚡</span>
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-900 text-sm">Finish your profile</p>
+                  <p className="text-xs text-gray-600">Activate all features</p>
+                </div>
+                <ChevronRight className="h-5 w-5 text-gray-400" />
+              </Link>
+            )}
+
             {/* Navigation Items */}
             <div className="grid grid-cols-4 gap-4 mb-6">
               {navMenuItems.map((item) => (

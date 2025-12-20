@@ -3,159 +3,236 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ChevronRight, ChevronLeft, X } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { createSupabaseClient } from "@/lib/supabase";
 
-const onboardingSlides = [
+// 5-question onboarding flow
+const onboardingQuestions = [
   {
     id: 1,
-    title: "Welcome to Bold & Beyond",
-    description: "Your journey to wellness starts here. Discover expert coaching, therapy, and personalized wellness solutions.",
-    image: "/images/onboarding-1.jpg",
-    gradient: "from-[#0D9488] to-[#0D4F4F]",
+    question: "What's your main wellness goal right now?",
+    options: [
+      "Engaging in mindfulness practices",
+      "Exploring the benefits of meditation",
+      "Incorporating yoga into daily routines",
+      "Understanding the science behind stress reduction",
+      "Developing a gratitude journaling habit",
+    ],
   },
   {
     id: 2,
-    title: "Expert Guidance",
-    description: "Connect with certified coaches, therapists, and wellness experts who understand your unique needs.",
-    image: "/images/onboarding-2.jpg",
-    gradient: "from-[#6B9BC3] to-[#0D4F4F]",
+    question: "How often do you make time for self-care or relaxation?",
+    options: [
+      "Engaging in mindfulness practices",
+      "Incorporating physical activity into daily routines",
+      "Exploring creative hobbies for personal growth",
+      "Establishing a consistent sleep schedule for better health",
+    ],
   },
   {
     id: 3,
-    title: "Track Your Progress",
-    description: "Monitor your wellness journey with personalized insights, charts, and recommendations.",
-    image: "/images/onboarding-3.jpg",
-    gradient: "from-[#D4AF37] to-[#8B7355]",
+    question: "What kind of support are you most interested in?",
+    options: [
+      "Engaging in mindfulness practices",
+      "Journaling thoughts and experiences",
+      "Participating in peer support groups",
+      "Reading self-help literature",
+      "Exploring creative outlets like art or music",
+    ],
   },
   {
     id: 4,
-    title: "One app for everything",
-    description: "AI guidance, expert coaching, and exclusive wellness perks—all in one place.",
-    image: "/images/onboarding-4.jpg",
-    gradient: "from-[#7DD3D3] to-[#0D9488]",
+    question: "How do you usually manage stress?",
+    options: [
+      { label: "Struggling", emoji: "😔" },
+      { label: "Unsure", emoji: "😐" },
+      { label: "Content", emoji: "😊" },
+      { label: "Thriving", emoji: "😄" },
+    ],
+  },
+  {
+    id: 5,
+    question: "How are you feeling overall these days?",
+    options: [
+      { label: "Struggling", emoji: "😔" },
+      { label: "Struggling", emoji: "😔" },
+      { label: "Doing okay", emoji: "😐" },
+      { label: "Feeling good", emoji: "😊" },
+      { label: "Doing great", emoji: "😄" },
+    ],
   },
 ];
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleNext = () => {
-    if (currentSlide < onboardingSlides.length - 1) {
-      setCurrentSlide(currentSlide + 1);
+  const supabase = createSupabaseClient();
+  const question = onboardingQuestions[currentQuestion];
+  const isLastQuestion = currentQuestion === onboardingQuestions.length - 1;
+  const progress = ((currentQuestion + 1) / onboardingQuestions.length) * 100;
+
+  const handleOptionSelect = (option: string | { label: string; emoji: string }) => {
+    const value = typeof option === "string" ? option : option.label;
+    setSelectedOption(value);
+  };
+
+  const handleContinue = async () => {
+    if (!selectedOption) return;
+
+    const newAnswers = { ...answers, [question.id]: selectedOption };
+    setAnswers(newAnswers);
+    setSelectedOption(null);
+
+    if (isLastQuestion) {
+      // Save to database and go to calibrating page
+      setIsSaving(true);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          // Save onboarding responses
+          await supabase.from("onboarding_responses").upsert({
+            user_id: user.id,
+            wellness_goal: newAnswers[1],
+            self_care_frequency: newAnswers[2],
+            support_interest: newAnswers[3],
+            stress_management: newAnswers[4],
+            overall_feeling: newAnswers[5],
+            completed_at: new Date().toISOString(),
+          });
+
+          // Update profile to mark onboarding complete
+          await supabase.from("profiles").update({
+            onboarding_complete: true,
+          }).eq("id", user.id);
+        }
+      } catch (error) {
+        console.error("Error saving onboarding:", error);
+      }
+      
+      // Store in localStorage as backup
+      localStorage.setItem("onboarding_complete", "true");
+      localStorage.setItem("onboarding_answers", JSON.stringify(newAnswers));
+      
+      router.push("/onboarding/calibrating");
     } else {
-      completeOnboarding();
+      setCurrentQuestion(currentQuestion + 1);
     }
   };
 
-  const handlePrev = () => {
-    if (currentSlide > 0) {
-      setCurrentSlide(currentSlide - 1);
+  const handleSkip = async () => {
+    // Mark as skipped but not complete
+    localStorage.setItem("onboarding_skipped", "true");
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("profiles").update({
+          onboarding_skipped: true,
+        }).eq("id", user.id);
+      }
+    } catch (error) {
+      console.error("Error marking skip:", error);
     }
-  };
-
-  const handleSkip = () => {
-    completeOnboarding();
-  };
-
-  const completeOnboarding = () => {
-    // Mark onboarding as complete in localStorage
-    localStorage.setItem("onboarding_complete", "true");
+    
     router.push("/appx");
   };
 
-  const slide = onboardingSlides[currentSlide];
-  const isLastSlide = currentSlide === onboardingSlides.length - 1;
-
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
-      {/* Background gradient */}
-      <div className={`absolute inset-0 bg-gradient-to-b ${slide.gradient} transition-all duration-500`} />
-      
-      {/* Background image placeholder */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute inset-0 bg-[url('/images/pattern-bg.png')] bg-cover bg-center" />
-      </div>
-
-      {/* Skip button */}
-      <div className="relative z-10 flex justify-end p-4">
+    <div className="min-h-screen bg-[#FDFBF7] flex flex-col">
+      {/* Header with Skip */}
+      <div className="flex justify-end p-4">
         <button
           onClick={handleSkip}
-          className="flex items-center gap-1 text-white/80 hover:text-white text-sm font-medium transition-colors"
+          className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
         >
-          Skip
-          <X className="h-4 w-4" />
+          SKIP
         </button>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 relative z-10 flex flex-col items-center justify-center px-6">
-        {/* Illustration area */}
-        <div className="w-full max-w-sm h-64 mb-8 relative">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-48 h-48 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
-              <Image
-                src="/images/bold-beyond-logo.png"
-                alt="Bold & Beyond"
-                width={120}
-                height={120}
-                className="object-contain"
+      {/* Title */}
+      <div className="px-6 mb-4">
+        <h1 className="text-2xl font-bold text-gray-900">Let's get you started</h1>
+      </div>
+
+      {/* Progress bar */}
+      <div className="px-6 mb-6">
+        <div className="relative">
+          {/* Brown decorative element */}
+          <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-12 h-16 bg-[#8B6F47] rounded-r-full" />
+          
+          {/* Progress container */}
+          <div className="bg-[#F5F0EA] rounded-3xl p-6 ml-6">
+            {/* Progress indicator */}
+            <div className="flex justify-center mb-4">
+              <span className="px-4 py-1 bg-[#8B6F47] text-white text-sm font-medium rounded-full">
+                {currentQuestion + 1} OF {onboardingQuestions.length}
+              </span>
+            </div>
+
+            {/* Progress bar */}
+            <div className="w-full h-1 bg-[#E8E0D5] rounded-full mb-6 overflow-hidden">
+              <div 
+                className="h-full bg-[#8B6F47] rounded-full transition-all duration-500"
+                style={{ width: `${progress}%` }}
               />
             </div>
+
+            {/* Question */}
+            <h2 className="text-xl font-bold text-gray-900 text-center mb-6">
+              {question.question}
+            </h2>
           </div>
-        </div>
-
-        {/* Slide indicators */}
-        <div className="flex items-center gap-2 mb-6">
-          {onboardingSlides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === currentSlide
-                  ? "w-8 bg-white"
-                  : "w-2 bg-white/40 hover:bg-white/60"
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Text content */}
-        <div className="text-center max-w-sm">
-          <h1 className="text-2xl font-bold text-white mb-3 transition-all duration-300">
-            {slide.title}
-          </h1>
-          <p className="text-white/80 text-sm leading-relaxed">
-            {slide.description}
-          </p>
         </div>
       </div>
 
-      {/* Navigation buttons */}
-      <div className="relative z-10 p-6 pb-12">
-        <div className="flex items-center gap-4">
-          {currentSlide > 0 && (
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={handlePrev}
-              className="flex-1 bg-white/10 border-white/30 text-white hover:bg-white/20"
+      {/* Options */}
+      <div className="flex-1 px-6 space-y-3 overflow-y-auto pb-32">
+        {question.options.map((option, index) => {
+          const isObject = typeof option === "object";
+          const label = isObject ? option.label : option;
+          const emoji = isObject ? option.emoji : null;
+          const isSelected = selectedOption === label;
+
+          return (
+            <button
+              key={index}
+              onClick={() => handleOptionSelect(option)}
+              className={`w-full p-4 rounded-2xl border-2 text-left transition-all duration-200 ${
+                isSelected
+                  ? "border-[#7DD3D3] bg-[#E8F8F8]"
+                  : "border-gray-200 bg-white hover:border-gray-300"
+              }`}
             >
-              <ChevronLeft className="h-5 w-5 mr-1" />
-              Back
-            </Button>
+              <span className="flex items-center gap-3">
+                {emoji && <span className="text-xl">{emoji}</span>}
+                <span className="text-gray-800 font-medium">{label}</span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Continue Button - Fixed at bottom */}
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#FDFBF7] via-[#FDFBF7] to-transparent pt-12">
+        <Button
+          onClick={handleContinue}
+          disabled={!selectedOption || isSaving}
+          className="w-full h-14 bg-[#7DD3D3] hover:bg-[#6BC4C4] text-white font-medium text-lg rounded-2xl disabled:opacity-50"
+        >
+          {isSaving ? (
+            "Saving..."
+          ) : (
+            <>
+              {isLastQuestion ? "Complete" : "Continue"}
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </>
           )}
-          <Button
-            variant="default"
-            size="lg"
-            onClick={handleNext}
-            className={`${currentSlide === 0 ? "w-full" : "flex-1"} bg-white text-gray-900 hover:bg-white/90`}
-          >
-            {isLastSlide ? "Get Started" : "Next"}
-            {!isLastSlide && <ChevronRight className="h-5 w-5 ml-1" />}
-          </Button>
-        </div>
+        </Button>
       </div>
     </div>
   );
