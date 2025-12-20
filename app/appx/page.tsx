@@ -384,7 +384,7 @@ export default function AppXPage() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-brand-navy select-none">
-      {/* Slide-out Navigation Menu */}
+      {/* Slide-out Navigation Menu - Draggable */}
       <div 
         className={`fixed inset-0 z-50 transition-all duration-300 ${
           isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'
@@ -398,36 +398,76 @@ export default function AppXPage() {
           onClick={() => setIsMenuOpen(false)}
         />
         
-        {/* Menu Panel */}
+        {/* Menu Panel - Slides from top */}
         <div 
-          className={`absolute top-0 left-0 right-0 bg-white rounded-b-3xl shadow-2xl transition-transform duration-300 ${
+          className={`absolute top-0 left-0 right-0 bg-[#F5F3EF] rounded-b-[2rem] shadow-2xl transition-transform duration-300 ease-out ${
             isMenuOpen ? 'translate-y-0' : '-translate-y-full'
           }`}
+          style={{ maxHeight: '85vh' }}
         >
-          <div className="p-6 pt-8">
-            {/* Logo centered, Close on right */}
-            <div className="flex items-center justify-center relative mb-8">
-              <Image 
-                src="/images/bold-beyond-logo.png" 
-                alt="Bold & Beyond" 
-                width={50} 
-                height={50}
-                className="h-12 w-12 object-contain"
-              />
+          <div className="p-5 pt-10 overflow-y-auto" style={{ maxHeight: 'calc(85vh - 40px)' }}>
+            {/* Header: Logo + Brand + Close */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <Image 
+                  src="/images/bold-beyond-logo.png" 
+                  alt="Bold & Beyond" 
+                  width={40} 
+                  height={40}
+                  className="h-10 w-10 object-contain"
+                />
+                <div className="flex flex-col">
+                  <span className="text-lg font-bold text-[#0D4F4F] leading-tight">BOLD&</span>
+                  <span className="text-lg font-bold text-[#0D4F4F] leading-tight">BEYOND</span>
+                </div>
+              </div>
               <button 
                 onClick={() => setIsMenuOpen(false)}
-                className="absolute right-0 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center"
+                className="h-10 w-10 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-gray-50"
               >
                 <X className="h-5 w-5 text-gray-600" />
               </button>
             </div>
-            
+
+            {/* User Profile Section */}
+            <div className="flex items-center gap-4 mb-6">
+              {/* Avatar */}
+              <div className="relative">
+                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-[#0D9488] to-[#0D4F4F] flex items-center justify-center overflow-hidden">
+                  <div className="h-14 w-14 rounded-full bg-gray-200 flex items-center justify-center">
+                    <User className="h-8 w-8 text-gray-400" />
+                  </div>
+                </div>
+                {/* Teal accent */}
+                <div className="absolute -bottom-1 -left-1 h-6 w-6 bg-[#0D9488] rounded-full" />
+              </div>
+              
+              {/* Name & Stats */}
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">Hi, User!</h2>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Pro Member Badge */}
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#D4AF37] text-white text-xs font-bold rounded-full">
+                    <Star className="h-3 w-3 fill-white" />
+                    Pro Member
+                  </span>
+                  {/* Mood Stats */}
+                  <span className="inline-flex items-center gap-1 text-sm text-gray-600">
+                    <span className="text-[#D4AF37]">👤</span> 80%
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-sm text-gray-600">
+                    😊 Happy
+                  </span>
+                </div>
+              </div>
+            </div>
+
             {/* Finish Profile Reminder - Shows if onboarding was skipped */}
             {typeof window !== 'undefined' && localStorage.getItem('onboarding_skipped') === 'true' && !localStorage.getItem('onboarding_complete') && (
               <Link
                 href="/onboarding"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-3 p-4 mb-4 bg-gradient-to-r from-[#FFF3E0] to-[#FFE0B2] rounded-2xl border border-[#FFB74D]"
+                className="flex items-center gap-3 p-4 mb-5 bg-gradient-to-r from-[#FFF3E0] to-[#FFE0B2] rounded-2xl border border-[#FFB74D]"
               >
                 <div className="h-10 w-10 rounded-full bg-[#FF9800] flex items-center justify-center">
                   <span className="text-white text-lg">⚡</span>
@@ -440,30 +480,82 @@ export default function AppXPage() {
               </Link>
             )}
 
-            {/* Navigation Items */}
-            <div className="grid grid-cols-4 gap-4 mb-6">
-              {navMenuItems.map((item) => (
+            {/* Navigation Items - Circular buttons */}
+            <div className="grid grid-cols-4 gap-3 mb-6">
+              {navMenuItems.map((item, index) => (
                 <Link
                   key={item.id}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
                   className="flex flex-col items-center gap-2"
                 >
-                  <div className="relative h-14 w-14 rounded-2xl border-2 border-gray-200 flex items-center justify-center hover:border-[#0D9488] transition-colors">
-                    <item.icon className="h-6 w-6 text-gray-700" />
+                  <div className={`relative h-16 w-16 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 ${
+                    index === 1 ? 'bg-[#25D366] shadow-lg' : 'bg-white shadow-md border border-gray-100'
+                  }`}>
+                    <item.icon className={`h-6 w-6 ${index === 1 ? 'text-white' : 'text-gray-700'}`} />
                     {item.badge && (
-                      <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full" />
+                      <span className="absolute -top-0.5 -right-0.5 h-3 w-3 bg-red-500 rounded-full border-2 border-white" />
                     )}
                   </div>
                   <span className="text-xs font-medium text-gray-700">{item.label}</span>
                 </Link>
               ))}
             </div>
-            
-            {/* Drag Handle */}
-            <div className="flex justify-center pt-2">
-              <div className="w-16 h-1.5 bg-gray-300 rounded-full" />
+
+            {/* Daily Check-in Card */}
+            <div className="bg-white rounded-2xl p-4 shadow-sm mb-4">
+              <div className="flex gap-4">
+                {/* Date */}
+                <div className="flex flex-col items-center justify-center bg-gray-50 rounded-xl px-4 py-2">
+                  <span className="text-xs font-medium text-gray-500 uppercase">
+                    {new Date().toLocaleDateString('en-US', { month: 'short' })}
+                  </span>
+                  <span className="text-2xl font-bold text-gray-900">
+                    {new Date().getDate()}
+                  </span>
+                </div>
+                
+                {/* Content */}
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 mb-1">
+                    What's the first thing on your mind today?
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    We're here to check in with you.
+                  </p>
+                </div>
+              </div>
+              
+              {/* CTA Button */}
+              <button className="w-full mt-4 py-3 bg-[#7DD3D3] hover:bg-[#6BC4C4] text-white font-semibold rounded-2xl transition-colors">
+                Share My Thoughts
+              </button>
             </div>
+          </div>
+          
+          {/* Draggable Handle Bar - Drag up to close */}
+          <div 
+            className="flex justify-center py-4 cursor-grab active:cursor-grabbing touch-none bg-[#F5F3EF] rounded-b-[2rem]"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              const startY = e.clientY;
+              const onMove = (moveEvent: PointerEvent) => {
+                const deltaY = moveEvent.clientY - startY;
+                if (deltaY < -50) {
+                  setIsMenuOpen(false);
+                  document.removeEventListener('pointermove', onMove);
+                  document.removeEventListener('pointerup', onUp);
+                }
+              };
+              const onUp = () => {
+                document.removeEventListener('pointermove', onMove);
+                document.removeEventListener('pointerup', onUp);
+              };
+              document.addEventListener('pointermove', onMove);
+              document.addEventListener('pointerup', onUp);
+            }}
+          >
+            <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
           </div>
         </div>
       </div>
