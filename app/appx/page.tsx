@@ -25,6 +25,11 @@ import {
   Zap,
   Smile,
   Coffee,
+  X,
+  Home,
+  HelpCircle,
+  ClipboardList,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -65,14 +70,19 @@ const serviceCategories = [
   { id: "support", label: "Support", icon: MessageCircle, color: "bg-[#7DD3D3]", gradient: "from-[#7DD3D3] to-[#6BC4C4]" },
 ];
 
-// Promo items for carousel (3 items per slide)
+// Promo items for header carousel (3 stacked cards, auto-rotating)
 const promoItems = [
-  { id: 1, title: "Therapy", subtitle: "Talk to experts", image: "/promo/therapy.png", bgColor: "bg-[#E0F4F4]" },
-  { id: 2, title: "Wellness", subtitle: "Daily check-ins", image: "/promo/wellness.png", bgColor: "bg-[#F5E6D3]" },
-  { id: 3, title: "Groups", subtitle: "Join community", image: "/promo/groups.png", bgColor: "bg-[#F0F7FF]" },
-  { id: 4, title: "Coaching", subtitle: "Life goals", image: "/promo/coaching.png", bgColor: "bg-[#FFF8E7]" },
-  { id: 5, title: "Fitness", subtitle: "Move & groove", image: "/promo/fitness.png", bgColor: "bg-[#FFF0E6]" },
-  { id: 6, title: "Perks", subtitle: "Exclusive deals", image: "/promo/perks.png", bgColor: "bg-[#F5E6D3]" },
+  { id: 1, title: "Rides", subtitle: "Book now", bgColor: "bg-[#E0F4F4]", icon: Activity },
+  { id: 2, title: "Food", subtitle: "Order fresh", bgColor: "bg-[#F5E6D3]", icon: Coffee },
+  { id: 3, title: "Wellness", subtitle: "Feel good", bgColor: "bg-[#F0F7FF]", icon: Leaf },
+];
+
+// Navigation menu items
+const navMenuItems = [
+  { id: "home", label: "Home", icon: Home, href: "/appx" },
+  { id: "help", label: "Help", icon: HelpCircle, href: "/appx/help", badge: true },
+  { id: "activities", label: "Activities", icon: ClipboardList, href: "/appx/activities" },
+  { id: "profile", label: "Profile", icon: User, href: "/appx/profile" },
 ];
 
 // Wellness metrics for charts
@@ -279,8 +289,10 @@ const featuredExperts = [
 ];
 
 export default function AppXPage() {
+  const [currentPromoCard, setCurrentPromoCard] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [sheetY, setSheetY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartY, setDragStartY] = useState(0);
@@ -331,18 +343,22 @@ export default function AppXPage() {
     }
   }, []);
 
-  // Calculate total promo slides (3 items per slide)
-  const totalPromoSlides = Math.ceil(promoItems.length / 3);
-  
-  // Auto-rotate carousel with dynamic duration
+  // Auto-rotate the 3 stacked promo cards (like Careem)
   useEffect(() => {
-    if (totalPromoSlides === 0) return;
+    const interval = setInterval(() => {
+      setCurrentPromoCard((prev) => (prev + 1) % promoItems.length);
+    }, 2000); // Rotate every 2 seconds for animated feel
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Auto-rotate main carousel slides
+  useEffect(() => {
     const currentDuration = (slides[currentSlide % slides.length]?.duration || 5) * 1000;
     const interval = setTimeout(() => {
-      setCurrentSlide((prev) => (prev + 1) % totalPromoSlides);
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, currentDuration);
     return () => clearTimeout(interval);
-  }, [currentSlide, slides, totalPromoSlides]);
+  }, [currentSlide, slides]);
 
   const headerHeight = isCollapsed ? HEADER_COLLAPSED : HEADER_EXPANDED;
   const currentSlideData = slides[currentSlide] || defaultSlides[0];
@@ -354,10 +370,76 @@ export default function AppXPage() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-brand-navy select-none">
+      {/* Slide-out Navigation Menu */}
+      <div 
+        className={`fixed inset-0 z-50 transition-all duration-300 ${
+          isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'
+        }`}
+      >
+        {/* Backdrop */}
+        <div 
+          className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
+            isMenuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={() => setIsMenuOpen(false)}
+        />
+        
+        {/* Menu Panel */}
+        <div 
+          className={`absolute top-0 left-0 right-0 bg-white rounded-b-3xl shadow-2xl transition-transform duration-300 ${
+            isMenuOpen ? 'translate-y-0' : '-translate-y-full'
+          }`}
+        >
+          <div className="p-6 pt-8">
+            {/* Logo and Close */}
+            <div className="flex items-center justify-between mb-8">
+              <Image 
+                src="/images/bold-beyond-logo.png" 
+                alt="Bold & Beyond" 
+                width={140} 
+                height={40}
+                className="h-10 w-auto"
+              />
+              <button 
+                onClick={() => setIsMenuOpen(false)}
+                className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center"
+              >
+                <X className="h-5 w-5 text-gray-600" />
+              </button>
+            </div>
+            
+            {/* Navigation Items */}
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              {navMenuItems.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex flex-col items-center gap-2"
+                >
+                  <div className="relative h-14 w-14 rounded-2xl border-2 border-gray-200 flex items-center justify-center hover:border-[#0D9488] transition-colors">
+                    <item.icon className="h-6 w-6 text-gray-700" />
+                    {item.badge && (
+                      <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full" />
+                    )}
+                  </div>
+                  <span className="text-xs font-medium text-gray-700">{item.label}</span>
+                </Link>
+              ))}
+            </div>
+            
+            {/* Drag Handle */}
+            <div className="flex justify-center pt-2">
+              <div className="w-16 h-1.5 bg-gray-300 rounded-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Fixed Header Section */}
       <div
         ref={headerRef}
-        className={`relative transition-all duration-300 ease-out bg-gradient-to-br from-${currentSlideData.gradientFrom} to-${currentSlideData.gradientTo}`}
+        className={`relative transition-all duration-300 ease-out bg-gradient-to-br from-[#1B365D] to-[#0D9488]`}
         style={{ height: headerHeight, minHeight: headerHeight }}
       >
         {/* Search Bar - Always visible */}
@@ -371,77 +453,86 @@ export default function AppXPage() {
                 className="w-full pl-12 pr-4 py-3.5 bg-white rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold shadow-lg"
               />
             </div>
-            <button className="h-12 w-12 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+            <button 
+              onClick={() => setIsMenuOpen(true)}
+              className="h-12 w-12 rounded-full bg-white/20 backdrop-blur flex items-center justify-center"
+            >
               <Menu className="h-5 w-5 text-white" />
             </button>
           </div>
         </div>
 
-        {/* Carousel Content with 3 Promo Items - Hidden when collapsed */}
+        {/* Carousel Content - Text LEFT, 3 Stacked Cards RIGHT */}
         <div
-          className={`absolute inset-0 pt-16 transition-opacity duration-300 ${
+          className={`absolute inset-0 pt-20 transition-opacity duration-300 ${
             isCollapsed ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
         >
-          <div className="h-full flex flex-col justify-center px-5 pb-12">
-            {/* Text Content */}
-            <div className="mb-4">
-              <h1 className="text-2xl font-display font-bold text-white mb-1">
+          <div className="h-full flex items-center px-5 pb-8">
+            {/* Text Content - Left Side */}
+            <div className="flex-1 pr-4">
+              <h1 className="text-3xl font-display font-bold text-white mb-2">
                 {currentSlideData.title}
               </h1>
-              <p className="text-white/90 text-sm mb-3">
+              <p className="text-white/90 text-base mb-4">
                 {currentSlideData.subtitle}
               </p>
               <Link 
                 href={currentSlideData.ctaLink || "#"}
-                className="inline-flex items-center gap-2 text-white text-sm font-medium hover:underline"
+                className="inline-flex items-center gap-2 text-white font-medium hover:underline"
               >
                 {currentSlideData.ctaText}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
             
-            {/* 3 Promo Cards per Slide */}
-            <div className="flex gap-3">
-              {promoItems.slice(currentSlide * 3, currentSlide * 3 + 3).map((item) => (
-                <div 
-                  key={item.id}
-                  className={`${item.bgColor} rounded-2xl p-3 flex-1 flex flex-col items-center justify-center text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer`}
-                  style={{ minHeight: 100 }}
-                >
-                  <div className="w-12 h-12 rounded-xl bg-white/70 flex items-center justify-center mb-2 shadow-sm">
-                    <Sparkles className="h-6 w-6 text-gray-600" />
+            {/* 3 Stacked Promo Cards - Right Side (Auto-rotating) */}
+            <div className="relative w-36 h-40 flex-shrink-0">
+              {promoItems.map((item, index) => {
+                const offset = (index - currentPromoCard + promoItems.length) % promoItems.length;
+                const isTop = offset === 0;
+                const isMiddle = offset === 1;
+                const isBottom = offset === 2;
+                
+                return (
+                  <div
+                    key={item.id}
+                    className={`absolute rounded-2xl shadow-lg transition-all duration-500 ease-out cursor-pointer overflow-hidden ${item.bgColor}`}
+                    style={{
+                      width: isTop ? 130 : isMiddle ? 115 : 100,
+                      height: isTop ? 100 : isMiddle ? 85 : 70,
+                      top: isTop ? 0 : isMiddle ? 10 : 20,
+                      right: isTop ? 0 : isMiddle ? 8 : 16,
+                      zIndex: isTop ? 3 : isMiddle ? 2 : 1,
+                      opacity: isBottom ? 0.6 : isMiddle ? 0.85 : 1,
+                      transform: `scale(${isTop ? 1 : isMiddle ? 0.95 : 0.9})`,
+                    }}
+                  >
+                    <div className="h-full p-3 flex flex-col justify-between">
+                      <div className="flex items-start justify-between">
+                        <span className="text-xs font-semibold text-gray-700">{item.title}</span>
+                        <div className="w-8 h-8 rounded-lg bg-white/70 flex items-center justify-center">
+                          <item.icon className="h-4 w-4 text-gray-600" />
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-gray-500">{item.subtitle}</p>
+                    </div>
                   </div>
-                  <p className="text-xs font-semibold text-gray-700">{item.title}</p>
-                  <p className="text-[10px] text-gray-500">{item.subtitle}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
           {/* Slide Progress Indicators */}
-          <div className="absolute bottom-4 left-5 right-5 flex items-center gap-3">
-            {Array.from({ length: Math.ceil(promoItems.length / 3) }).map((_, i) => (
-              <div key={i} className="flex-1 flex items-center gap-2">
-                <div 
-                  className={`h-1.5 rounded-full overflow-hidden flex-1 transition-all ${
-                    i === currentSlide ? 'bg-white/30' : 'bg-white/10'
-                  }`}
-                >
-                  {i === currentSlide && (
-                    <div 
-                      className="h-full bg-white rounded-full animate-progress"
-                      style={{ 
-                        animation: `progress ${currentSlideData.duration}s linear`,
-                        width: '100%'
-                      }}
-                    />
-                  )}
-                  {i < currentSlide && (
-                    <div className="h-full bg-white/60 rounded-full w-full" />
-                  )}
-                </div>
-              </div>
+          <div className="absolute bottom-4 left-5 flex items-center gap-2">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentSlide(i)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  i === currentSlide ? "w-6 bg-white" : "w-2 bg-white/40"
+                }`}
+              />
             ))}
           </div>
         </div>
@@ -477,122 +568,108 @@ export default function AppXPage() {
           onPointerLeave={handlePointerUp}
         >
           <div className={`pb-8 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #FDFBF7 0%, #F8F6F0 100%)' }}>
-            {/* Wellness Charts - Horizontal Scroll (6 charts) */}
-            <div className="mb-5">
-              <div className="flex items-center justify-between px-4 mb-3">
-                <h3 className="text-sm font-semibold text-gray-700">Your Wellness</h3>
-                <Link href="/appx/wellness" className="text-xs text-[#0D9488] font-medium">View All</Link>
-              </div>
-              <div 
-                className="flex gap-3 overflow-x-auto pb-2 px-4 cursor-grab active:cursor-grabbing"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {wellnessMetrics.map((metric, i) => (
-                  <WellnessChart 
-                    key={metric.id}
-                    value={metric.value} 
-                    label={metric.label} 
-                    color={metric.color} 
-                    delay={i * 100}
-                    icon={metric.icon}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Service Grid - 2 Rows Max, Horizontal Scroll */}
+            {/* Combined Wellness Charts + Service Grid - 2 Rows, Horizontal Scroll */}
             <div className="mb-5">
               <div 
-                className="flex gap-3 overflow-x-auto pb-2 px-4 cursor-grab active:cursor-grabbing"
+                className="flex gap-4 overflow-x-auto pb-2 px-4 cursor-grab active:cursor-grabbing"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
-                {/* First column of 2 */}
+                {/* Wellness Chart Column 1 (Mind) */}
+                <div className="flex flex-col gap-3 flex-shrink-0 items-center">
+                  <WellnessChart value={wellnessMetrics[0].value} label={wellnessMetrics[0].label} color={wellnessMetrics[0].color} delay={0} icon={wellnessMetrics[0].icon} />
+                </div>
+                
+                {/* Service Column 1 */}
                 <div className="flex flex-col gap-3 flex-shrink-0">
                   {serviceCategories.slice(0, 2).map((service) => (
-                    <Link
-                      key={service.id}
-                      href={`/appx/${service.id}`}
-                      className="flex flex-col items-center gap-1.5"
-                    >
+                    <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5">
                       <div className="relative">
                         <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
                           <service.icon className="h-8 w-8 text-white" />
                         </div>
                         {service.badge && (
-                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">
-                            {service.badge}
-                          </span>
+                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">{service.badge}</span>
                         )}
                       </div>
                       <span className="text-xs font-medium text-gray-600">{service.label}</span>
                     </Link>
                   ))}
                 </div>
-                {/* Second column of 2 */}
+                
+                {/* Wellness Chart Column 2 (Body) */}
+                <div className="flex flex-col gap-3 flex-shrink-0 items-center">
+                  <WellnessChart value={wellnessMetrics[1].value} label={wellnessMetrics[1].label} color={wellnessMetrics[1].color} delay={100} icon={wellnessMetrics[1].icon} />
+                </div>
+                
+                {/* Service Column 2 */}
                 <div className="flex flex-col gap-3 flex-shrink-0">
                   {serviceCategories.slice(2, 4).map((service) => (
-                    <Link
-                      key={service.id}
-                      href={`/appx/${service.id}`}
-                      className="flex flex-col items-center gap-1.5"
-                    >
+                    <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5">
                       <div className="relative">
                         <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
                           <service.icon className="h-8 w-8 text-white" />
                         </div>
                         {service.badge && (
-                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">
-                            {service.badge}
-                          </span>
+                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">{service.badge}</span>
                         )}
                       </div>
                       <span className="text-xs font-medium text-gray-600">{service.label}</span>
                     </Link>
                   ))}
                 </div>
-                {/* Third column of 2 */}
+                
+                {/* Wellness Chart Column 3 (Sleep) */}
+                <div className="flex flex-col gap-3 flex-shrink-0 items-center">
+                  <WellnessChart value={wellnessMetrics[2].value} label={wellnessMetrics[2].label} color={wellnessMetrics[2].color} delay={200} icon={wellnessMetrics[2].icon} />
+                </div>
+                
+                {/* Service Column 3 */}
                 <div className="flex flex-col gap-3 flex-shrink-0">
                   {serviceCategories.slice(4, 6).map((service) => (
-                    <Link
-                      key={service.id}
-                      href={`/appx/${service.id}`}
-                      className="flex flex-col items-center gap-1.5"
-                    >
+                    <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5">
                       <div className="relative">
                         <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
                           <service.icon className="h-8 w-8 text-white" />
                         </div>
                         {service.badge && (
-                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">
-                            {service.badge}
-                          </span>
+                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">{service.badge}</span>
                         )}
                       </div>
                       <span className="text-xs font-medium text-gray-600">{service.label}</span>
                     </Link>
                   ))}
                 </div>
-                {/* Fourth column of 2 */}
+                
+                {/* Wellness Chart Column 4 (Energy) */}
+                <div className="flex flex-col gap-3 flex-shrink-0 items-center">
+                  <WellnessChart value={wellnessMetrics[3].value} label={wellnessMetrics[3].label} color={wellnessMetrics[3].color} delay={300} icon={wellnessMetrics[3].icon} />
+                </div>
+                
+                {/* Service Column 4 */}
                 <div className="flex flex-col gap-3 flex-shrink-0">
                   {serviceCategories.slice(6, 8).map((service) => (
-                    <Link
-                      key={service.id}
-                      href={`/appx/${service.id}`}
-                      className="flex flex-col items-center gap-1.5"
-                    >
+                    <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5">
                       <div className="relative">
                         <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
                           <service.icon className="h-8 w-8 text-white" />
                         </div>
                         {service.badge && (
-                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">
-                            {service.badge}
-                          </span>
+                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">{service.badge}</span>
                         )}
                       </div>
                       <span className="text-xs font-medium text-gray-600">{service.label}</span>
                     </Link>
                   ))}
+                </div>
+                
+                {/* Wellness Chart Column 5 (Mood) */}
+                <div className="flex flex-col gap-3 flex-shrink-0 items-center">
+                  <WellnessChart value={wellnessMetrics[4].value} label={wellnessMetrics[4].label} color={wellnessMetrics[4].color} delay={400} icon={wellnessMetrics[4].icon} />
+                </div>
+                
+                {/* Wellness Chart Column 6 (Focus) */}
+                <div className="flex flex-col gap-3 flex-shrink-0 items-center">
+                  <WellnessChart value={wellnessMetrics[5].value} label={wellnessMetrics[5].label} color={wellnessMetrics[5].color} delay={500} icon={wellnessMetrics[5].icon} />
                 </div>
               </div>
             </div>

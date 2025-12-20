@@ -30,6 +30,20 @@ export const metadata: Metadata = {
     "Dubai wellness",
   ],
   authors: [{ name: "Bold & Beyond" }],
+  icons: {
+    icon: [
+      { url: "/images/favicon.ico" },
+      { url: "/images/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/images/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/images/apple-touch-icon.png" },
+    ],
+    other: [
+      { rel: "android-chrome-192x192", url: "/images/android-chrome-192x192.png" },
+      { rel: "android-chrome-512x512", url: "/images/android-chrome-512x512.png" },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "en_AE",
