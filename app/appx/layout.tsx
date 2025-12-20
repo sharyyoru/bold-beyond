@@ -4,7 +4,7 @@ export default function AppXLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div data-app="true" className="min-h-screen bg-gray-100 overflow-hidden">
       {children}
     </div>
   );

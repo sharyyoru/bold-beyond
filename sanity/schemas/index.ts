@@ -12,6 +12,7 @@ import specialization from "./specialization";
 import onboardingQuestion from "./onboardingQuestion";
 import testQuestion from "./testQuestion";
 import homepage from "./homepage";
+import appCarousel from "./appCarousel";
 
 export const schemaTypes = [
   service,
@@ -28,4 +29,5 @@ export const schemaTypes = [
   onboardingQuestion,
   testQuestion,
   homepage,
+  appCarousel,
 ];

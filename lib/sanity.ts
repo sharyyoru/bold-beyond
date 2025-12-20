@@ -323,6 +323,24 @@ export const queries = {
     testName
   } | unique`,
 
+  // App Carousel
+  appCarousel: `*[_type == "appCarousel"][0] {
+    slides[] {
+      title,
+      titleAr,
+      subtitle,
+      subtitleAr,
+      ctaText,
+      ctaTextAr,
+      ctaLink,
+      backgroundImage,
+      gradientFrom,
+      gradientTo,
+      duration,
+      isActive
+    }
+  }`,
+
   // Homepage
   homepage: `*[_type == "homepage"][0] {
     heroTagline,

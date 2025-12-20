@@ -116,3 +116,23 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+/* App-style scrolling - hide all scrollbars */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* App container - no scrollbars anywhere */
+[data-app="true"],
+[data-app="true"] * {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+[data-app="true"]::-webkit-scrollbar,
+[data-app="true"] *::-webkit-scrollbar {
+  display: none;
+}

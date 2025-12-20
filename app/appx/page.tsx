@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Search,
   Menu,
   ArrowRight,
   Heart,
   Star,
-  Clock,
-  MapPin,
   Brain,
   Sparkles,
   Users,
@@ -19,6 +18,8 @@ import {
   Stethoscope,
   Dumbbell,
   Leaf,
+  Activity,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,30 +36,124 @@ const serviceCategories = [
   { id: "support", label: "Support", icon: MessageCircle, color: "bg-blue-500" },
 ];
 
-// Carousel slides
-const carouselSlides = [
+// Slide type interface
+interface CarouselSlide {
+  title: string;
+  subtitle: string;
+  ctaText: string;
+  ctaLink: string;
+  gradientFrom: string;
+  gradientTo: string;
+  duration: number;
+  isActive: boolean;
+  backgroundImage?: string | null;
+}
+
+// Default carousel slides (fallback when Sanity has no data)
+const defaultSlides: CarouselSlide[] = [
   {
-    id: 1,
     title: "Bold+",
     subtitle: "Save 25% with an annual membership.",
-    cta: "Switch now",
-    bgGradient: "from-brand-navy via-brand-navy to-brand-teal",
+    ctaText: "Switch now",
+    ctaLink: "/appx/membership",
+    gradientFrom: "brand-navy",
+    gradientTo: "brand-teal",
+    duration: 5,
+    isActive: true,
+    backgroundImage: null,
   },
   {
-    id: 2,
     title: "Wellness Week",
     subtitle: "Free consultations with top experts.",
-    cta: "Explore",
-    bgGradient: "from-brand-teal via-brand-teal to-brand-gold",
+    ctaText: "Explore",
+    ctaLink: "/appx/wellness",
+    gradientFrom: "brand-teal",
+    gradientTo: "brand-gold",
+    duration: 5,
+    isActive: true,
+    backgroundImage: null,
   },
   {
-    id: 3,
     title: "New: Group Sessions",
     subtitle: "Connect and grow together.",
-    cta: "Join now",
-    bgGradient: "from-purple-600 via-purple-700 to-brand-navy",
+    ctaText: "Join now",
+    ctaLink: "/appx/groups",
+    gradientFrom: "purple-600",
+    gradientTo: "brand-navy",
+    duration: 5,
+    isActive: true,
+    backgroundImage: null,
   },
 ];
+
+// Animated Wellness Chart Component
+function WellnessChart({ value, label, color, delay }: { value: number; label: string; color: string; delay: number }) {
+  const [animatedValue, setAnimatedValue] = useState(0);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const interval = setInterval(() => {
+        setAnimatedValue((prev) => {
+          if (prev >= value) {
+            clearInterval(interval);
+            return value;
+          }
+          return prev + 2;
+        });
+      }, 20);
+      return () => clearInterval(interval);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative h-14 w-14">
+        <svg className="h-14 w-14 -rotate-90 transform">
+          <circle cx="28" cy="28" r="24" stroke="#E5E7EB" strokeWidth="4" fill="none" />
+          <circle
+            cx="28" cy="28" r="24"
+            stroke={color}
+            strokeWidth="4"
+            fill="none"
+            strokeDasharray={150.8}
+            strokeDashoffset={150.8 * (1 - animatedValue / 100)}
+            strokeLinecap="round"
+            className="transition-all duration-300"
+          />
+        </svg>
+        <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-700">
+          {animatedValue}%
+        </span>
+      </div>
+      <span className="text-[10px] text-gray-500 mt-1 text-center">{label}</span>
+    </div>
+  );
+}
+
+// Mini Line Chart Component
+function MiniLineChart({ data, color }: { data: number[]; color: string }) {
+  const maxVal = Math.max(...data);
+  const points = data.map((val, i) => {
+    const x = (i / (data.length - 1)) * 50;
+    const y = 24 - (val / maxVal) * 20;
+    return `${x},${y}`;
+  }).join(' ');
+
+  return (
+    <svg viewBox="0 0 50 28" className="w-full h-7">
+      <polyline
+        points={points}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="animate-pulse"
+      />
+    </svg>
+  );
+}
 
 // Quick action cards
 const quickActions = [
@@ -108,84 +203,147 @@ const featuredExperts = [
 export default function AppXPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
+  const [sheetY, setSheetY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartY, setDragStartY] = useState(0);
+  const [dragStartScroll, setDragStartScroll] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+
+  const slides = defaultSlides.filter(s => s.isActive);
+  
+  // Header heights: uncollapsed +25% (280 -> 350), collapsed +20% (60 -> 72)
+  const HEADER_EXPANDED = 350;
+  const HEADER_COLLAPSED = 72;
+
+  // Handle drag scrolling (app-like behavior)
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    setIsDragging(true);
+    setDragStartY(e.clientY);
+    setDragStartScroll(contentRef.current?.scrollTop || 0);
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  }, []);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging || !contentRef.current) return;
+    const deltaY = dragStartY - e.clientY;
+    contentRef.current.scrollTop = dragStartScroll + deltaY;
+  }, [isDragging, dragStartY, dragStartScroll]);
+
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    setIsDragging(false);
+    (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+  }, []);
 
   // Handle scroll to collapse header
   useEffect(() => {
     const handleScroll = () => {
       if (contentRef.current) {
         const scrollTop = contentRef.current.scrollTop;
-        setScrollY(scrollTop);
-        setIsCollapsed(scrollTop > 50);
+        setSheetY(scrollTop);
+        setIsCollapsed(scrollTop > 60);
       }
     };
 
     const contentElement = contentRef.current;
     if (contentElement) {
-      contentElement.addEventListener("scroll", handleScroll);
+      contentElement.addEventListener("scroll", handleScroll, { passive: true });
       return () => contentElement.removeEventListener("scroll", handleScroll);
     }
   }, []);
 
-  // Auto-rotate carousel
+  // Auto-rotate carousel with dynamic duration
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    if (slides.length === 0) return;
+    const currentDuration = (slides[currentSlide]?.duration || 5) * 1000;
+    const interval = setTimeout(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, currentDuration);
+    return () => clearTimeout(interval);
+  }, [currentSlide, slides]);
 
-  const headerHeight = isCollapsed ? 60 : 280;
+  const headerHeight = isCollapsed ? HEADER_COLLAPSED : HEADER_EXPANDED;
+  const currentSlideData = slides[currentSlide] || defaultSlides[0];
+
+  // Generate gradient class
+  const getGradientClass = (from: string, to: string) => {
+    return `from-${from} to-${to}`;
+  };
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-brand-navy">
+    <div className="h-screen flex flex-col overflow-hidden bg-brand-navy select-none">
       {/* Fixed Header Section */}
       <div
         ref={headerRef}
-        className={`relative transition-all duration-300 ease-out bg-gradient-to-b ${carouselSlides[currentSlide].bgGradient}`}
+        className={`relative transition-all duration-300 ease-out bg-gradient-to-br from-${currentSlideData.gradientFrom} to-${currentSlideData.gradientTo}`}
         style={{ height: headerHeight, minHeight: headerHeight }}
       >
         {/* Search Bar - Always visible */}
-        <div className={`absolute top-0 left-0 right-0 z-20 px-4 transition-all duration-300 ${isCollapsed ? 'py-2' : 'py-3'}`}>
+        <div className={`absolute top-0 left-0 right-0 z-20 px-4 transition-all duration-300 ${isCollapsed ? 'py-3' : 'py-4'}`}>
           <div className="flex items-center gap-3">
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="text"
                 placeholder="Discover anything"
-                className="w-full pl-12 pr-4 py-3 bg-white rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold shadow-lg"
+                className="w-full pl-12 pr-4 py-3.5 bg-white rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold shadow-lg"
               />
             </div>
-            <button className="h-11 w-11 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+            <button className="h-12 w-12 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
               <Menu className="h-5 w-5 text-white" />
             </button>
           </div>
         </div>
 
-        {/* Carousel Content - Hidden when collapsed */}
+        {/* Carousel Content with Square Slider - Hidden when collapsed */}
         <div
-          className={`absolute inset-0 pt-20 px-6 transition-opacity duration-300 ${
+          className={`absolute inset-0 pt-20 transition-opacity duration-300 ${
             isCollapsed ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
         >
-          <div className="h-full flex flex-col justify-center pb-8">
-            <h1 className="text-3xl font-display font-bold text-white mb-1">
-              {carouselSlides[currentSlide].title}
-            </h1>
-            <p className="text-white/90 text-lg mb-4">
-              {carouselSlides[currentSlide].subtitle}
-            </p>
-            <button className="flex items-center gap-2 text-white font-medium">
-              {carouselSlides[currentSlide].cta}
-              <ArrowRight className="h-4 w-4" />
-            </button>
+          <div className="h-full flex items-center px-5 pb-10">
+            {/* Text Content */}
+            <div className="flex-1 pr-4">
+              <h1 className="text-3xl font-display font-bold text-white mb-2">
+                {currentSlideData.title}
+              </h1>
+              <p className="text-white/90 text-base mb-4">
+                {currentSlideData.subtitle}
+              </p>
+              <Link 
+                href={currentSlideData.ctaLink || "#"}
+                className="inline-flex items-center gap-2 text-white font-medium hover:underline"
+              >
+                {currentSlideData.ctaText}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+            
+            {/* Square Promotional Slider Image */}
+            <div className="w-36 h-36 rounded-2xl bg-white/10 backdrop-blur-sm overflow-hidden shadow-2xl flex-shrink-0">
+              {currentSlideData.backgroundImage ? (
+                <Image 
+                  src={`/api/sanity/image/${currentSlideData.backgroundImage}`}
+                  alt={currentSlideData.title}
+                  width={144}
+                  height={144}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center">
+                  <div className="text-center text-white/60">
+                    <Sparkles className="h-10 w-10 mx-auto mb-2" />
+                    <span className="text-xs">Promo</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Carousel Dots */}
-          <div className="absolute bottom-4 left-6 flex gap-2">
-            {carouselSlides.map((_, i) => (
+          <div className="absolute bottom-5 left-5 flex gap-2">
+            {slides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrentSlide(i)}
@@ -198,59 +356,98 @@ export default function AppXPage() {
         </div>
       </div>
 
-      {/* Scrollable Content Container */}
+      {/* Draggable Sheet Content Container */}
       <div
-        ref={contentRef}
-        className="flex-1 bg-white rounded-t-3xl -mt-6 overflow-y-auto relative z-10"
-        style={{ marginTop: isCollapsed ? 0 : -24 }}
+        ref={sheetRef}
+        className={`flex-1 bg-white rounded-t-[2rem] overflow-hidden relative z-10 transition-all duration-300 ${
+          isCollapsed ? 'rounded-t-none' : ''
+        }`}
+        style={{ marginTop: isCollapsed ? 0 : -28 }}
       >
-        <div className="pt-6 pb-8">
-          {/* Service Grid - Careem Style */}
-          <div className="px-4 mb-6">
-            <div className="grid grid-cols-4 gap-4">
-              {serviceCategories.map((service) => (
-                <Link
-                  key={service.id}
-                  href={`/appx/${service.id}`}
-                  className="flex flex-col items-center gap-2"
-                >
-                  <div className="relative">
-                    <div className={`h-16 w-16 rounded-2xl ${service.color} flex items-center justify-center shadow-md`}>
-                      <service.icon className="h-8 w-8 text-white" />
-                    </div>
-                    {service.badge && (
-                      <span className="absolute -top-1 -right-1 bg-green-400 text-[10px] font-bold text-white px-1.5 py-0.5 rounded">
-                        {service.badge}
+        {/* Drag Handle */}
+        {!isCollapsed && (
+          <div className="flex justify-center py-3">
+            <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+          </div>
+        )}
+        
+        {/* Scrollable Content - No scrollbars, drag to scroll */}
+        <div
+          ref={contentRef}
+          className="h-full overflow-y-auto overflow-x-hidden scrollbar-none cursor-grab active:cursor-grabbing"
+          style={{ 
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none',
+            WebkitOverflowScrolling: 'touch'
+          }}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerLeave={handlePointerUp}
+        >
+          <div className={`pb-8 ${isCollapsed ? 'pt-4' : 'pt-2'}`}>
+            {/* Wellness Indicators + Service Grid Row */}
+            <div className="px-4 mb-6">
+              <div className="flex gap-4 items-start">
+                {/* Animated Wellness Charts */}
+                <div className="flex flex-col gap-3 flex-shrink-0">
+                  <WellnessChart value={72} label="Mind" color="#0D9488" delay={0} />
+                  <WellnessChart value={85} label="Body" color="#D4AF37" delay={200} />
+                  <div className="bg-gray-50 rounded-xl p-2">
+                    <MiniLineChart data={[30, 45, 35, 60, 50, 70, 65]} color="#8B5CF6" />
+                    <span className="text-[9px] text-gray-500 block text-center mt-1">Weekly</span>
+                  </div>
+                </div>
+                
+                {/* Service Grid */}
+                <div className="flex-1 grid grid-cols-4 gap-3">
+                  {serviceCategories.map((service) => (
+                    <Link
+                      key={service.id}
+                      href={`/appx/${service.id}`}
+                      className="flex flex-col items-center gap-1.5"
+                    >
+                      <div className="relative">
+                        <div className={`h-14 w-14 rounded-2xl ${service.color} flex items-center justify-center shadow-md`}>
+                          <service.icon className="h-7 w-7 text-white" />
+                        </div>
+                        {service.badge && (
+                          <span className="absolute -top-1 -right-1 bg-green-400 text-[9px] font-bold text-white px-1.5 py-0.5 rounded">
+                            {service.badge}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[11px] font-medium text-gray-700 text-center">
+                        {service.label}
                       </span>
-                    )}
-                  </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">
-                    {service.label}
-                  </span>
-                </Link>
-              ))}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
 
-          {/* Quick Actions - Horizontal Scroll */}
-          <div className="px-4 mb-6">
-            <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
-              {quickActions.map((action, i) => (
-                <button
-                  key={i}
-                  className="flex-shrink-0 flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border border-gray-100"
-                >
-                  <div className="h-10 w-10 rounded-full bg-brand-gold/10 flex items-center justify-center">
-                    <action.icon className="h-5 w-5 text-brand-gold" />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-sm font-medium text-gray-900">{action.label}</p>
-                    <p className="text-xs text-gray-500">{action.sublabel}</p>
-                  </div>
-                </button>
-              ))}
+            {/* Quick Actions - Horizontal Drag Scroll */}
+            <div className="px-4 mb-6">
+              <div 
+                className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 cursor-grab active:cursor-grabbing"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {quickActions.map((action, i) => (
+                  <button
+                    key={i}
+                    className="flex-shrink-0 flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border border-gray-100 active:scale-95 transition-transform"
+                  >
+                    <div className="h-10 w-10 rounded-full bg-brand-gold/10 flex items-center justify-center">
+                      <action.icon className="h-5 w-5 text-brand-gold" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-medium text-gray-900">{action.label}</p>
+                      <p className="text-xs text-gray-500">{action.sublabel}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
           {/* Promo Banner */}
           <div className="px-4 mb-6">
@@ -387,6 +584,7 @@ export default function AppXPage() {
               </Card>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
