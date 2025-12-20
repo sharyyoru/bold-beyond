@@ -295,10 +295,7 @@ export default function AppXPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [sheetPosition, setSheetPosition] = useState(0); // 0 = expanded, positive = collapsed
-  const [isHandleDragging, setIsHandleDragging] = useState(false);
-  const [handleDragStartY, setHandleDragStartY] = useState(0);
-  const [handleDragStartPos, setHandleDragStartPos] = useState(0);
+  const [lastScrollTop, setLastScrollTop] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -308,39 +305,56 @@ export default function AppXPage() {
   // Header heights
   const HEADER_EXPANDED = 350;
   const HEADER_COLLAPSED = 72;
-  const COLLAPSE_THRESHOLD = 150; // Drag distance to trigger collapse
 
-  // Handle bar drag to collapse/expand - drag UP to collapse, drag DOWN to expand
+  // Handle content scroll - collapse on scroll down, expand only at top
+  useEffect(() => {
+    const contentElement = contentRef.current;
+    if (!contentElement) return;
+
+    const handleScroll = () => {
+      const scrollTop = contentElement.scrollTop;
+      
+      // Scrolling down - collapse header
+      if (scrollTop > lastScrollTop && scrollTop > 20) {
+        setIsCollapsed(true);
+      }
+      // At the very top - expand header
+      else if (scrollTop === 0) {
+        setIsCollapsed(false);
+      }
+      
+      setLastScrollTop(scrollTop);
+    };
+
+    contentElement.addEventListener('scroll', handleScroll, { passive: true });
+    return () => contentElement.removeEventListener('scroll', handleScroll);
+  }, [lastScrollTop]);
+
+  // Handle bar drag - drag UP to collapse, drag DOWN to expand
+  const handleDragStart = useRef({ y: 0, collapsed: false });
+  
   const handleHandlePointerDown = useCallback((e: React.PointerEvent) => {
     e.preventDefault();
-    setIsHandleDragging(true);
-    setHandleDragStartY(e.clientY);
-    setHandleDragStartPos(sheetPosition);
+    handleDragStart.current = { y: e.clientY, collapsed: isCollapsed };
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  }, [sheetPosition]);
+  }, [isCollapsed]);
 
   const handleHandlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!isHandleDragging) return;
-    // Drag UP (negative deltaY) = increase position = collapse
-    // Drag DOWN (positive deltaY) = decrease position = expand
-    const deltaY = e.clientY - handleDragStartY;
-    const newPosition = Math.max(0, Math.min(COLLAPSE_THRESHOLD, handleDragStartPos - deltaY));
-    setSheetPosition(newPosition);
-  }, [isHandleDragging, handleDragStartY, handleDragStartPos]);
-
-  const handleHandlePointerUp = useCallback((e: React.PointerEvent) => {
-    setIsHandleDragging(false);
-    (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+    const deltaY = e.clientY - handleDragStart.current.y;
     
-    // Snap to collapsed or expanded based on position
-    if (sheetPosition > COLLAPSE_THRESHOLD / 2) {
-      setSheetPosition(COLLAPSE_THRESHOLD);
+    // Dragging UP (negative deltaY) = collapse
+    if (deltaY < -30 && !isCollapsed) {
       setIsCollapsed(true);
-    } else {
-      setSheetPosition(0);
+    }
+    // Dragging DOWN (positive deltaY) = expand (only if at top of content)
+    else if (deltaY > 30 && isCollapsed && contentRef.current?.scrollTop === 0) {
       setIsCollapsed(false);
     }
-  }, [sheetPosition]);
+  }, [isCollapsed]);
+
+  const handleHandlePointerUp = useCallback((e: React.PointerEvent) => {
+    (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+  }, []);
 
   // Auto-rotate the 3 stacked promo cards (like Careem) - 3 seconds
   useEffect(() => {
@@ -540,13 +554,10 @@ export default function AppXPage() {
       {/* Draggable Sheet Content Container */}
       <div
         ref={sheetRef}
-        className={`flex-1 bg-white rounded-t-[2rem] overflow-hidden relative z-10 transition-all ${
-          isHandleDragging ? 'duration-0' : 'duration-300'
-        } ${isCollapsed ? 'rounded-t-none' : ''}`}
-        style={{ 
-          marginTop: isCollapsed ? 0 : -28,
-          transform: `translateY(${sheetPosition}px)`
-        }}
+        className={`flex-1 bg-white rounded-t-[2rem] overflow-hidden relative z-10 transition-all duration-300 ease-out ${
+          isCollapsed ? 'rounded-t-none' : ''
+        }`}
+        style={{ marginTop: isCollapsed ? 0 : -28 }}
       >
         {/* Drag Handle - Functional */}
         <div 
