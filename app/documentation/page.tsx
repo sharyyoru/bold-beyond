@@ -34,6 +34,7 @@ import {
   Box,
   Cpu,
   Activity,
+  Bell,
 } from "lucide-react";
 
 // Documentation sections
@@ -149,6 +150,13 @@ const docSections = [
     icon: Calendar,
     color: "#10B981",
     description: "Availability-aware booking with double-booking prevention",
+  },
+  {
+    id: "notifications",
+    title: "Notifications & Reminders",
+    icon: Bell,
+    color: "#8B5CF6",
+    description: "Real-time notifications with appointment reminders",
   },
   {
     id: "partner-dashboard",
@@ -1406,6 +1414,60 @@ const sectionContent: Record<string, React.ReactNode> = {
           <li>• Payment status tracking (pending, paid, refunded)</li>
           <li>• Appointment status workflow (pending → confirmed → completed)</li>
         </ul>
+      </div>
+    </div>
+  ),
+
+  notifications: (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Bell className="h-6 w-6" />
+          Notifications & Reminders
+        </h3>
+        <p className="opacity-90">Real-time notifications with automatic appointment reminders and live updates.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-purple-200">
+          <h4 className="font-semibold text-gray-900 mb-3">🔔 Notification Types</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <strong>Appointment Reminders</strong> - 1 day & 1 hour before</li>
+            <li>• <strong>Booking Confirmations</strong> - When provider accepts</li>
+            <li>• <strong>Order Updates</strong> - Processing, shipped, delivered</li>
+            <li>• <strong>Payment Receipts</strong> - Successful payments</li>
+          </ul>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-indigo-200">
+          <h4 className="font-semibold text-gray-900 mb-3">⚡ Real-Time Updates</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Live notification count on bell icon</li>
+            <li>• Supabase real-time subscriptions</li>
+            <li>• Instant updates without refresh</li>
+            <li>• Mark as read / Mark all read</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">📱 User Activities</h4>
+        <p className="text-sm text-gray-600 mb-3">All paid appointments and orders show in the Activities page with:</p>
+        <ul className="space-y-2 text-sm text-gray-600">
+          <li>• Invoice/receipt links from Stripe</li>
+          <li>• Payment status and amount</li>
+          <li>• Appointment date & time</li>
+          <li>• Order tracking status</li>
+        </ul>
+      </div>
+
+      <div className="bg-slate-50 rounded-xl p-5 border border-slate-200">
+        <h4 className="font-semibold text-slate-800 mb-3">⏰ Automatic Reminders</h4>
+        <p className="text-sm text-gray-600 mb-2">Cron job runs every 15 minutes to send scheduled reminders:</p>
+        <div className="text-sm font-mono text-slate-600">
+          <p>• 1 day before appointment → "Appointment Tomorrow"</p>
+          <p>• 1 hour before appointment → "Appointment in 1 Hour"</p>
+        </div>
       </div>
     </div>
   ),

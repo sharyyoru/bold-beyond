@@ -127,17 +127,82 @@ export default function ActivitiesPage() {
         return;
       }
 
-      // Fetch all activity types in parallel
-      const [bookingsRes, purchasesRes, checkinsRes, chatsRes] = await Promise.all([
+      // Fetch from user_activities table (paid appointments and orders)
+      const { data: userActivities } = await supabase
+        .from("user_activities")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      // Also fetch from legacy tables for backwards compatibility
+      const [bookingsRes, purchasesRes, checkinsRes, chatsRes, appointmentsRes, ordersRes] = await Promise.all([
         supabase.from("bookings").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
         supabase.from("purchases").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
         supabase.from("wellness_checkins").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
         supabase.from("wellness_chat_logs").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
+        supabase.from("appointments").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
+        supabase.from("provider_orders").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
       ]);
 
       const allActivities: ActivityItem[] = [];
 
-      // Process bookings
+      // Process user_activities (from payment webhook)
+      (userActivities || []).forEach((activity: any) => {
+        const isBooking = activity.activity_type.includes("appointment") || activity.activity_type.includes("booking");
+        allActivities.push({
+          id: activity.id,
+          type: isBooking ? "booking" : "purchase",
+          title: activity.title,
+          subtitle: activity.description || "",
+          date: activity.created_at,
+          status: activity.metadata?.status,
+          wellness_contribution: 15,
+          wellness_dimensions: isBooking ? ["body", "mind"] : ["body"],
+          icon: isBooking ? Calendar : ShoppingBag,
+          color: isBooking ? "#0D9488" : "#D4AF37",
+          data: { ...activity, invoice_url: activity.metadata?.invoice_url, receipt_url: activity.metadata?.receipt_url },
+        });
+      });
+
+      // Process paid appointments
+      (appointmentsRes.data || []).filter((a: any) => a.payment_status === "paid").forEach((apt: any) => {
+        // Skip if already in userActivities
+        if (userActivities?.some((ua: any) => ua.reference_id === apt.id)) return;
+        allActivities.push({
+          id: `apt-${apt.id}`,
+          type: "booking",
+          title: apt.service_name || "Service Appointment",
+          subtitle: `${apt.appointment_date} at ${apt.appointment_time}`,
+          date: apt.created_at,
+          status: apt.status,
+          wellness_contribution: 15,
+          wellness_dimensions: ["body", "mind"],
+          icon: Calendar,
+          color: "#0D9488",
+          data: apt,
+        });
+      });
+
+      // Process paid orders
+      (ordersRes.data || []).filter((o: any) => o.payment_status === "paid").forEach((order: any) => {
+        // Skip if already in userActivities
+        if (userActivities?.some((ua: any) => ua.reference_id === order.id)) return;
+        allActivities.push({
+          id: `order-${order.id}`,
+          type: "purchase",
+          title: `Order #${order.order_number}`,
+          subtitle: `${order.total} AED`,
+          date: order.created_at,
+          status: order.status,
+          wellness_contribution: 10,
+          wellness_dimensions: ["body"],
+          icon: ShoppingBag,
+          color: "#D4AF37",
+          data: order,
+        });
+      });
+
+      // Process legacy bookings
       (bookingsRes.data || []).forEach((booking: Booking) => {
         allActivities.push({
           id: booking.id,
@@ -154,7 +219,7 @@ export default function ActivitiesPage() {
         });
       });
 
-      // Process purchases
+      // Process legacy purchases
       (purchasesRes.data || []).forEach((purchase: Purchase) => {
         allActivities.push({
           id: purchase.id,
@@ -212,7 +277,7 @@ export default function ActivitiesPage() {
         });
       });
 
-      // Sort by date
+      // Sort by date and remove duplicates
       allActivities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
       setActivities(allActivities);

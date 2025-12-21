@@ -73,6 +73,65 @@ export async function POST(request: NextRequest) {
               end_time: endTime,
               status: "booked",
             });
+
+            // Create activity for user
+            if (appointment.user_id) {
+              await supabase.from("user_activities").insert({
+                user_id: appointment.user_id,
+                activity_type: "appointment_booked",
+                title: "Appointment Booked",
+                description: `${appointment.service_name} on ${appointment.appointment_date} at ${appointment.appointment_time}`,
+                reference_id: appointment.id,
+                reference_type: "appointment",
+                amount: appointment.service_price,
+                metadata: {
+                  service_name: appointment.service_name,
+                  appointment_date: appointment.appointment_date,
+                  appointment_time: appointment.appointment_time,
+                  payment_id: session.payment_intent,
+                  invoice_url: session.invoice,
+                  receipt_url: session.receipt_url,
+                }
+              });
+
+              // Create notification
+              await supabase.from("user_notifications").insert({
+                user_id: appointment.user_id,
+                type: "payment",
+                title: "Booking Confirmed",
+                message: `Your appointment for ${appointment.service_name} has been booked. Payment of ${appointment.service_price} AED received.`,
+                reference_id: appointment.id,
+                reference_type: "appointment",
+                sent_at: new Date().toISOString(),
+              });
+
+              // Schedule appointment reminders
+              const appointmentDateTime = new Date(`${appointment.appointment_date}T${appointment.appointment_time}`);
+              
+              // 1 day before reminder
+              const dayBefore = new Date(appointmentDateTime);
+              dayBefore.setDate(dayBefore.getDate() - 1);
+              if (dayBefore > new Date()) {
+                await supabase.from("appointment_reminders").insert({
+                  appointment_id: appointment.id,
+                  user_id: appointment.user_id,
+                  reminder_type: "day_before",
+                  scheduled_for: dayBefore.toISOString(),
+                });
+              }
+
+              // 1 hour before reminder
+              const hourBefore = new Date(appointmentDateTime);
+              hourBefore.setHours(hourBefore.getHours() - 1);
+              if (hourBefore > new Date()) {
+                await supabase.from("appointment_reminders").insert({
+                  appointment_id: appointment.id,
+                  user_id: appointment.user_id,
+                  reminder_type: "hour_before",
+                  scheduled_for: hourBefore.toISOString(),
+                });
+              }
+            }
           }
         } else if (metadata?.type === "product_order" && metadata?.order_id) {
           // Update product order status
@@ -85,6 +144,44 @@ export async function POST(request: NextRequest) {
               paid_at: new Date().toISOString(),
             })
             .eq("id", metadata.order_id);
+
+          // Fetch the order details
+          const { data: order } = await supabase
+            .from("provider_orders")
+            .select("*")
+            .eq("id", metadata.order_id)
+            .single();
+
+          if (order && order.user_id) {
+            // Create activity for user
+            await supabase.from("user_activities").insert({
+              user_id: order.user_id,
+              activity_type: "order_placed",
+              title: "Order Placed",
+              description: `Order #${order.order_number} - ${order.items?.length || 1} item(s)`,
+              reference_id: order.id,
+              reference_type: "order",
+              amount: order.total,
+              metadata: {
+                order_number: order.order_number,
+                items: order.items,
+                payment_id: session.payment_intent,
+                invoice_url: session.invoice,
+                receipt_url: session.receipt_url,
+              }
+            });
+
+            // Create notification
+            await supabase.from("user_notifications").insert({
+              user_id: order.user_id,
+              type: "order_update",
+              title: "Order Confirmed",
+              message: `Your order #${order.order_number} has been placed. Total: ${order.total} AED`,
+              reference_id: order.id,
+              reference_type: "order",
+              sent_at: new Date().toISOString(),
+            });
+          }
         }
         break;
       }
