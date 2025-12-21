@@ -139,6 +139,44 @@ export default function WellnessCheckinPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [wellnessScores, setWellnessScores] = useState<Record<string, number>>({});
+  const [todayCheckin, setTodayCheckin] = useState<any>(null);
+  const [showReEvaluate, setShowReEvaluate] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Check if user already completed today's check-in
+  useEffect(() => {
+    const checkTodayCheckin = async () => {
+      const supabase = createSupabaseClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const today = new Date().toISOString().split('T')[0];
+        const { data } = await supabase
+          .from("wellness_checkins")
+          .select("*")
+          .eq("user_id", user.id)
+          .gte("created_at", `${today}T00:00:00`)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .single();
+        
+        if (data) {
+          setTodayCheckin(data);
+          setWellnessScores(data.scores || {});
+          setShowReEvaluate(true);
+        }
+      }
+      setLoading(false);
+    };
+    
+    checkTodayCheckin();
+  }, []);
+
+  const startFreshCheckin = () => {
+    setShowReEvaluate(false);
+    setCurrentStep(0);
+    setAnswers({});
+  };
 
   const currentQuestion = dailyQuestions[currentStep];
   const progress = ((currentStep + 1) / dailyQuestions.length) * 100;
@@ -274,6 +312,99 @@ export default function WellnessCheckinPage() {
       { title: "Keep it up!", description: "You're doing great. Explore our services.", category: "wellness" }
     ];
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#0D9488] to-[#1B365D] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+      </div>
+    );
+  }
+
+  // Show re-evaluate option if already completed today
+  if (showReEvaluate && todayCheckin) {
+    const overallScore = wellnessScores.overall || Math.round(
+      (Object.values(wellnessScores).filter(v => typeof v === 'number').reduce((a, b) => a + b, 0)) /
+      (Object.values(wellnessScores).filter(v => typeof v === 'number').length || 1)
+    );
+
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#0D9488] to-[#1B365D] px-4 py-8">
+        <div className="max-w-md mx-auto">
+          {/* Back Button */}
+          <button onClick={() => router.back()} className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center mb-6">
+            <ArrowLeft className="h-5 w-5 text-white" />
+          </button>
+
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="h-20 w-20 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4">
+              <Check className="h-10 w-10 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-white mb-2">Already Checked In Today!</h1>
+            <p className="text-white/80">You completed your wellness check-in earlier</p>
+          </div>
+
+          {/* Today's Score Summary */}
+          <div className="bg-white rounded-3xl p-6 mb-6 text-center">
+            <p className="text-gray-500 text-sm mb-2">Today's Wellness Score</p>
+            <div className="relative h-24 w-24 mx-auto mb-4">
+              <svg className="h-24 w-24 -rotate-90 transform">
+                <circle cx="48" cy="48" r="40" stroke="#E5E7EB" strokeWidth="8" fill="none" />
+                <circle
+                  cx="48" cy="48" r="40"
+                  stroke="#0D9488"
+                  strokeWidth="8"
+                  fill="none"
+                  strokeDasharray={251}
+                  strokeDashoffset={251 * (1 - overallScore / 100)}
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gray-900">
+                {overallScore}
+              </span>
+            </div>
+            <div className="grid grid-cols-3 gap-2 mt-4">
+              {wellnessDimensions.slice(0, 6).map((dim) => (
+                <div key={dim.id} className="text-center p-2 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-500">{dim.label}</p>
+                  <p className="font-bold text-sm" style={{ color: dim.color }}>
+                    {wellnessScores[dim.id] || 0}%
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="space-y-3">
+            <Button
+              onClick={startFreshCheckin}
+              className="w-full py-6 bg-white text-[#0D9488] hover:bg-gray-100 rounded-2xl font-semibold"
+            >
+              Re-evaluate My Answers
+            </Button>
+            <Button
+              onClick={() => router.push("/appx/wellness-tracker")}
+              variant="outline"
+              className="w-full py-6 bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-2xl font-semibold"
+            >
+              View Wellness Tracker
+            </Button>
+            <Button
+              onClick={() => router.push("/appx")}
+              variant="ghost"
+              className="w-full py-4 text-white/80 hover:text-white hover:bg-white/10 rounded-2xl"
+            >
+              Back to Home
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (showResults) {
     const recommendations = getRecommendations();

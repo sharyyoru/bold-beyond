@@ -95,6 +95,13 @@ const docSections = [
     description: "Visual tracking of wellness progress and AI recommendations",
   },
   {
+    id: "emotional-scoring",
+    title: "Emotional Scoring System",
+    icon: Brain,
+    color: "#7C3AED",
+    description: "How we calculate wellness scores and generate recommendations",
+  },
+  {
     id: "favorites",
     title: "Favorites System",
     icon: Heart,
@@ -822,6 +829,120 @@ const sectionContent: Record<string, React.ReactNode> = {
         <p className="text-sm text-teal-700">
           Access the Wellness Tracker by clicking any wellness dimension chart on the homepage, or through Profile → Settings → Wellness Tracker.
         </p>
+      </div>
+    </div>
+  ),
+
+  "emotional-scoring": (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-[#7C3AED] to-[#9333EA] rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Brain className="h-6 w-6" />
+          Emotional Scoring System
+        </h3>
+        <p className="opacity-90">Comprehensive methodology for calculating wellness scores and generating personalized recommendations.</p>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-4">🧠 The 6 Wellness Dimensions</h4>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {[
+            { name: "Mind", color: "#0D9488", desc: "Mental clarity, focus, cognitive function" },
+            { name: "Body", color: "#D4AF37", desc: "Physical health, fitness, vitality" },
+            { name: "Sleep", color: "#6B9BC3", desc: "Sleep quality, rest, recovery" },
+            { name: "Energy", color: "#F4A261", desc: "Daily energy, stamina, motivation" },
+            { name: "Mood", color: "#E9967A", desc: "Emotional state, happiness, outlook" },
+            { name: "Stress", color: "#B8A4C9", desc: "Stress levels (inverted - lower is better)" },
+          ].map((dim) => (
+            <div key={dim.name} className="p-3 rounded-lg" style={{ backgroundColor: `${dim.color}15` }}>
+              <p className="font-semibold text-sm" style={{ color: dim.color }}>{dim.name}</p>
+              <p className="text-xs text-gray-500">{dim.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-4">📊 Score Calculation</h4>
+        <div className="space-y-4">
+          <div className="bg-purple-50 rounded-lg p-4">
+            <p className="font-medium text-purple-900 mb-2">Daily Check-in Questions</p>
+            <ul className="text-sm text-purple-700 space-y-1">
+              <li>• <strong>Mood Selection:</strong> 5-point scale (Struggling 20% → Great 100%)</li>
+              <li>• <strong>Sleep Quality:</strong> Terribly/Poorly/Okay/Well/Great</li>
+              <li>• <strong>Energy Level:</strong> Exhausted → Very High</li>
+              <li>• <strong>Stress Level:</strong> Overwhelmed → Very Calm</li>
+              <li>• <strong>Physical Wellbeing:</strong> Poor → Excellent</li>
+              <li>• <strong>Mental Clarity:</strong> Foggy → Crystal Clear</li>
+            </ul>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-4">
+            <p className="font-medium text-gray-900 mb-2">Overall Score Formula</p>
+            <code className="text-sm bg-white px-2 py-1 rounded border">
+              Overall = (Mind + Body + Sleep + Energy + Mood + (100 - Stress)) / 6
+            </code>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-4">💡 Recommendation Engine</h4>
+        <div className="space-y-3">
+          <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg">
+            <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center text-sm">😰</div>
+            <div>
+              <p className="font-medium text-red-900">Stress {"<"} 60%</p>
+              <p className="text-sm text-red-700">→ Recommend meditation, breathing sessions, therapy</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+            <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-sm">😴</div>
+            <div>
+              <p className="font-medium text-blue-900">Sleep {"<"} 60%</p>
+              <p className="text-sm text-blue-700">→ Suggest sleep consultations, relaxation services</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3 p-3 bg-amber-50 rounded-lg">
+            <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-sm">⚡</div>
+            <div>
+              <p className="font-medium text-amber-900">Energy {"<"} 60%</p>
+              <p className="text-sm text-amber-700">→ Recommend yoga, fitness coaching, energy boosters</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3 p-3 bg-teal-50 rounded-lg">
+            <div className="h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center text-sm">🧠</div>
+            <div>
+              <p className="font-medium text-teal-900">Mind {"<"} 60%</p>
+              <p className="text-sm text-teal-700">→ Suggest mindfulness sessions, cognitive wellness</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-4">🔄 Re-evaluation Flow</h4>
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">Check-in Started</span>
+          <span className="text-gray-400">→</span>
+          <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Already Done Today?</span>
+          <span className="text-gray-400">→</span>
+          <span className="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm">Show Summary</span>
+          <span className="text-gray-400">→</span>
+          <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm">Re-evaluate Option</span>
+        </div>
+        <p className="text-sm text-gray-500 mt-3">
+          Users who have already completed their daily check-in see their current scores and can choose to re-evaluate if their situation has changed.
+        </p>
+      </div>
+
+      <div className="bg-purple-50 border border-purple-200 rounded-xl p-5">
+        <h4 className="font-semibold text-purple-800 mb-2">📈 Data Storage</h4>
+        <ul className="text-sm text-purple-700 space-y-1">
+          <li>• <code>wellness_checkins</code> table stores daily responses and scores</li>
+          <li>• <code>profiles.wellness_scores</code> stores latest dimension scores</li>
+          <li>• <code>profiles.last_checkin</code> tracks check-in timestamp</li>
+          <li>• Historical data used for streak counting and progress charts</li>
+        </ul>
       </div>
     </div>
   ),
