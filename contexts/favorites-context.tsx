@@ -44,16 +44,21 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
       setUserId(user.id);
 
-      const { data, error } = await supabase
-        .from("favorites")
-        .select("*")
-        .eq("user_id", user.id);
+      // Try to fetch favorites, but don't break if table doesn't exist
+      try {
+        const { data, error } = await supabase
+          .from("favorites")
+          .select("*")
+          .eq("user_id", user.id);
 
-      if (error) {
-        console.error("Error fetching favorites:", error);
+        if (!error && data) {
+          setFavorites(data);
+        } else {
+          setFavorites([]);
+        }
+      } catch {
+        // Table might not exist yet
         setFavorites([]);
-      } else {
-        setFavorites(data || []);
       }
     } catch (error) {
       console.error("Error in fetchFavorites:", error);
