@@ -65,6 +65,27 @@ const docSections = [
     description: "How we calculate and track wellness metrics",
   },
   {
+    id: "booking-system",
+    title: "Booking System",
+    icon: Calendar,
+    color: "#22C55E",
+    description: "Full booking flow with confirmation and tracking",
+  },
+  {
+    id: "profile-system",
+    title: "Profile & Personalization",
+    icon: Settings,
+    color: "#3B82F6",
+    description: "User profiles, preferences, and wellness data",
+  },
+  {
+    id: "activities",
+    title: "Activities & History",
+    icon: BarChart3,
+    color: "#8B5CF6",
+    description: "Activity tracking with wellness contribution scores",
+  },
+  {
     id: "services",
     title: "Services Module",
     icon: Heart,
@@ -537,6 +558,183 @@ const sectionContent: Record<string, React.ReactNode> = {
         <h4 className="font-semibold text-teal-800 mb-2">💾 Data Storage</h4>
         <p className="text-sm text-teal-700">
           Wellness scores are stored in the <code className="bg-teal-100 px-1 rounded">wellness_checkins</code> table and synced to the user's <code className="bg-teal-100 px-1 rounded">profiles.wellness_scores</code> column for quick access on the homepage charts.
+        </p>
+      </div>
+    </div>
+  ),
+
+  "booking-system": (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-[#22C55E] to-[#16A34A] rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Calendar className="h-6 w-6" />
+          Booking System
+        </h3>
+        <p className="opacity-90">Complete booking flow from selection to confirmation with tracking.</p>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-4">📅 Booking Flow</h4>
+        <div className="flex items-center justify-between mb-4">
+          {["Select Service", "Choose Date/Time", "Confirm Details", "Payment", "Confirmed"].map((step, i) => (
+            <div key={i} className="flex items-center">
+              <div className="flex flex-col items-center">
+                <div className="h-8 w-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold text-sm">{i + 1}</div>
+                <p className="text-xs text-gray-600 mt-1 text-center max-w-[60px]">{step}</p>
+              </div>
+              {i < 4 && <div className="h-px w-4 bg-gray-200 mx-1" />}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">📊 Booking Status</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-amber-500" /> Pending</li>
+            <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-green-500" /> Confirmed</li>
+            <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-blue-500" /> Completed</li>
+            <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-red-500" /> Cancelled</li>
+          </ul>
+        </div>
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">✨ Features</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Real-time availability checking</li>
+            <li>• Calendar date picker</li>
+            <li>• Time slot selection</li>
+            <li>• Booking confirmation email</li>
+            <li>• Wellness score contribution</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">🗄️ Database Schema</h4>
+        <pre className="text-xs bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto">
+{`bookings (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES auth.users,
+  service_id TEXT,
+  service_title TEXT,
+  provider_name TEXT,
+  booking_date DATE,
+  booking_time TEXT,
+  duration INTEGER,
+  price DECIMAL,
+  status TEXT, -- pending, confirmed, completed, cancelled
+  wellness_dimensions TEXT[],
+  wellness_contribution INTEGER,
+  created_at TIMESTAMP
+)`}
+        </pre>
+      </div>
+    </div>
+  ),
+
+  "profile-system": (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-[#3B82F6] to-[#6366F1] rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Settings className="h-6 w-6" />
+          Profile & Personalization
+        </h3>
+        <p className="opacity-90">Comprehensive user profiles with editable wellness preferences.</p>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-4">👤 Profile Tabs</h4>
+        <div className="grid grid-cols-4 gap-2">
+          {["Personal", "Wellness", "Preferences", "Settings"].map((tab) => (
+            <div key={tab} className="p-3 bg-gray-50 rounded-xl text-center">
+              <p className="text-sm font-medium text-gray-700">{tab}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">📝 Personal Info</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Full name & email</li>
+            <li>• Phone number</li>
+            <li>• Date of birth</li>
+            <li>• Gender</li>
+            <li>• Height & weight</li>
+          </ul>
+        </div>
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">🎯 Wellness Data</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Wellness goals (multi-select)</li>
+            <li>• Interests & activities</li>
+            <li>• Dietary preferences</li>
+            <li>• Health conditions</li>
+            <li>• Preferred appointment times</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
+        <h4 className="font-semibold text-blue-800 mb-2">🎨 Personalization</h4>
+        <p className="text-sm text-blue-700">
+          Profile data is used by the AI recommendation engine to suggest relevant services, products, and wellness activities tailored to each user's goals and preferences.
+        </p>
+      </div>
+    </div>
+  ),
+
+  activities: (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <BarChart3 className="h-6 w-6" />
+          Activities & History
+        </h3>
+        <p className="opacity-90">Track all user activities with wellness contribution visualization.</p>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-4">📊 Activity Types</h4>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { type: "Bookings", icon: "📅", color: "bg-teal-50 text-teal-600" },
+            { type: "Purchases", icon: "🛍️", color: "bg-amber-50 text-amber-600" },
+            { type: "Check-ins", icon: "❤️", color: "bg-pink-50 text-pink-600" },
+            { type: "AI Chats", icon: "💬", color: "bg-blue-50 text-blue-600" },
+          ].map((item) => (
+            <div key={item.type} className={`p-4 rounded-xl text-center ${item.color}`}>
+              <span className="text-2xl">{item.icon}</span>
+              <p className="text-sm font-medium mt-1">{item.type}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-4">✨ Features</h4>
+        <div className="grid md:grid-cols-2 gap-4">
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Filter by activity type</li>
+            <li>• Filter by wellness dimension</li>
+            <li>• Sort by date or wellness impact</li>
+            <li>• Search activities</li>
+          </ul>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Wellness contribution scores</li>
+            <li>• Dimension tags (mind, body, etc.)</li>
+            <li>• Status badges</li>
+            <li>• Grouped by date</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-purple-50 border border-purple-200 rounded-xl p-5">
+        <h4 className="font-semibold text-purple-800 mb-2">📈 Wellness Points</h4>
+        <p className="text-sm text-purple-700">
+          Each activity contributes wellness points based on its type and the user's engagement. Points are calculated and displayed to motivate continued wellness journey participation.
         </p>
       </div>
     </div>

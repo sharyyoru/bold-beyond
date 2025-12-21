@@ -85,7 +85,7 @@ const promoItems = [
 // Navigation menu items
 const navMenuItems = [
   { id: "home", label: "Home", icon: Home, href: "/appx" },
-  { id: "help", label: "Help", icon: HelpCircle, href: "/appx/help", badge: true },
+  { id: "help", label: "Help", icon: HelpCircle, href: "/appx/wellness-chat", badge: true },
   { id: "activities", label: "Activities", icon: ClipboardList, href: "/appx/activities" },
   { id: "profile", label: "Profile", icon: User, href: "/appx/profile" },
 ];
@@ -611,35 +611,42 @@ export default function AppXPage() {
               ))}
             </div>
 
-            {/* Daily Check-in Card */}
-            <div className="bg-white rounded-2xl p-4 shadow-sm mb-4">
-              <div className="flex gap-4">
-                {/* Date */}
-                <div className="flex flex-col items-center justify-center bg-gray-50 rounded-xl px-4 py-2">
-                  <span className="text-xs font-medium text-gray-500 uppercase">
-                    {new Date().toLocaleDateString('en-US', { month: 'short' })}
-                  </span>
-                  <span className="text-2xl font-bold text-gray-900">
-                    {new Date().getDate()}
-                  </span>
+            {/* AI Daily Question Card */}
+            <Link href="/appx/wellness-chat" className="block">
+              <div className="bg-white rounded-2xl p-4 shadow-sm mb-4 hover:shadow-md transition-shadow">
+                <div className="flex gap-4">
+                  {/* Date */}
+                  <div className="flex flex-col items-center justify-center bg-gradient-to-br from-[#0D9488] to-[#7DD3D3] rounded-xl px-4 py-2 text-white">
+                    <span className="text-xs font-medium uppercase opacity-90">
+                      {new Date().toLocaleDateString('en-US', { month: 'short' })}
+                    </span>
+                    <span className="text-2xl font-bold">
+                      {new Date().getDate()}
+                    </span>
+                  </div>
+                  
+                  {/* Content - AI Generated Question */}
+                  <div className="flex-1">
+                    <h3 className="font-bold text-gray-900 mb-1">
+                      {(() => {
+                        const hour = new Date().getHours();
+                        if (hour < 12) return "How are you feeling this morning?";
+                        if (hour < 17) return "How's your energy level this afternoon?";
+                        return "How was your day today?";
+                      })()}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Share with our AI wellness coach for personalized insights.
+                    </p>
+                  </div>
                 </div>
                 
-                {/* Content */}
-                <div className="flex-1">
-                  <h3 className="font-bold text-gray-900 mb-1">
-                    What's the first thing on your mind today?
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    We're here to check in with you.
-                  </p>
+                {/* CTA Button */}
+                <div className="w-full mt-4 py-3 bg-[#7DD3D3] hover:bg-[#6BC4C4] text-white font-semibold rounded-2xl transition-colors text-center">
+                  Share My Thoughts
                 </div>
               </div>
-              
-              {/* CTA Button */}
-              <button className="w-full mt-4 py-3 bg-[#7DD3D3] hover:bg-[#6BC4C4] text-white font-semibold rounded-2xl transition-colors">
-                Share My Thoughts
-              </button>
-            </div>
+            </Link>
           </div>
           
           {/* Draggable Handle Bar - Drag up to close */}
