@@ -941,7 +941,7 @@ export default function AppXPage() {
                             item_name: service.title,
                             item_image_url: service.image ? urlFor(service.image).width(300).url() : null,
                             item_category: service.category,
-                            item_price: service.basePrice,
+                            item_price: service.basePrice ?? null,
                           }}
                           className="absolute top-2 right-2"
                         />
@@ -1028,7 +1028,7 @@ export default function AppXPage() {
                             item_name: product.name,
                             item_image_url: product.images?.[0] ? urlFor(product.images[0]).width(200).url() : null,
                             item_category: product.category,
-                            item_price: product.salePrice || product.price,
+                            item_price: product.salePrice || product.price || null,
                           }}
                           size="sm"
                           className="absolute top-2 right-2"

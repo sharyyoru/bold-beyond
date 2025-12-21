@@ -1,53 +1,43 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Heart } from "lucide-react";
-import { toggleFavorite, checkIsFavorited, FavoriteItem } from "@/lib/favorites";
+import { useFavorites, FavoriteItem } from "@/contexts/favorites-context";
 import { useToast } from "@/components/ui/use-toast";
 
 interface FavoriteButtonProps {
-  item: FavoriteItem;
+  item: Omit<FavoriteItem, "id">;
   className?: string;
   size?: "sm" | "md" | "lg";
 }
 
 export function FavoriteButton({ item, className = "", size = "md" }: FavoriteButtonProps) {
   const { toast } = useToast();
-  const [isFavorited, setIsFavorited] = useState(false);
+  const { isFavorited: checkFavorited, toggleFavorite } = useFavorites();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    checkFavoriteStatus();
-  }, [item.item_id]);
-
-  const checkFavoriteStatus = async () => {
-    const favorited = await checkIsFavorited(item.item_type, item.item_id);
-    setIsFavorited(favorited);
-  };
+  const isFavorited = checkFavorited(item.item_type, item.item_id);
 
   const handleToggle = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
     setIsLoading(true);
-    const result = await toggleFavorite(item);
-    
-    if (result.success) {
-      setIsFavorited(result.isFavorited);
+    try {
+      const nowFavorited = await toggleFavorite(item);
       toast({
-        title: result.isFavorited ? "Added to favorites" : "Removed from favorites",
-        description: result.isFavorited 
+        title: nowFavorited ? "Added to favorites" : "Removed from favorites",
+        description: nowFavorited 
           ? `${item.item_name} has been saved to your favorites.`
           : `${item.item_name} has been removed from your favorites.`,
       });
-    } else {
+    } catch (error) {
       toast({
         title: "Please log in",
         description: "You need to be logged in to save favorites.",
         variant: "destructive",
       });
     }
-    
     setIsLoading(false);
   };
 
