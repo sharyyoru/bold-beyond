@@ -561,12 +561,24 @@ export default function AppXPage() {
                     <Star className="h-3 w-3 fill-white" />
                     {userProfile?.role === 'admin' ? 'Admin' : 'Pro Member'}
                   </span>
-                  {/* Mood Stats */}
+                  {/* Wellness Score & Mood */}
                   <span className="inline-flex items-center gap-1 text-sm text-gray-600">
-                    <span className="text-[#D4AF37]">👤</span> 80%
+                    <span className="text-[#D4AF37]">👤</span> {(() => {
+                      const scores = userProfile?.wellness_scores;
+                      if (!scores) return '—%';
+                      const values = [scores.mind, scores.body, scores.sleep, scores.energy, scores.mood].filter(v => typeof v === 'number');
+                      return values.length > 0 ? Math.round(values.reduce((a, b) => a + b, 0) / values.length) + '%' : '—%';
+                    })()}
                   </span>
                   <span className="inline-flex items-center gap-1 text-sm text-gray-600">
-                    😊 Happy
+                    {(() => {
+                      const mood = userProfile?.current_mood_score || userProfile?.wellness_scores?.mood;
+                      if (!mood) return '😊 —';
+                      if (mood >= 80) return '😄 Great';
+                      if (mood >= 60) return '😊 Happy';
+                      if (mood >= 40) return '😐 Okay';
+                      return '😔 Low';
+                    })()}
                   </span>
                 </div>
               </div>
