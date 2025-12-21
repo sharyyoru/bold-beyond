@@ -90,16 +90,16 @@ const navMenuItems = [
   { id: "profile", label: "Profile", icon: User, href: "/appx/profile" },
 ];
 
-// Wellness metrics for charts (8 charts)
-const wellnessMetrics = [
-  { id: "mind", label: "Mind", value: 72, color: "#0D9488", icon: Brain },
-  { id: "body", label: "Body", value: 85, color: "#D4AF37", icon: Activity },
-  { id: "sleep", label: "Sleep", value: 68, color: "#6B9BC3", icon: Moon },
-  { id: "energy", label: "Energy", value: 79, color: "#F4A261", icon: Zap },
-  { id: "mood", label: "Mood", value: 88, color: "#E9967A", icon: Smile },
-  { id: "focus", label: "Focus", value: 65, color: "#7DD3D3", icon: Sun },
-  { id: "stress", label: "Stress", value: 42, color: "#B8A4C9", icon: TrendingUp },
-  { id: "hydration", label: "Hydration", value: 76, color: "#6B9BC3", icon: Coffee },
+// Wellness metrics config (values will be dynamic from user profile)
+const wellnessMetricsConfig = [
+  { id: "mind", label: "Mind", defaultValue: 60, color: "#0D9488", icon: Brain },
+  { id: "body", label: "Body", defaultValue: 60, color: "#D4AF37", icon: Activity },
+  { id: "sleep", label: "Sleep", defaultValue: 60, color: "#6B9BC3", icon: Moon },
+  { id: "energy", label: "Energy", defaultValue: 60, color: "#F4A261", icon: Zap },
+  { id: "mood", label: "Mood", defaultValue: 60, color: "#E9967A", icon: Smile },
+  { id: "focus", label: "Focus", defaultValue: 60, color: "#7DD3D3", icon: Sun },
+  { id: "stress", label: "Stress", defaultValue: 60, color: "#B8A4C9", icon: TrendingUp },
+  { id: "hydration", label: "Hydration", defaultValue: 60, color: "#6B9BC3", icon: Coffee },
 ];
 
 // Slide type interface
@@ -326,6 +326,17 @@ interface UserProfile {
   avatar_url: string | null;
   role: string;
   onboarding_complete: boolean;
+  wellness_scores?: {
+    mind?: number;
+    body?: number;
+    sleep?: number;
+    energy?: number;
+    mood?: number;
+    stress?: number;
+    overall?: number;
+  };
+  current_mood_score?: number;
+  last_checkin?: string;
 }
 
 export default function AppXPage() {
@@ -790,17 +801,31 @@ export default function AppXPage() {
           }}
         >
           <div className={`pb-32 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #FDFBF7 0%, #F8F6F0 100%)' }}>
-            {/* Row 1: 8 Wellness Charts - Horizontal Scroll */}
+            {/* Row 1: 8 Wellness Charts - Horizontal Scroll + Daily Check-in */}
             <div className="mb-4">
               <div 
                 className="flex gap-3 overflow-x-auto pb-2 px-4"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
-                {wellnessMetrics.map((metric, i) => (
-                  <div key={metric.id} className="flex-shrink-0">
-                    <WellnessChart value={metric.value} label={metric.label} color={metric.color} delay={i * 100} icon={metric.icon} />
+                {/* Daily Check-in Button */}
+                <Link href="/appx/wellness-checkin" className="flex-shrink-0">
+                  <div className="flex flex-col items-center p-2 rounded-2xl bg-gradient-to-br from-[#0D9488] to-[#7DD3D3] shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95"
+                    style={{ minWidth: 80 }}
+                  >
+                    <div className="h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
+                      <span className="text-2xl">✨</span>
+                    </div>
+                    <span className="text-xs font-medium text-white mt-1">Check-in</span>
                   </div>
-                ))}
+                </Link>
+                {wellnessMetricsConfig.map((metric, i) => {
+                  const score = userProfile?.wellness_scores?.[metric.id as keyof typeof userProfile.wellness_scores] ?? metric.defaultValue;
+                  return (
+                    <div key={metric.id} className="flex-shrink-0">
+                      <WellnessChart value={score} label={metric.label} color={metric.color} delay={i * 100} icon={metric.icon} />
+                    </div>
+                  );
+                })}
               </div>
             </div>
             
