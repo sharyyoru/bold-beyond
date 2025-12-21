@@ -696,6 +696,26 @@ export default function ProfilePage() {
               <h3 className="font-semibold text-gray-900 mb-4">Account</h3>
               <div className="space-y-2">
                 <Link
+                  href="/appx/profile/favorites"
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-xl"
+                >
+                  <div className="flex items-center gap-3">
+                    <Heart className="h-5 w-5 text-gray-500" />
+                    <span className="text-sm text-gray-700">My Favorites</span>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-gray-400" />
+                </Link>
+                <Link
+                  href="/appx/wellness-tracker"
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-xl"
+                >
+                  <div className="flex items-center gap-3">
+                    <TrendingUp className="h-5 w-5 text-gray-500" />
+                    <span className="text-sm text-gray-700">Wellness Tracker</span>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-gray-400" />
+                </Link>
+                <Link
                   href="/appx/onboarding"
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-xl"
                 >

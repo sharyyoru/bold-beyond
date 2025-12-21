@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { FavoriteButton } from "@/components/ui/favorite-button";
 import { sanityClient, urlFor, queries } from "@/lib/sanity";
 
 // Sand/Water/Air color palette for welcoming feel
@@ -828,9 +829,9 @@ export default function AppXPage() {
                 {wellnessMetricsConfig.map((metric, i) => {
                   const score = userProfile?.wellness_scores?.[metric.id as keyof typeof userProfile.wellness_scores] ?? metric.defaultValue;
                   return (
-                    <div key={metric.id} className="flex-shrink-0">
+                    <Link key={metric.id} href="/appx/wellness-tracker" className="flex-shrink-0">
                       <WellnessChart value={score} label={metric.label} color={metric.color} delay={i * 100} icon={metric.icon} />
-                    </div>
+                    </Link>
                   );
                 })}
               </div>
@@ -932,9 +933,18 @@ export default function AppXPage() {
                         <span className="absolute top-2 left-2 text-[10px] font-bold bg-white/90 px-2 py-1 rounded-full uppercase">
                           {service.category}
                         </span>
-                        <button className="absolute top-2 right-2 h-8 w-8 bg-white/80 rounded-full flex items-center justify-center">
-                          <Heart className="h-4 w-4 text-gray-400" />
-                        </button>
+                        <FavoriteButton
+                          item={{
+                            item_type: "service",
+                            item_id: service._id,
+                            item_slug: service.slug.current,
+                            item_name: service.title,
+                            item_image_url: service.image ? urlFor(service.image).width(300).url() : null,
+                            item_category: service.category,
+                            item_price: service.basePrice,
+                          }}
+                          className="absolute top-2 right-2"
+                        />
                       </div>
                       <CardContent className="p-3 flex flex-col flex-1">
                         <h4 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2 min-h-[40px]">
@@ -1010,9 +1020,19 @@ export default function AppXPage() {
                             -{product.discountPercentage}%
                           </span>
                         )}
-                        <button className="absolute top-2 right-2 h-7 w-7 bg-white/80 rounded-full flex items-center justify-center">
-                          <Heart className="h-3 w-3 text-gray-400" />
-                        </button>
+                        <FavoriteButton
+                          item={{
+                            item_type: "product",
+                            item_id: product._id,
+                            item_slug: product.slug.current,
+                            item_name: product.name,
+                            item_image_url: product.images?.[0] ? urlFor(product.images[0]).width(200).url() : null,
+                            item_category: product.category,
+                            item_price: product.salePrice || product.price,
+                          }}
+                          size="sm"
+                          className="absolute top-2 right-2"
+                        />
                       </div>
                       <CardContent className="p-3 flex flex-col flex-1">
                         <h4 className="text-xs font-semibold text-gray-900 line-clamp-2 mb-1 min-h-[32px]">

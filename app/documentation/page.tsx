@@ -28,6 +28,7 @@ import {
   Play,
   ArrowLeft,
   Layers,
+  TrendingUp,
   GitBranch,
   Box,
   Cpu,
@@ -86,9 +87,23 @@ const docSections = [
     description: "Activity tracking with wellness contribution scores",
   },
   {
+    id: "wellness-tracker",
+    title: "Wellness Tracker",
+    icon: TrendingUp,
+    color: "#14B8A6",
+    description: "Visual tracking of wellness progress and AI recommendations",
+  },
+  {
+    id: "favorites",
+    title: "Favorites System",
+    icon: Heart,
+    color: "#EC4899",
+    description: "Save and manage favorite providers, services, and products",
+  },
+  {
     id: "services",
     title: "Services Module",
-    icon: Heart,
+    icon: Sparkles,
     color: "#F4A261",
     description: "Service listings, booking, and management",
   },
@@ -735,6 +750,127 @@ const sectionContent: Record<string, React.ReactNode> = {
         <h4 className="font-semibold text-purple-800 mb-2">📈 Wellness Points</h4>
         <p className="text-sm text-purple-700">
           Each activity contributes wellness points based on its type and the user's engagement. Points are calculated and displayed to motivate continued wellness journey participation.
+        </p>
+      </div>
+    </div>
+  ),
+
+  "wellness-tracker": (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-[#14B8A6] to-[#0D9488] rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <TrendingUp className="h-6 w-6" />
+          Wellness Tracker
+        </h3>
+        <p className="opacity-90">Visual dashboard for tracking wellness progress with AI-powered recommendations.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">📊 Tracking Features</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Weekly bar chart visualization</li>
+            <li>• Check-in streak counter</li>
+            <li>• 6 wellness dimension scores</li>
+            <li>• Week-over-week improvement %</li>
+            <li>• Date range selection</li>
+          </ul>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">🤖 AI Recommendations</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Score-based service suggestions</li>
+            <li>• Personalized improvement tips</li>
+            <li>• Discounts for recommended items</li>
+            <li>• Category-specific advice</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">📱 UI Components</h4>
+        <div className="grid md:grid-cols-3 gap-4">
+          <div className="bg-teal-50 rounded-lg p-4 text-center">
+            <div className="text-2xl mb-2">🏆</div>
+            <p className="text-sm font-medium text-teal-800">Streak Banner</p>
+            <p className="text-xs text-teal-600">Celebrate consistency</p>
+          </div>
+          <div className="bg-purple-50 rounded-lg p-4 text-center">
+            <div className="text-2xl mb-2">📈</div>
+            <p className="text-sm font-medium text-purple-800">Weekly Chart</p>
+            <p className="text-xs text-purple-600">Visual progress bars</p>
+          </div>
+          <div className="bg-amber-50 rounded-lg p-4 text-center">
+            <div className="text-2xl mb-2">💡</div>
+            <p className="text-sm font-medium text-amber-800">Recommendations</p>
+            <p className="text-xs text-amber-600">AI-curated cards</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-teal-50 border border-teal-200 rounded-xl p-5">
+        <h4 className="font-semibold text-teal-800 mb-2">🔗 Navigation</h4>
+        <p className="text-sm text-teal-700">
+          Access the Wellness Tracker by clicking any wellness dimension chart on the homepage, or through Profile → Settings → Wellness Tracker.
+        </p>
+      </div>
+    </div>
+  ),
+
+  favorites: (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-[#EC4899] to-[#F472B6] rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Heart className="h-6 w-6" />
+          Favorites System
+        </h3>
+        <p className="opacity-90">Save and manage favorite providers, services, and products for quick access.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">❤️ Favorite Types</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <strong>Providers:</strong> Save wellness centers</li>
+            <li>• <strong>Services:</strong> Bookmark treatments</li>
+            <li>• <strong>Products:</strong> Wishlist items</li>
+          </ul>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">✨ Features</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• One-click toggle on any card</li>
+            <li>• Categorized tabs view</li>
+            <li>• Search within favorites</li>
+            <li>• Quick navigation to items</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">🗂️ Database Schema</h4>
+        <pre className="text-xs bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto">
+{`CREATE TABLE favorites (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id),
+  item_type VARCHAR(20), -- 'provider', 'service', 'product'
+  item_id VARCHAR(255),  -- Sanity document ID
+  item_slug VARCHAR(255),
+  item_name VARCHAR(255),
+  item_image_url TEXT,
+  item_category VARCHAR(100),
+  item_price DECIMAL(10,2),
+  created_at TIMESTAMP DEFAULT NOW()
+);`}
+        </pre>
+      </div>
+
+      <div className="bg-pink-50 border border-pink-200 rounded-xl p-5">
+        <h4 className="font-semibold text-pink-800 mb-2">🔐 Row Level Security</h4>
+        <p className="text-sm text-pink-700">
+          Users can only view, add, and remove their own favorites. RLS policies ensure complete data privacy and security.
         </p>
       </div>
     </div>
