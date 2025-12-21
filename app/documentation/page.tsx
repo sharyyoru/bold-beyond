@@ -1339,7 +1339,18 @@ const sectionContent: Record<string, React.ReactNode> = {
           <Calendar className="h-6 w-6" />
           Smart Booking System
         </h3>
-        <p className="opacity-90">Intelligent booking with provider availability checking and double-booking prevention.</p>
+        <p className="opacity-90">Intelligent booking with Stripe payments, provider availability checking, and double-booking prevention.</p>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-purple-200">
+        <h4 className="font-semibold text-gray-900 mb-3">💳 Stripe Payment Integration</h4>
+        <p className="text-sm text-gray-600 mb-3">Bookings require payment before confirmation:</p>
+        <ul className="space-y-2 text-sm text-gray-600">
+          <li>• <strong>Checkout flow</strong> via Stripe Checkout</li>
+          <li>• Payment required before booking is confirmed</li>
+          <li>• Webhook handles payment success/failure</li>
+          <li>• Automatic status updates on payment</li>
+        </ul>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
@@ -1378,11 +1389,23 @@ const sectionContent: Record<string, React.ReactNode> = {
       <div className="bg-slate-50 rounded-xl p-5 border border-slate-200">
         <h4 className="font-semibold text-slate-800 mb-3">🔌 API Endpoints</h4>
         <div className="space-y-2 text-sm font-mono">
+          <p className="text-slate-600">POST <code className="bg-white px-2 py-0.5 rounded">/api/checkout/booking</code></p>
+          <p className="text-xs text-slate-500 ml-4">Create Stripe checkout for booking</p>
+          <p className="text-slate-600">POST <code className="bg-white px-2 py-0.5 rounded">/api/webhooks/stripe</code></p>
+          <p className="text-xs text-slate-500 ml-4">Handle Stripe webhook events</p>
           <p className="text-slate-600">GET <code className="bg-white px-2 py-0.5 rounded">/api/booking/availability</code></p>
           <p className="text-xs text-slate-500 ml-4">Get available slots for a provider/date</p>
-          <p className="text-slate-600">POST <code className="bg-white px-2 py-0.5 rounded">/api/booking/availability</code></p>
-          <p className="text-xs text-slate-500 ml-4">Create a booking slot</p>
         </div>
+      </div>
+
+      <div className="bg-amber-50 rounded-xl p-5 border border-amber-200">
+        <h4 className="font-semibold text-gray-900 mb-3">📊 Dashboard Integration</h4>
+        <ul className="space-y-2 text-sm text-gray-600">
+          <li>• <strong>Partner Dashboard</strong> - Providers can view/accept/complete bookings</li>
+          <li>• <strong>Admin Dashboard</strong> - Full visibility of all appointments & orders</li>
+          <li>• Payment status tracking (pending, paid, refunded)</li>
+          <li>• Appointment status workflow (pending → confirmed → completed)</li>
+        </ul>
       </div>
     </div>
   ),

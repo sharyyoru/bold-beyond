@@ -75,12 +75,38 @@ interface ProviderAccountFull {
   user_id: string | null;
 }
 
+interface Appointment {
+  id: string;
+  customer_name: string;
+  customer_email: string;
+  service_name: string;
+  service_price: number;
+  appointment_date: string;
+  appointment_time: string;
+  status: string;
+  payment_status: string;
+  provider_id: string;
+}
+
+interface Order {
+  id: string;
+  order_number: string;
+  customer_name: string;
+  customer_email: string;
+  total: number;
+  status: string;
+  payment_status: string;
+  created_at: string;
+  provider_id: string;
+}
+
 const navItems = [
   { id: "overview", label: "Overview", icon: Home },
+  { id: "appointments", label: "Appointments", icon: Calendar },
+  { id: "orders", label: "Orders", icon: ShoppingBag },
   { id: "admins", label: "Admin Users", icon: Shield },
   { id: "partners", label: "Partners", icon: Building2 },
   { id: "reviews", label: "Reviews", icon: Star },
-  { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -111,6 +137,8 @@ export default function AdminDashboard() {
   const [admins, setAdmins] = useState<AdminAccount[]>([]);
   const [partners, setPartners] = useState<ProviderAccountFull[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   
   // Modal states
   const [showAddAdmin, setShowAddAdmin] = useState(false);
@@ -182,6 +210,8 @@ export default function AdminDashboard() {
       fetchAdmins(),
       fetchPartners(),
       fetchReviews(),
+      fetchAppointments(),
+      fetchOrders(),
     ]);
   };
 
@@ -255,6 +285,49 @@ export default function AdminDashboard() {
       .select("*")
       .order("created_at", { ascending: false });
     setReviews(data || []);
+  };
+
+  const fetchAppointments = async () => {
+    const { data } = await supabase
+      .from("appointments")
+      .select("*")
+      .order("appointment_date", { ascending: false })
+      .order("appointment_time", { ascending: false });
+    setAppointments(data || []);
+  };
+
+  const fetchOrders = async () => {
+    const { data } = await supabase
+      .from("provider_orders")
+      .select("*")
+      .order("created_at", { ascending: false });
+    setOrders(data || []);
+  };
+
+  const updateAppointmentStatus = async (appointmentId: string, newStatus: string) => {
+    try {
+      await supabase
+        .from("appointments")
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq("id", appointmentId);
+      fetchAppointments();
+      toast({ title: "Updated", description: `Appointment ${newStatus}` });
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to update", variant: "destructive" });
+    }
+  };
+
+  const updateOrderStatus = async (orderId: string, newStatus: string) => {
+    try {
+      await supabase
+        .from("provider_orders")
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq("id", orderId);
+      fetchOrders();
+      toast({ title: "Updated", description: `Order ${newStatus}` });
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to update", variant: "destructive" });
+    }
   };
 
   const createAdmin = async () => {
@@ -631,6 +704,185 @@ export default function AdminDashboard() {
                     </Button>
                   </div>
                 </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Appointments Tab */}
+          {activeTab === "appointments" && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold text-slate-900">All Appointments</h1>
+                <Button onClick={fetchAppointments} variant="outline" size="sm">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Refresh
+                </Button>
+              </div>
+
+              <Card className="border-0 shadow-sm">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-slate-50">
+                      <tr>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Customer</th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Service</th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Date & Time</th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Payment</th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Status</th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {appointments.map((apt) => (
+                        <tr key={apt.id} className="hover:bg-slate-50">
+                          <td className="px-4 py-4">
+                            <p className="font-medium text-slate-900">{apt.customer_name}</p>
+                            <p className="text-xs text-slate-500">{apt.customer_email}</p>
+                          </td>
+                          <td className="px-4 py-4">
+                            <p className="text-sm text-slate-900">{apt.service_name}</p>
+                            <p className="text-xs text-slate-500">{apt.service_price} AED</p>
+                          </td>
+                          <td className="px-4 py-4">
+                            <p className="text-sm text-slate-900">{new Date(apt.appointment_date).toLocaleDateString()}</p>
+                            <p className="text-xs text-slate-500">{apt.appointment_time}</p>
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              apt.payment_status === "paid" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
+                            }`}>
+                              {apt.payment_status || "pending"}
+                            </span>
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              apt.status === "completed" ? "bg-green-100 text-green-700" :
+                              apt.status === "confirmed" ? "bg-blue-100 text-blue-700" :
+                              apt.status === "cancelled" ? "bg-red-100 text-red-700" :
+                              "bg-amber-100 text-amber-700"
+                            }`}>
+                              {apt.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-4">
+                            <div className="flex gap-1">
+                              {apt.status === "pending" && (
+                                <>
+                                  <Button size="sm" variant="ghost" onClick={() => updateAppointmentStatus(apt.id, "confirmed")}>
+                                    <CheckCircle className="h-4 w-4 text-green-500" />
+                                  </Button>
+                                  <Button size="sm" variant="ghost" onClick={() => updateAppointmentStatus(apt.id, "cancelled")}>
+                                    <XCircle className="h-4 w-4 text-red-500" />
+                                  </Button>
+                                </>
+                              )}
+                              {apt.status === "confirmed" && (
+                                <Button size="sm" variant="ghost" onClick={() => updateAppointmentStatus(apt.id, "completed")}>
+                                  <CheckCircle className="h-4 w-4 text-teal-500" />
+                                </Button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {appointments.length === 0 && (
+                    <div className="p-12 text-center text-slate-500">
+                      <Calendar className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+                      <p>No appointments yet</p>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {/* Orders Tab */}
+          {activeTab === "orders" && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold text-slate-900">All Orders</h1>
+                <Button onClick={fetchOrders} variant="outline" size="sm">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Refresh
+                </Button>
+              </div>
+
+              <Card className="border-0 shadow-sm">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-slate-50">
+                      <tr>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Order</th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Customer</th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Total</th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Payment</th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Status</th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {orders.map((order) => (
+                        <tr key={order.id} className="hover:bg-slate-50">
+                          <td className="px-4 py-4">
+                            <p className="font-medium text-slate-900">#{order.order_number}</p>
+                            <p className="text-xs text-slate-500">{new Date(order.created_at).toLocaleDateString()}</p>
+                          </td>
+                          <td className="px-4 py-4">
+                            <p className="text-sm text-slate-900">{order.customer_name}</p>
+                            <p className="text-xs text-slate-500">{order.customer_email}</p>
+                          </td>
+                          <td className="px-4 py-4">
+                            <p className="font-semibold text-slate-900">{order.total} AED</p>
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              order.payment_status === "paid" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
+                            }`}>
+                              {order.payment_status || "pending"}
+                            </span>
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              order.status === "delivered" ? "bg-green-100 text-green-700" :
+                              order.status === "shipped" ? "bg-blue-100 text-blue-700" :
+                              order.status === "processing" ? "bg-indigo-100 text-indigo-700" :
+                              "bg-amber-100 text-amber-700"
+                            }`}>
+                              {order.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-4">
+                            <div className="flex gap-1">
+                              {order.status === "pending" && (
+                                <Button size="sm" variant="ghost" onClick={() => updateOrderStatus(order.id, "processing")}>
+                                  <CheckCircle className="h-4 w-4 text-blue-500" />
+                                </Button>
+                              )}
+                              {order.status === "processing" && (
+                                <Button size="sm" variant="ghost" onClick={() => updateOrderStatus(order.id, "shipped")}>
+                                  <Package className="h-4 w-4 text-indigo-500" />
+                                </Button>
+                              )}
+                              {order.status === "shipped" && (
+                                <Button size="sm" variant="ghost" onClick={() => updateOrderStatus(order.id, "delivered")}>
+                                  <CheckCircle className="h-4 w-4 text-green-500" />
+                                </Button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {orders.length === 0 && (
+                    <div className="p-12 text-center text-slate-500">
+                      <ShoppingBag className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+                      <p>No orders yet</p>
+                    </div>
+                  )}
+                </div>
               </Card>
             </div>
           )}

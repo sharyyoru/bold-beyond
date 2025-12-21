@@ -5,6 +5,9 @@ const config: CapacitorConfig = {
   appName: "Bold & Beyond",
   webDir: "out",
   server: {
+    // Load directly from Vercel - always shows latest build
+    url: "https://bold-beyond.vercel.app",
+    cleartext: false,
     androidScheme: "https",
   },
   plugins: {
