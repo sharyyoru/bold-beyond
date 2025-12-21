@@ -23,6 +23,7 @@ import {
   Filter,
   MoreVertical,
   Eye,
+  EyeOff,
   Edit,
   Trash2,
   Plus,
