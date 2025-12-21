@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   webDir: "out",
   server: {
     // Load directly from Vercel - always shows latest build
-    url: "https://bold-beyond.vercel.app",
+    url: "https://bold-beyond.vercel.app/appx",
     cleartext: false,
     androidScheme: "https",
   },

@@ -378,11 +378,19 @@ export default function AppXPage() {
     fetchSanityData();
   }, []);
 
-  // Fetch user profile
+  // Check session and fetch user profile - redirect to welcome if no session
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const checkSessionAndFetchProfile = async () => {
       const { createSupabaseClient } = await import("@/lib/supabase");
       const supabase = createSupabaseClient();
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      // If no session, redirect to welcome page
+      if (!session) {
+        window.location.href = "/appx/welcome";
+        return;
+      }
       
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -405,7 +413,7 @@ export default function AppXPage() {
       }
     };
     
-    fetchUserProfile();
+    checkSessionAndFetchProfile();
   }, []);
 
   // Get user display name and initials - check multiple sources
