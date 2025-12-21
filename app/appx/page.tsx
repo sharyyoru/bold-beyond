@@ -919,7 +919,7 @@ export default function AppXPage() {
                     href={`/appx/services/${service.slug.current}`}
                     className="flex-shrink-0 w-48"
                   >
-                    <Card className="overflow-hidden border-0 shadow-md">
+                    <Card className="overflow-hidden border-0 shadow-md h-full min-h-[220px]">
                       <div className="h-28 bg-gradient-to-br from-brand-navy/80 to-brand-teal/60 relative">
                         {service.image && (
                           <Image
@@ -936,8 +936,8 @@ export default function AppXPage() {
                           <Heart className="h-4 w-4 text-gray-400" />
                         </button>
                       </div>
-                      <CardContent className="p-3">
-                        <h4 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2">
+                      <CardContent className="p-3 flex flex-col flex-1">
+                        <h4 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2 min-h-[40px]">
                           {service.title}
                         </h4>
                         <p className="text-sm font-bold text-brand-gold mb-1">
@@ -991,7 +991,7 @@ export default function AppXPage() {
                     href={`/appx/products/${product.slug.current}`}
                     className="flex-shrink-0 w-40"
                   >
-                    <Card className="overflow-hidden border-0 shadow-md">
+                    <Card className="overflow-hidden border-0 shadow-md h-full min-h-[220px]">
                       <div className="h-32 bg-gray-100 relative">
                         {product.images && product.images[0] ? (
                           <Image
@@ -1014,8 +1014,8 @@ export default function AppXPage() {
                           <Heart className="h-3 w-3 text-gray-400" />
                         </button>
                       </div>
-                      <CardContent className="p-3">
-                        <h4 className="text-xs font-semibold text-gray-900 line-clamp-2 mb-1">
+                      <CardContent className="p-3 flex flex-col flex-1">
+                        <h4 className="text-xs font-semibold text-gray-900 line-clamp-2 mb-1 min-h-[32px]">
                           {product.name}
                         </h4>
                         <div className="flex items-center gap-1">
@@ -1070,7 +1070,7 @@ export default function AppXPage() {
                     href={`/appx/providers/${provider.slug.current}`}
                     className="flex-shrink-0 w-56"
                   >
-                    <Card className="overflow-hidden border-0 shadow-md">
+                    <Card className="overflow-hidden border-0 shadow-md h-full min-h-[180px]">
                       <div className="h-24 bg-gradient-to-br from-[#1B365D] to-[#0D9488] relative">
                         {provider.coverImage && (
                           <Image

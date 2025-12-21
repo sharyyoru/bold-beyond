@@ -123,10 +123,41 @@ export default function ProfilePage() {
         .eq("id", user.id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Profile fetch error:", error);
+        // Create a default profile if not found
+        setProfile({
+          id: user.id,
+          email: user.email || "",
+          full_name: user.user_metadata?.full_name || null,
+          avatar_url: null,
+          phone: null,
+          date_of_birth: null,
+          gender: null,
+          height_cm: null,
+          weight_kg: null,
+          wellness_goals: [],
+          interests: [],
+          dietary_preferences: [],
+          health_conditions: [],
+          preferred_times: [],
+          notification_preferences: { email: true, push: true, sms: false },
+          membership_tier: "free",
+          total_bookings: 0,
+          total_purchases: 0,
+          total_wellness_points: 0,
+          wellness_scores: {},
+          current_mood_score: 60,
+          onboarding_complete: false,
+        });
+        setEditedProfile({});
+        setLoading(false);
+        return;
+      }
 
       setProfile({
         ...data,
+        email: data.email || user.email || "",
         wellness_goals: data.wellness_goals || [],
         interests: data.interests || [],
         dietary_preferences: data.dietary_preferences || [],

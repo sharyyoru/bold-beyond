@@ -13,7 +13,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const redirect = searchParams.get("redirect") || "/dashboard";
+  const redirect = searchParams.get("redirect") || "/appx";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
