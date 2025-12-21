@@ -401,9 +401,29 @@ export default function AppXPage() {
     fetchUserProfile();
   }, []);
 
-  // Get user display name and initials
-  const userName = userProfile?.full_name || userProfile?.email?.split("@")[0] || "User";
-  const userInitials = userName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+  // Get user display name and initials - check multiple sources
+  const userName = userProfile?.full_name || 
+    (userProfile?.email ? userProfile.email.split("@")[0].replace(/[._]/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : "User");
+  const userInitials = userName.split(" ").map(n => n?.[0] || "").join("").toUpperCase().slice(0, 2) || "U";
+  
+  // Calculate wellness score from stored data
+  const userWellnessScore = (() => {
+    const scores = userProfile?.wellness_scores;
+    if (!scores || typeof scores !== 'object') return null;
+    const values = [scores.mind, scores.body, scores.sleep, scores.energy, scores.mood]
+      .filter((v): v is number => typeof v === 'number' && !isNaN(v));
+    return values.length > 0 ? Math.round(values.reduce((a, b) => a + b, 0) / values.length) : null;
+  })();
+  
+  // Get mood label from score
+  const userMoodLabel = (() => {
+    const mood = userProfile?.wellness_scores?.mood || userProfile?.current_mood_score;
+    if (!mood || typeof mood !== 'number') return null;
+    if (mood >= 80) return { emoji: '😄', text: 'Great' };
+    if (mood >= 60) return { emoji: '😊', text: 'Happy' };
+    if (mood >= 40) return { emoji: '😐', text: 'Okay' };
+    return { emoji: '😔', text: 'Low' };
+  })();
   
   // Header heights
   const HEADER_EXPANDED = 350;
@@ -563,22 +583,10 @@ export default function AppXPage() {
                   </span>
                   {/* Wellness Score & Mood */}
                   <span className="inline-flex items-center gap-1 text-sm text-gray-600">
-                    <span className="text-[#D4AF37]">👤</span> {(() => {
-                      const scores = userProfile?.wellness_scores;
-                      if (!scores) return '—%';
-                      const values = [scores.mind, scores.body, scores.sleep, scores.energy, scores.mood].filter(v => typeof v === 'number');
-                      return values.length > 0 ? Math.round(values.reduce((a, b) => a + b, 0) / values.length) + '%' : '—%';
-                    })()}
+                    <span className="text-[#D4AF37]">👤</span> {userWellnessScore !== null ? `${userWellnessScore}%` : '—%'}
                   </span>
                   <span className="inline-flex items-center gap-1 text-sm text-gray-600">
-                    {(() => {
-                      const mood = userProfile?.current_mood_score || userProfile?.wellness_scores?.mood;
-                      if (!mood) return '😊 —';
-                      if (mood >= 80) return '😄 Great';
-                      if (mood >= 60) return '😊 Happy';
-                      if (mood >= 40) return '😐 Okay';
-                      return '😔 Low';
-                    })()}
+                    {userMoodLabel ? `${userMoodLabel.emoji} ${userMoodLabel.text}` : '😊 —'}
                   </span>
                 </div>
               </div>
