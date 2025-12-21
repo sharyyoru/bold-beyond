@@ -29,6 +29,7 @@ import {
   ArrowLeft,
   Layers,
   TrendingUp,
+  Building2,
   GitBranch,
   Box,
   Cpu,
@@ -120,6 +121,13 @@ const docSections = [
     icon: Users,
     color: "#7DD3D3",
     description: "Provider profiles and service offerings",
+  },
+  {
+    id: "partner-dashboard",
+    title: "Partner Dashboard",
+    icon: Building2,
+    color: "#0F172A",
+    description: "Provider portal for managing appointments, orders, and services",
   },
   {
     id: "authentication",
@@ -1018,6 +1026,84 @@ const sectionContent: Record<string, React.ReactNode> = {
             <li>• Social links (WhatsApp, etc.)</li>
           </ul>
         </div>
+      </div>
+    </div>
+  ),
+
+  "partner-dashboard": (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Building2 className="h-6 w-6" />
+          Partner Dashboard
+        </h3>
+        <p className="opacity-90">Full-featured portal for providers to manage their wellness business.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">📅 Appointment Management</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• View all appointments</li>
+            <li>• Confirm, cancel, or reschedule</li>
+            <li>• Customer contact info</li>
+            <li>• Status tracking (pending, confirmed, completed)</li>
+          </ul>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">🛍️ Order Management</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Process incoming orders</li>
+            <li>• Update order status</li>
+            <li>• Track shipments</li>
+            <li>• View order history</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">📊 Dashboard Features</h4>
+        <div className="grid md:grid-cols-3 gap-4">
+          <div className="bg-teal-50 rounded-lg p-4 text-center">
+            <div className="text-2xl mb-2">📈</div>
+            <p className="text-sm font-medium text-teal-800">Analytics</p>
+            <p className="text-xs text-teal-600">Revenue & stats</p>
+          </div>
+          <div className="bg-slate-50 rounded-lg p-4 text-center">
+            <div className="text-2xl mb-2">⚙️</div>
+            <p className="text-sm font-medium text-slate-800">Settings</p>
+            <p className="text-xs text-slate-600">Business config</p>
+          </div>
+          <div className="bg-amber-50 rounded-lg p-4 text-center">
+            <div className="text-2xl mb-2">🔔</div>
+            <p className="text-sm font-medium text-amber-800">Notifications</p>
+            <p className="text-xs text-amber-600">Real-time alerts</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">🔗 Access</h4>
+        <p className="text-sm text-gray-600 mb-3">
+          Partners can access their dashboard at <code className="bg-gray-100 px-2 py-0.5 rounded">/partners</code>
+        </p>
+        <div className="bg-slate-900 rounded-lg p-4 text-sm">
+          <p className="text-slate-400 mb-2">Demo Credentials:</p>
+          <p className="text-teal-400">Email: serenity@demo.com</p>
+          <p className="text-teal-400">Password: demo123456</p>
+        </div>
+      </div>
+
+      <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
+        <h4 className="font-semibold text-slate-800 mb-2">🗂️ Database Tables</h4>
+        <ul className="text-sm text-slate-600 space-y-1">
+          <li>• <code>provider_accounts</code> - Links auth users to Sanity providers</li>
+          <li>• <code>appointments</code> - Booking records with status tracking</li>
+          <li>• <code>provider_orders</code> - Product order management</li>
+          <li>• <code>provider_availability</code> - Weekly schedules</li>
+          <li>• <code>provider_blocked_dates</code> - Holiday/vacation dates</li>
+        </ul>
       </div>
     </div>
   ),
