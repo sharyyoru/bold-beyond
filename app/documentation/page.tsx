@@ -102,6 +102,13 @@ const docSections = [
     description: "How we calculate wellness scores and generate recommendations",
   },
   {
+    id: "search",
+    title: "Search & Discovery",
+    icon: Search,
+    color: "#06B6D4",
+    description: "Dynamic search with filters, top searches, and top rated items",
+  },
+  {
     id: "favorites",
     title: "Favorites System",
     icon: Heart,
@@ -943,6 +950,94 @@ const sectionContent: Record<string, React.ReactNode> = {
           <li>• <code>profiles.last_checkin</code> tracks check-in timestamp</li>
           <li>• Historical data used for streak counting and progress charts</li>
         </ul>
+      </div>
+    </div>
+  ),
+
+  search: (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-[#06B6D4] to-[#0891B2] rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Search className="h-6 w-6" />
+          Search & Discovery
+        </h3>
+        <p className="opacity-90">Powerful search with real-time results, smart filters, and curated top-rated content.</p>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-4">🔍 Search Features</h4>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2 text-sm text-gray-600">
+            <p><strong>Dynamic Search:</strong></p>
+            <ul className="space-y-1 ml-4">
+              <li>• Real-time results as you type</li>
+              <li>• 300ms debounce for performance</li>
+              <li>• Searches services, products, providers</li>
+              <li>• Matches title, description, category</li>
+            </ul>
+          </div>
+          <div className="space-y-2 text-sm text-gray-600">
+            <p><strong>Smart Filters:</strong></p>
+            <ul className="space-y-1 ml-4">
+              <li>• Filter by type (All/Services/Products/Providers)</li>
+              <li>• Price range filtering</li>
+              <li>• Category-based filtering</li>
+              <li>• Combinable filters</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-4">⭐ Rating System</h4>
+        <div className="space-y-3">
+          <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg">
+            <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center">⭐</div>
+            <div>
+              <p className="font-medium text-amber-900">5-Star Rating Scale</p>
+              <p className="text-sm text-amber-700">Products, services, and providers all have ratings (0-5)</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">📊</div>
+            <div>
+              <p className="font-medium text-blue-900">Review Counts</p>
+              <p className="text-sm text-blue-700">Each item tracks total number of reviews</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 bg-teal-50 rounded-lg">
+            <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center">🏆</div>
+            <div>
+              <p className="font-medium text-teal-900">Top Rated Sections</p>
+              <p className="text-sm text-teal-700">Sorted by rating descending to show best items first</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="bg-cyan-50 rounded-xl p-4 text-center">
+          <div className="text-2xl mb-2">🔥</div>
+          <p className="text-sm font-medium text-cyan-800">Top Searches</p>
+          <p className="text-xs text-cyan-600">Quick-tap popular terms</p>
+        </div>
+        <div className="bg-purple-50 rounded-xl p-4 text-center">
+          <div className="text-2xl mb-2">💆</div>
+          <p className="text-sm font-medium text-purple-800">Top Services</p>
+          <p className="text-xs text-purple-600">Highest-rated treatments</p>
+        </div>
+        <div className="bg-rose-50 rounded-xl p-4 text-center">
+          <div className="text-2xl mb-2">🛍️</div>
+          <p className="text-sm font-medium text-rose-800">Top Products</p>
+          <p className="text-xs text-rose-600">Best-reviewed items</p>
+        </div>
+      </div>
+
+      <div className="bg-cyan-50 border border-cyan-200 rounded-xl p-5">
+        <h4 className="font-semibold text-cyan-800 mb-2">🚀 Access</h4>
+        <p className="text-sm text-cyan-700">
+          Click the search bar on the homepage header to open the full search page at <code>/appx/search</code>
+        </p>
       </div>
     </div>
   ),

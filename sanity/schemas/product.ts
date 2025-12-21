@@ -102,6 +102,19 @@ export default defineType({
       description: "e.g., 20 for 20% off",
     }),
     defineField({
+      name: "rating",
+      title: "Rating",
+      type: "number",
+      validation: (Rule) => Rule.min(0).max(5),
+      description: "Average rating from 0-5",
+    }),
+    defineField({
+      name: "reviewCount",
+      title: "Review Count",
+      type: "number",
+      initialValue: 0,
+    }),
+    defineField({
       name: "featured",
       title: "Featured",
       type: "boolean",

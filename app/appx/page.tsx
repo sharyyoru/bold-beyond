@@ -713,14 +713,12 @@ export default function AppXPage() {
         {/* Search Bar - Always visible */}
         <div className={`absolute top-0 left-0 right-0 z-20 px-4 transition-all duration-300 ${isCollapsed ? 'py-3' : 'py-4'}`}>
           <div className="flex items-center gap-3">
-            <div className="flex-1 relative">
+            <Link href="/appx/search" className="flex-1 relative block">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Discover anything"
-                className="w-full pl-12 pr-4 py-3.5 bg-white rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold shadow-lg"
-              />
-            </div>
+              <div className="w-full pl-12 pr-4 py-3.5 bg-white rounded-full text-sm text-gray-400 shadow-lg cursor-pointer hover:ring-2 hover:ring-brand-gold transition-all">
+                Discover anything
+              </div>
+            </Link>
             <button 
               onClick={() => setIsMenuOpen(true)}
               className="h-12 w-12 rounded-full bg-white/20 backdrop-blur flex items-center justify-center"
