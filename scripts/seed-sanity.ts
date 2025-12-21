@@ -1,10 +1,14 @@
 import { createClient } from '@sanity/client';
 
+// Use the token from .env.local - this token needs "Editor" or "Admin" permissions in Sanity
+// Go to sanity.io/manage > Project > API > Tokens > Create new token with "Editor" role
+const SANITY_WRITE_TOKEN = process.env.SANITY_API_TOKEN || 'sk0uDGUuctT0ugqGi05GezYtnj052CwCjZi39jRoWnyZssFeR2kA4G9wZcRaIWcEvXDH8AgeKRMO8u41hlMlAEMzcOPVl4ZI8VNbmaKQq1zrxG81akzJPPNW4PSJWkEEVkb37TrOAi7CxPaAXTTNBCmMwyk7TtM5dIgvCbVYfd0hKMbTRNNN';
+
 const client = createClient({
   projectId: 'hgmgl6bw',
   dataset: 'production',
   apiVersion: '2024-01-01',
-  token: process.env.SANITY_API_TOKEN,
+  token: SANITY_WRITE_TOKEN,
   useCdn: false,
 });
 
