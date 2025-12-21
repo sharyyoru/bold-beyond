@@ -1,6 +1,7 @@
 import service from "./service";
 import expert from "./expert";
 import partner from "./partner";
+import provider from "./provider";
 import blogPost from "./blogPost";
 import wellnessQuestion from "./wellnessQuestion";
 import testimonial from "./testimonial";
@@ -18,6 +19,7 @@ export const schemaTypes = [
   service,
   expert,
   partner,
+  provider,
   blogPost,
   wellnessQuestion,
   testimonial,

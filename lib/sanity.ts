@@ -17,8 +17,73 @@ export function urlFor(source: SanityImageSource) {
 
 // GROQ query helpers
 export const queries = {
+  // Providers
+  allProviders: `*[_type == "provider" && isActive == true] | order(featured desc, name asc) {
+    _id,
+    name,
+    nameAr,
+    slug,
+    logo,
+    coverImage,
+    category,
+    shortDescription,
+    shortDescriptionAr,
+    location,
+    rating,
+    reviewCount,
+    averageSessionDuration,
+    priceRange,
+    discountText,
+    featured
+  }`,
+
+  providerBySlug: `*[_type == "provider" && slug.current == $slug][0] {
+    _id,
+    name,
+    nameAr,
+    slug,
+    logo,
+    coverImage,
+    gallery,
+    category,
+    shortDescription,
+    shortDescriptionAr,
+    description,
+    location,
+    contact,
+    averageSessionDuration,
+    priceRange,
+    rating,
+    reviewCount,
+    discountText,
+    amenities,
+    openingHours,
+    "services": *[_type == "service" && references(^._id)] {
+      _id,
+      title,
+      slug,
+      description,
+      category,
+      basePrice,
+      duration,
+      image,
+      rating,
+      serviceType
+    },
+    "products": *[_type == "product" && references(^._id)] {
+      _id,
+      name,
+      slug,
+      images,
+      price,
+      salePrice,
+      discountPercentage,
+      category
+    }
+  }`,
+
   // Services
-  allServices: `*[_type == "service"] | order(order asc) {
+  allServices: `*[_type == "service" && isActive == true] | order(order asc) {
     _id,
     title,
     slug,
@@ -26,6 +91,18 @@ export const queries = {
     icon,
     category,
     benefits,
+    basePrice,
+    duration,
+    image,
+    rating,
+    reviewCount,
+    serviceType,
+    "provider": provider-> {
+      _id,
+      name,
+      slug,
+      logo
+    },
     seoMetadata
   }`,
 
@@ -39,7 +116,23 @@ export const queries = {
     category,
     benefits,
     image,
+    basePrice,
+    duration,
+    rating,
+    reviewCount,
+    serviceType,
     seoMetadata,
+    "provider": provider-> {
+      _id,
+      name,
+      nameAr,
+      slug,
+      logo,
+      location,
+      contact,
+      rating,
+      reviewCount
+    },
     "experts": *[_type == "expert" && references(^._id)] {
       _id,
       name,
@@ -230,7 +323,14 @@ export const queries = {
     category,
     price,
     salePrice,
-    featured
+    discountPercentage,
+    featured,
+    "provider": provider-> {
+      _id,
+      name,
+      slug,
+      logo
+    }
   }`,
 
   productBySlug: `*[_type == "product" && slug.current == $slug][0] {
@@ -244,10 +344,28 @@ export const queries = {
     category,
     price,
     salePrice,
+    discountPercentage,
     sku,
     stock,
     features,
-    "relatedServices": relatedServices[]-> { _id, title, slug }
+    "provider": provider-> {
+      _id,
+      name,
+      nameAr,
+      slug,
+      logo,
+      location,
+      contact
+    },
+    "relatedServices": relatedServices[]-> { _id, title, slug },
+    "relatedProducts": *[_type == "product" && references(^.provider._ref) && _id != ^._id][0...4] {
+      _id,
+      name,
+      slug,
+      images,
+      price,
+      salePrice
+    }
   }`,
 
   // Collections

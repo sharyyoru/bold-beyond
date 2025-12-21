@@ -89,6 +89,19 @@ export default defineType({
       of: [{ type: "reference", to: [{ type: "service" }] }],
     }),
     defineField({
+      name: "provider",
+      title: "Provider",
+      type: "reference",
+      to: [{ type: "provider" }],
+      description: "The provider selling this product",
+    }),
+    defineField({
+      name: "discountPercentage",
+      title: "Discount Percentage",
+      type: "number",
+      description: "e.g., 20 for 20% off",
+    }),
+    defineField({
       name: "featured",
       title: "Featured",
       type: "boolean",

@@ -95,6 +95,37 @@ export default defineType({
       description: "Starting price - therapists can set their own",
     }),
     defineField({
+      name: "provider",
+      title: "Provider",
+      type: "reference",
+      to: [{ type: "provider" }],
+      description: "The provider offering this service",
+    }),
+    defineField({
+      name: "rating",
+      title: "Rating",
+      type: "number",
+      validation: (Rule) => Rule.min(0).max(5),
+    }),
+    defineField({
+      name: "reviewCount",
+      title: "Review Count",
+      type: "number",
+      initialValue: 0,
+    }),
+    defineField({
+      name: "serviceType",
+      title: "Service Type",
+      type: "string",
+      description: "e.g., 'Wellness Therapy', 'Breathwork Therapy'",
+    }),
+    defineField({
+      name: "isActive",
+      title: "Active",
+      type: "boolean",
+      initialValue: true,
+    }),
+    defineField({
       name: "order",
       title: "Display Order",
       type: "number",

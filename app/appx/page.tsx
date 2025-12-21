@@ -31,9 +31,13 @@ import {
   HelpCircle,
   ClipboardList,
   User,
+  Clock,
+  ShoppingBag,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { sanityClient, urlFor, queries } from "@/lib/sanity";
 
 // Sand/Water/Air color palette for welcoming feel
 const colors = {
@@ -253,43 +257,66 @@ const quickActions = [
   { label: "Verify", sublabel: "Get perks", icon: Star },
 ];
 
-// Featured services
-const featuredServices = [
-  {
-    id: "1",
-    title: "Unlock your full potential",
-    category: "COACHING",
-    price: 80,
-    expertName: "Dr. Aisha Al Mansoori",
-    rating: 4.9,
-  },
-  {
-    id: "2",
-    title: "Stress & Anxiety Management",
-    category: "THERAPY",
-    price: 120,
-    expertName: "Dr. Sarah Ahmed",
-    rating: 4.8,
-  },
-];
+// Service type for Sanity data
+interface SanityService {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  description?: string;
+  category: string;
+  basePrice?: number;
+  duration?: number;
+  image?: any;
+  rating?: number;
+  serviceType?: string;
+  provider?: {
+    _id: string;
+    name: string;
+    slug: { current: string };
+    logo?: any;
+  };
+}
 
-// Featured experts
-const featuredExperts = [
-  {
-    id: "1",
-    name: "Dr. Omar Al-Mansoori",
-    title: "Life Strategist",
-    specialty: "Career Development",
-    rating: 4.9,
-  },
-  {
-    id: "2",
-    name: "Dr. Salma Al Hosani",
-    title: "Certified Coach",
-    specialty: "Stress Management",
-    rating: 4.8,
-  },
-];
+// Product type for Sanity data
+interface SanityProduct {
+  _id: string;
+  name: string;
+  slug: { current: string };
+  images?: any[];
+  category: string;
+  price: number;
+  salePrice?: number;
+  discountPercentage?: number;
+  provider?: {
+    _id: string;
+    name: string;
+    slug: { current: string };
+    logo?: any;
+  };
+}
+
+// Provider type for Sanity data
+interface SanityProvider {
+  _id: string;
+  name: string;
+  slug: { current: string };
+  logo?: any;
+  coverImage?: any;
+  category: string;
+  shortDescription?: string;
+  location?: {
+    area?: string;
+    distance?: string;
+  };
+  rating?: number;
+  reviewCount?: number;
+  averageSessionDuration?: string;
+  priceRange?: {
+    min?: number;
+    max?: number;
+  };
+  discountText?: string;
+}
 
 // User profile type
 interface UserProfile {
@@ -308,11 +335,36 @@ export default function AppXPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [services, setServices] = useState<SanityService[]>([]);
+  const [products, setProducts] = useState<SanityProduct[]>([]);
+  const [providers, setProviders] = useState<SanityProvider[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
 
   const slides = defaultSlides.filter(s => s.isActive);
+
+  // Fetch Sanity data
+  useEffect(() => {
+    async function fetchSanityData() {
+      try {
+        const [servicesData, productsData, providersData] = await Promise.all([
+          sanityClient.fetch(queries.allServices),
+          sanityClient.fetch(queries.allProducts),
+          sanityClient.fetch(queries.allProviders),
+        ]);
+        setServices(servicesData || []);
+        setProducts(productsData || []);
+        setProviders(providersData || []);
+      } catch (error) {
+        console.error("Error fetching Sanity data:", error);
+      } finally {
+        setLoadingData(false);
+      }
+    }
+    fetchSanityData();
+  }, []);
 
   // Fetch user profile
   useEffect(() => {
@@ -809,7 +861,7 @@ export default function AppXPage() {
             </div>
           </div>
 
-          {/* Featured Services */}
+          {/* Featured Services from Sanity */}
           <div className="mb-6">
             <div className="flex items-center justify-between px-4 mb-3">
               <h3 className="font-semibold text-gray-900">Popular Services</h3>
@@ -818,76 +870,228 @@ export default function AppXPage() {
               </Link>
             </div>
             <div className="flex gap-3 overflow-x-auto pb-2 px-4 scrollbar-hide">
-              {featuredServices.map((service) => (
-                <Link
-                  key={service.id}
-                  href={`/appx/services/${service.id}`}
-                  className="flex-shrink-0 w-48"
-                >
-                  <Card className="overflow-hidden border-0 shadow-md">
-                    <div className="h-28 bg-gradient-to-br from-brand-navy/80 to-brand-teal/60 relative">
-                      <span className="absolute top-2 left-2 text-[10px] font-bold bg-white/90 px-2 py-1 rounded-full">
-                        {service.category}
-                      </span>
-                      <button className="absolute top-2 right-2 h-8 w-8 bg-white/80 rounded-full flex items-center justify-center">
-                        <Heart className="h-4 w-4 text-gray-400" />
-                      </button>
+              {loadingData ? (
+                [1, 2, 3].map((i) => (
+                  <div key={i} className="flex-shrink-0 w-48 animate-pulse">
+                    <div className="h-28 bg-gray-200 rounded-t-xl" />
+                    <div className="bg-white p-3 rounded-b-xl space-y-2">
+                      <div className="h-4 bg-gray-200 rounded w-3/4" />
+                      <div className="h-3 bg-gray-200 rounded w-1/2" />
                     </div>
-                    <CardContent className="p-3">
-                      <h4 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2">
-                        {service.title}
-                      </h4>
-                      <p className="text-sm font-bold text-brand-gold mb-1">
-                        {service.price} AED
-                      </p>
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span className="truncate">{service.expertName}</span>
-                        <span className="flex items-center gap-1">
-                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                          {service.rating}
+                  </div>
+                ))
+              ) : services.length > 0 ? (
+                services.slice(0, 6).map((service: SanityService) => (
+                  <Link
+                    key={service._id}
+                    href={`/appx/services/${service.slug.current}`}
+                    className="flex-shrink-0 w-48"
+                  >
+                    <Card className="overflow-hidden border-0 shadow-md">
+                      <div className="h-28 bg-gradient-to-br from-brand-navy/80 to-brand-teal/60 relative">
+                        {service.image && (
+                          <Image
+                            src={urlFor(service.image).width(300).height(200).url()}
+                            alt={service.title}
+                            fill
+                            className="object-cover"
+                          />
+                        )}
+                        <span className="absolute top-2 left-2 text-[10px] font-bold bg-white/90 px-2 py-1 rounded-full uppercase">
+                          {service.category}
                         </span>
+                        <button className="absolute top-2 right-2 h-8 w-8 bg-white/80 rounded-full flex items-center justify-center">
+                          <Heart className="h-4 w-4 text-gray-400" />
+                        </button>
                       </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+                      <CardContent className="p-3">
+                        <h4 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2">
+                          {service.title}
+                        </h4>
+                        <p className="text-sm font-bold text-brand-gold mb-1">
+                          {service.basePrice || 0} AED
+                        </p>
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          <span className="truncate flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {service.duration || 60}min
+                          </span>
+                          {service.rating && (
+                            <span className="flex items-center gap-1">
+                              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                              {service.rating}
+                            </span>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm px-2">No services available</p>
+              )}
             </div>
           </div>
 
-          {/* Featured Experts */}
+          {/* Featured Products from Sanity */}
           <div className="mb-6">
             <div className="flex items-center justify-between px-4 mb-3">
-              <h3 className="font-semibold text-gray-900">Top Experts</h3>
-              <Link href="/appx/experts" className="text-sm text-brand-teal font-medium">
+              <h3 className="font-semibold text-gray-900">Wellness Products</h3>
+              <Link href="/appx/products" className="text-sm text-brand-teal font-medium">
                 See All
               </Link>
             </div>
             <div className="flex gap-3 overflow-x-auto pb-2 px-4 scrollbar-hide">
-              {featuredExperts.map((expert) => (
-                <Link
-                  key={expert.id}
-                  href={`/appx/experts/${expert.id}`}
-                  className="flex-shrink-0 w-40"
-                >
-                  <Card className="overflow-hidden border-0 shadow-md">
-                    <div className="h-32 bg-gradient-to-br from-gray-200 to-gray-300 relative">
-                      <button className="absolute top-2 right-2 h-8 w-8 bg-white/80 rounded-full flex items-center justify-center">
-                        <Heart className="h-4 w-4 text-gray-400" />
-                      </button>
+              {loadingData ? (
+                [1, 2, 3].map((i) => (
+                  <div key={i} className="flex-shrink-0 w-40 animate-pulse">
+                    <div className="h-32 bg-gray-200 rounded-t-xl" />
+                    <div className="bg-white p-3 rounded-b-xl space-y-2">
+                      <div className="h-4 bg-gray-200 rounded w-3/4" />
+                      <div className="h-3 bg-gray-200 rounded w-1/2" />
                     </div>
-                    <CardContent className="p-3">
-                      <h4 className="text-sm font-semibold text-gray-900 truncate">
-                        {expert.name}
-                      </h4>
-                      <p className="text-xs text-gray-500 mb-1">{expert.title}</p>
-                      <div className="flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        <span className="text-xs text-gray-600">{expert.rating}</span>
+                  </div>
+                ))
+              ) : products.length > 0 ? (
+                products.slice(0, 6).map((product: SanityProduct) => (
+                  <Link
+                    key={product._id}
+                    href={`/appx/products/${product.slug.current}`}
+                    className="flex-shrink-0 w-40"
+                  >
+                    <Card className="overflow-hidden border-0 shadow-md">
+                      <div className="h-32 bg-gray-100 relative">
+                        {product.images && product.images[0] ? (
+                          <Image
+                            src={urlFor(product.images[0]).width(200).height(200).url()}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                            <span className="text-3xl">🧴</span>
+                          </div>
+                        )}
+                        {product.discountPercentage && (
+                          <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                            -{product.discountPercentage}%
+                          </span>
+                        )}
+                        <button className="absolute top-2 right-2 h-7 w-7 bg-white/80 rounded-full flex items-center justify-center">
+                          <Heart className="h-3 w-3 text-gray-400" />
+                        </button>
                       </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+                      <CardContent className="p-3">
+                        <h4 className="text-xs font-semibold text-gray-900 line-clamp-2 mb-1">
+                          {product.name}
+                        </h4>
+                        <div className="flex items-center gap-1">
+                          {product.salePrice ? (
+                            <>
+                              <span className="text-xs text-gray-400 line-through">
+                                {product.price}
+                              </span>
+                              <span className="text-sm font-bold text-[#0D9488]">
+                                {product.salePrice} AED
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-sm font-bold text-gray-900">
+                              {product.price} AED
+                            </span>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm px-2">No products available</p>
+              )}
+            </div>
+          </div>
+
+          {/* Featured Providers from Sanity */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between px-4 mb-3">
+              <h3 className="font-semibold text-gray-900">Top Providers</h3>
+              <Link href="/appx/providers" className="text-sm text-brand-teal font-medium">
+                See All
+              </Link>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2 px-4 scrollbar-hide">
+              {loadingData ? (
+                [1, 2, 3].map((i) => (
+                  <div key={i} className="flex-shrink-0 w-56 animate-pulse">
+                    <div className="h-24 bg-gray-200 rounded-t-xl" />
+                    <div className="bg-white p-3 rounded-b-xl space-y-2">
+                      <div className="h-4 bg-gray-200 rounded w-3/4" />
+                      <div className="h-3 bg-gray-200 rounded w-1/2" />
+                    </div>
+                  </div>
+                ))
+              ) : providers.length > 0 ? (
+                providers.slice(0, 5).map((provider: SanityProvider) => (
+                  <Link
+                    key={provider._id}
+                    href={`/appx/providers/${provider.slug.current}`}
+                    className="flex-shrink-0 w-56"
+                  >
+                    <Card className="overflow-hidden border-0 shadow-md">
+                      <div className="h-24 bg-gradient-to-br from-[#1B365D] to-[#0D9488] relative">
+                        {provider.coverImage && (
+                          <Image
+                            src={urlFor(provider.coverImage).width(300).height(150).url()}
+                            alt={provider.name}
+                            fill
+                            className="object-cover"
+                          />
+                        )}
+                        <div className="absolute bottom-0 left-3 translate-y-1/2">
+                          <div className="h-12 w-12 rounded-xl bg-white shadow-lg overflow-hidden border-2 border-white">
+                            {provider.logo ? (
+                              <Image
+                                src={urlFor(provider.logo).width(80).height(80).url()}
+                                alt={provider.name}
+                                width={48}
+                                height={48}
+                                className="object-cover"
+                              />
+                            ) : (
+                              <div className="h-full w-full bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
+                                <span className="text-xl">🧘</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        {provider.rating && (
+                          <div className="absolute top-2 right-2 bg-white/90 px-2 py-0.5 rounded-lg flex items-center gap-1">
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                            <span className="text-xs font-semibold">{provider.rating}</span>
+                          </div>
+                        )}
+                      </div>
+                      <CardContent className="p-3 pt-8">
+                        <h4 className="text-sm font-semibold text-gray-900 truncate">
+                          {provider.name}
+                        </h4>
+                        <p className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {provider.location?.area || provider.category}
+                        </p>
+                        {provider.discountText && (
+                          <p className="text-[10px] text-[#0D9488] font-medium truncate">
+                            🎁 {provider.discountText}
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm px-2">No providers available</p>
+              )}
             </div>
           </div>
 
