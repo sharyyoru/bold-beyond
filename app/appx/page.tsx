@@ -392,9 +392,16 @@ export default function AppXPage() {
           .eq("id", user.id)
           .single();
         
-        if (profile) {
-          setUserProfile(profile);
-        }
+        // Merge profile data with user metadata (auth has the name sometimes)
+        const mergedProfile = {
+          ...profile,
+          id: user.id,
+          email: user.email || profile?.email,
+          // Check multiple sources for name: profile table, user_metadata, email
+          full_name: profile?.full_name || user.user_metadata?.full_name || user.user_metadata?.name || null,
+        };
+        
+        setUserProfile(mergedProfile);
       }
     };
     

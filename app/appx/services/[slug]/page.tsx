@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { sanityClient, urlFor, queries } from "@/lib/sanity";
 import { Button } from "@/components/ui/button";
+import { useFavorites } from "@/contexts/favorites-context";
 
 interface Service {
   _id: string;
@@ -63,12 +64,29 @@ interface Service {
 export default function ServiceDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { isFavorited, toggleFavorite } = useFavorites();
   const [service, setService] = useState<Service | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  
+  // Check if service is favorited using context
+  const isFavorite = service ? isFavorited('service', service._id) : false;
+  
+  const handleToggleFavorite = async () => {
+    if (!service) return;
+    
+    await toggleFavorite({
+      item_type: 'service',
+      item_id: service._id,
+      item_slug: service.slug.current,
+      item_name: service.title,
+      item_image_url: service.image ? urlFor(service.image).width(300).url() : null,
+      item_category: service.category,
+      item_price: service.basePrice || null,
+    });
+  };
 
   useEffect(() => {
     async function fetchService() {
@@ -179,7 +197,7 @@ export default function ServiceDetailPage() {
           </button>
           <div className="flex gap-2">
             <button
-              onClick={() => setIsFavorite(!isFavorite)}
+              onClick={handleToggleFavorite}
               className="h-10 w-10 rounded-full bg-white/90 backdrop-blur flex items-center justify-center"
             >
               <Heart

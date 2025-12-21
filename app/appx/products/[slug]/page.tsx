@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { sanityClient, urlFor, queries } from "@/lib/sanity";
 import { Button } from "@/components/ui/button";
+import { useFavorites } from "@/contexts/favorites-context";
 
 interface Product {
   _id: string;
@@ -69,13 +70,30 @@ interface Product {
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { isFavorited, toggleFavorite } = useFavorites();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState(1);
+  
+  // Check if product is favorited using context
+  const isFavorite = product ? isFavorited('product', product._id) : false;
+  
+  const handleToggleFavorite = async () => {
+    if (!product) return;
+    
+    await toggleFavorite({
+      item_type: 'product',
+      item_id: product._id,
+      item_slug: product.slug.current,
+      item_name: product.name,
+      item_image_url: product.images?.[0] ? urlFor(product.images[0]).width(300).url() : null,
+      item_category: product.category,
+      item_price: product.salePrice || product.price || null,
+    });
+  };
 
   useEffect(() => {
     async function fetchProduct() {
@@ -168,7 +186,7 @@ export default function ProductDetailPage() {
           </button>
           <div className="flex gap-2">
             <button
-              onClick={() => setIsFavorite(!isFavorite)}
+              onClick={handleToggleFavorite}
               className="h-10 w-10 rounded-full bg-white shadow-md flex items-center justify-center"
             >
               <Heart
