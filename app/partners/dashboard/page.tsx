@@ -165,6 +165,20 @@ export default function PartnerDashboard() {
   const [showAddModal, setShowAddModal] = useState<"service" | "product" | null>(null);
   const [newItem, setNewItem] = useState<any>({});
   const [saving, setSaving] = useState(false);
+  
+  // Availability schedule state
+  const [schedule, setSchedule] = useState<{
+    [key: number]: { isOpen: boolean; openTime: string; closeTime: string };
+  }>({
+    0: { isOpen: false, openTime: "09:00", closeTime: "18:00" }, // Sunday
+    1: { isOpen: true, openTime: "09:00", closeTime: "18:00" },  // Monday
+    2: { isOpen: true, openTime: "09:00", closeTime: "18:00" },  // Tuesday
+    3: { isOpen: true, openTime: "09:00", closeTime: "18:00" },  // Wednesday
+    4: { isOpen: true, openTime: "09:00", closeTime: "18:00" },  // Thursday
+    5: { isOpen: true, openTime: "09:00", closeTime: "18:00" },  // Friday
+    6: { isOpen: false, openTime: "09:00", closeTime: "18:00" }, // Saturday
+  });
+  const [serviceDurations, setServiceDurations] = useState<{ [key: string]: number }>({});
 
   const supabase = createSupabaseClient();
 
@@ -195,6 +209,7 @@ export default function PartnerDashboard() {
       setProvider(providerAccount);
       await fetchDashboardData(providerAccount.id);
       await fetchSanityData(providerAccount.sanity_provider_id);
+      await fetchSchedule(providerAccount.id);
     } catch (error) {
       console.error("Auth error:", error);
       router.push("/partners/login");
@@ -394,6 +409,97 @@ export default function PartnerDashboard() {
       toast({ title: "Error", description: "Failed to create product", variant: "destructive" });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const fetchSchedule = async (providerId: string) => {
+    try {
+      const { data } = await supabase
+        .from("provider_schedules")
+        .select("*")
+        .eq("provider_id", providerId);
+
+      if (data && data.length > 0) {
+        const scheduleMap: { [key: number]: { isOpen: boolean; openTime: string; closeTime: string } } = {};
+        data.forEach((item: any) => {
+          scheduleMap[item.day_of_week] = {
+            isOpen: item.is_open,
+            openTime: item.open_time || "09:00",
+            closeTime: item.close_time || "18:00",
+          };
+        });
+        setSchedule(prev => ({ ...prev, ...scheduleMap }));
+      }
+
+      // Fetch service durations
+      const { data: durations } = await supabase
+        .from("service_durations")
+        .select("*")
+        .eq("provider_id", providerId);
+
+      if (durations) {
+        const durationMap: { [key: string]: number } = {};
+        durations.forEach((d: any) => {
+          durationMap[d.service_id] = d.duration_minutes;
+        });
+        setServiceDurations(durationMap);
+      }
+    } catch (error) {
+      console.error("Error fetching schedule:", error);
+    }
+  };
+
+  const saveSchedule = async () => {
+    if (!provider) return;
+    setSaving(true);
+    try {
+      // Delete existing schedule
+      await supabase
+        .from("provider_schedules")
+        .delete()
+        .eq("provider_id", provider.id);
+
+      // Insert new schedule
+      const scheduleData = Object.entries(schedule).map(([day, data]) => ({
+        provider_id: provider.id,
+        day_of_week: parseInt(day),
+        is_open: data.isOpen,
+        open_time: data.openTime,
+        close_time: data.closeTime,
+      }));
+
+      const { error } = await supabase
+        .from("provider_schedules")
+        .insert(scheduleData);
+
+      if (error) throw error;
+
+      toast({ title: "Saved", description: "Schedule updated successfully" });
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to save schedule", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const saveServiceDuration = async (serviceId: string, serviceName: string, duration: number) => {
+    if (!provider) return;
+    try {
+      const { error } = await supabase
+        .from("service_durations")
+        .upsert({
+          provider_id: provider.id,
+          service_id: serviceId,
+          service_name: serviceName,
+          duration_minutes: duration,
+        }, { onConflict: "provider_id,service_id" });
+
+      if (error) throw error;
+
+      setServiceDurations(prev => ({ ...prev, [serviceId]: duration }));
+      toast({ title: "Saved", description: "Duration updated" });
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to save duration", variant: "destructive" });
     }
   };
 
@@ -1142,46 +1248,6 @@ export default function PartnerDashboard() {
             </div>
           )}
 
-          {/* Settings Tab - removed Analytics */}
-          {activeTab === "settings" && (
-            <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-slate-900">Analytics</h1>
-              
-              <div className="grid md:grid-cols-3 gap-4">
-                <Card className="border-0 shadow-sm">
-                  <CardContent className="p-6 text-center">
-                    <p className="text-4xl font-bold text-teal-600">{stats.completedThisWeek}</p>
-                    <p className="text-sm text-slate-500 mt-1">Completed This Week</p>
-                  </CardContent>
-                </Card>
-                <Card className="border-0 shadow-sm">
-                  <CardContent className="p-6 text-center">
-                    <p className="text-4xl font-bold text-purple-600">{stats.totalOrders}</p>
-                    <p className="text-sm text-slate-500 mt-1">Total Orders</p>
-                  </CardContent>
-                </Card>
-                <Card className="border-0 shadow-sm">
-                  <CardContent className="p-6 text-center">
-                    <p className="text-4xl font-bold text-amber-600">{stats.revenue.toFixed(0)} AED</p>
-                    <p className="text-sm text-slate-500 mt-1">Total Revenue</p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <Card className="border-0 shadow-sm">
-                <CardContent className="p-6">
-                  <h3 className="font-semibold text-slate-900 mb-4">Performance Overview</h3>
-                  <div className="h-64 flex items-center justify-center text-slate-400">
-                    <div className="text-center">
-                      <BarChart3 className="h-12 w-12 mx-auto mb-2" />
-                      <p>Analytics charts coming soon</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
           {/* Settings Tab */}
           {activeTab === "settings" && (
             <div className="space-y-6">
@@ -1210,6 +1276,96 @@ export default function PartnerDashboard() {
                       />
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+
+              {/* Availability Schedule */}
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-slate-900">Availability Schedule</h3>
+                    <Button onClick={saveSchedule} disabled={saving} size="sm" className="bg-teal-500 hover:bg-teal-600">
+                      {saving ? "Saving..." : "Save Schedule"}
+                    </Button>
+                  </div>
+                  <p className="text-sm text-slate-500 mb-4">Set your opening and closing times for each day of the week.</p>
+                  <div className="space-y-3">
+                    {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, index) => (
+                      <div key={day} className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg">
+                        <div className="w-24">
+                          <span className="text-sm font-medium text-slate-700">{day}</span>
+                        </div>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={schedule[index]?.isOpen || false}
+                            onChange={(e) => setSchedule(prev => ({
+                              ...prev,
+                              [index]: { ...prev[index], isOpen: e.target.checked }
+                            }))}
+                            className="w-4 h-4 text-teal-500 rounded"
+                          />
+                          <span className="text-sm text-slate-600">Open</span>
+                        </label>
+                        {schedule[index]?.isOpen && (
+                          <>
+                            <input
+                              type="time"
+                              value={schedule[index]?.openTime || "09:00"}
+                              onChange={(e) => setSchedule(prev => ({
+                                ...prev,
+                                [index]: { ...prev[index], openTime: e.target.value }
+                              }))}
+                              className="px-2 py-1 border border-slate-200 rounded text-sm"
+                            />
+                            <span className="text-slate-400">to</span>
+                            <input
+                              type="time"
+                              value={schedule[index]?.closeTime || "18:00"}
+                              onChange={(e) => setSchedule(prev => ({
+                                ...prev,
+                                [index]: { ...prev[index], closeTime: e.target.value }
+                              }))}
+                              className="px-2 py-1 border border-slate-200 rounded text-sm"
+                            />
+                          </>
+                        )}
+                        {!schedule[index]?.isOpen && (
+                          <span className="text-sm text-slate-400">Closed</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Service Durations */}
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold text-slate-900 mb-4">Service Durations</h3>
+                  <p className="text-sm text-slate-500 mb-4">Set how long each service takes for booking calendar.</p>
+                  {services.length > 0 ? (
+                    <div className="space-y-3">
+                      {services.map((service) => (
+                        <div key={service._id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                          <span className="text-sm font-medium text-slate-700">{service.title}</span>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="number"
+                              value={serviceDurations[service._id] || service.duration || 60}
+                              onChange={(e) => saveServiceDuration(service._id, service.title, parseInt(e.target.value))}
+                              className="w-20 px-2 py-1 border border-slate-200 rounded text-sm text-center"
+                              min="15"
+                              step="15"
+                            />
+                            <span className="text-sm text-slate-500">min</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-slate-400 text-center py-4">Add services to set their durations</p>
+                  )}
                 </CardContent>
               </Card>
 

@@ -137,6 +137,20 @@ const docSections = [
     description: "Provider profiles and service offerings",
   },
   {
+    id: "admin",
+    title: "Admin Portal",
+    icon: Shield,
+    color: "#EF4444",
+    description: "System administration, user management, and analytics",
+  },
+  {
+    id: "booking",
+    title: "Smart Booking System",
+    icon: Calendar,
+    color: "#10B981",
+    description: "Availability-aware booking with double-booking prevention",
+  },
+  {
     id: "partner-dashboard",
     title: "Partner Dashboard",
     icon: Building2,
@@ -1241,6 +1255,133 @@ const sectionContent: Record<string, React.ReactNode> = {
             <li>• Discount/promo badges</li>
             <li>• Social links (WhatsApp, etc.)</li>
           </ul>
+        </div>
+      </div>
+    </div>
+  ),
+
+  admin: (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Shield className="h-6 w-6" />
+          Admin Portal
+        </h3>
+        <p className="opacity-90">Complete system administration for managing users, partners, reviews, and analytics.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">👤 Admin Management</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Create admin accounts with temp passwords</li>
+            <li>• Super Admin and Admin roles</li>
+            <li>• Activate/deactivate admins</li>
+            <li>• Password change on first login</li>
+          </ul>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">🏢 Partner Management</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Create partner accounts</li>
+            <li>• Associate with Sanity providers</li>
+            <li>• Track account linking status</li>
+            <li>• View all partners</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">📊 Dashboard Features</h4>
+        <div className="grid md:grid-cols-4 gap-3">
+          <div className="bg-purple-50 rounded-lg p-3 text-center">
+            <p className="text-lg font-bold text-purple-700">Products</p>
+            <p className="text-xs text-purple-600">Total & Avg Rating</p>
+          </div>
+          <div className="bg-teal-50 rounded-lg p-3 text-center">
+            <p className="text-lg font-bold text-teal-700">Services</p>
+            <p className="text-xs text-teal-600">Total & Avg Rating</p>
+          </div>
+          <div className="bg-blue-50 rounded-lg p-3 text-center">
+            <p className="text-lg font-bold text-blue-700">Providers</p>
+            <p className="text-xs text-blue-600">Total & Avg Rating</p>
+          </div>
+          <div className="bg-amber-50 rounded-lg p-3 text-center">
+            <p className="text-lg font-bold text-amber-700">Reviews</p>
+            <p className="text-xs text-amber-600">Total Count</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-amber-200">
+        <h4 className="font-semibold text-gray-900 mb-3">⭐ Reviews Management</h4>
+        <ul className="space-y-2 text-sm text-gray-600">
+          <li>• <strong>Smart search</strong> across all reviews</li>
+          <li>• Filter by type (product, service, provider)</li>
+          <li>• Filter by rating (1-5 stars)</li>
+          <li>• Publish/unpublish reviews</li>
+        </ul>
+      </div>
+
+      <div className="bg-slate-900 rounded-xl p-5 text-white">
+        <h4 className="font-semibold mb-3">🔑 Access</h4>
+        <p className="text-sm text-slate-300 mb-2">Admin portal at <code className="bg-slate-800 px-2 py-0.5 rounded">/admin</code></p>
+        <p className="text-sm text-slate-400">Initial super admin: wilson@mutant.ae</p>
+      </div>
+    </div>
+  ),
+
+  booking: (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Calendar className="h-6 w-6" />
+          Smart Booking System
+        </h3>
+        <p className="opacity-90">Intelligent booking with provider availability checking and double-booking prevention.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-emerald-200">
+          <h4 className="font-semibold text-gray-900 mb-3">📅 Provider Availability</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Set open/close times per day</li>
+            <li>• Mark days as closed</li>
+            <li>• Configure weekly schedule</li>
+            <li>• Automatic slot generation</li>
+          </ul>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-teal-200">
+          <h4 className="font-semibold text-gray-900 mb-3">⏱️ Service Durations</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Set duration per service</li>
+            <li>• 15-minute increments</li>
+            <li>• Affects slot availability</li>
+            <li>• Buffer time between bookings</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">🛡️ Double-Booking Prevention</h4>
+        <p className="text-sm text-gray-600 mb-3">The system automatically prevents overlapping bookings:</p>
+        <ul className="space-y-2 text-sm text-gray-600">
+          <li>• Checks existing bookings for date/time</li>
+          <li>• Considers service duration</li>
+          <li>• Returns only available slots</li>
+          <li>• Real-time slot status updates</li>
+        </ul>
+      </div>
+
+      <div className="bg-slate-50 rounded-xl p-5 border border-slate-200">
+        <h4 className="font-semibold text-slate-800 mb-3">🔌 API Endpoints</h4>
+        <div className="space-y-2 text-sm font-mono">
+          <p className="text-slate-600">GET <code className="bg-white px-2 py-0.5 rounded">/api/booking/availability</code></p>
+          <p className="text-xs text-slate-500 ml-4">Get available slots for a provider/date</p>
+          <p className="text-slate-600">POST <code className="bg-white px-2 py-0.5 rounded">/api/booking/availability</code></p>
+          <p className="text-xs text-slate-500 ml-4">Create a booking slot</p>
         </div>
       </div>
     </div>
