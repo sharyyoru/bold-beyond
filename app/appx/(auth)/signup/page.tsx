@@ -55,13 +55,14 @@ export default function SignupPage() {
         return;
       }
 
-      // If user is created and session exists, redirect to app
+      // If user is created and session exists, redirect to onboarding for new users
       if (data.user && data.session) {
         toast({
           title: "Welcome!",
-          description: "Your account has been created successfully.",
+          description: "Let's personalize your experience.",
         });
-        router.push("/appx");
+        // New users always go to onboarding
+        router.push("/appx/onboarding");
         router.refresh();
       } else if (data.user) {
         // User created but no session (email confirmation might still be required in Supabase)
@@ -80,9 +81,10 @@ export default function SignupPage() {
         } else {
           toast({
             title: "Welcome!",
-            description: "Your account has been created successfully.",
+            description: "Let's personalize your experience.",
           });
-          router.push("/appx");
+          // New users always go to onboarding
+          router.push("/appx/onboarding");
           router.refresh();
         }
       }
