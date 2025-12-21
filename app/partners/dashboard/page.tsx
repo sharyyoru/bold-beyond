@@ -28,6 +28,12 @@ import {
   Phone,
   Mail,
   RefreshCw,
+  Star,
+  MessageSquare,
+  Edit,
+  Trash2,
+  Image,
+  DollarSign,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -74,6 +80,43 @@ interface Stats {
   pendingOrders: number;
   revenue: number;
   completedThisWeek: number;
+  averageRating: number;
+  totalReviews: number;
+}
+
+interface SanityService {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  category: string;
+  basePrice: number;
+  duration: number;
+  rating?: number;
+  reviewCount?: number;
+  image?: any;
+}
+
+interface SanityProduct {
+  _id: string;
+  name: string;
+  slug: { current: string };
+  category: string;
+  price: number;
+  salePrice?: number;
+  stock?: number;
+  rating?: number;
+  reviewCount?: number;
+  images?: any[];
+}
+
+interface Review {
+  _id: string;
+  rating: number;
+  review?: string;
+  customerName?: string;
+  itemType: string;
+  itemName: string;
+  createdAt: string;
 }
 
 const navItems = [
@@ -81,7 +124,8 @@ const navItems = [
   { id: "appointments", label: "Appointments", icon: Calendar },
   { id: "orders", label: "Orders", icon: ShoppingBag },
   { id: "services", label: "Services", icon: Package },
-  { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "products", label: "Products", icon: ShoppingBag },
+  { id: "reviews", label: "Reviews", icon: Star },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -112,7 +156,15 @@ export default function PartnerDashboard() {
     pendingOrders: 0,
     revenue: 0,
     completedThisWeek: 0,
+    averageRating: 0,
+    totalReviews: 0,
   });
+  const [services, setServices] = useState<SanityService[]>([]);
+  const [products, setProducts] = useState<SanityProduct[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [showAddModal, setShowAddModal] = useState<"service" | "product" | null>(null);
+  const [newItem, setNewItem] = useState<any>({});
+  const [saving, setSaving] = useState(false);
 
   const supabase = createSupabaseClient();
 
@@ -142,6 +194,7 @@ export default function PartnerDashboard() {
 
       setProvider(providerAccount);
       await fetchDashboardData(providerAccount.id);
+      await fetchSanityData(providerAccount.sanity_provider_id);
     } catch (error) {
       console.error("Auth error:", error);
       router.push("/partners/login");
@@ -194,10 +247,153 @@ export default function PartnerDashboard() {
         pendingOrders: pendingOrds.length,
         revenue: totalRevenue,
         completedThisWeek: completedWeek.length,
+        averageRating: 0,
+        totalReviews: 0,
       });
 
     } catch (error) {
       console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchSanityData = async (sanityProviderId: string) => {
+    try {
+      // Fetch services for this provider
+      const servicesRes = await fetch(`/api/sanity/mutate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "fetch",
+          data: {
+            query: `*[_type == "service" && provider._ref == $providerId] | order(title asc) {
+              _id, title, "slug": slug.current, category, basePrice, duration, rating, reviewCount, image
+            }`,
+            params: { providerId: sanityProviderId }
+          }
+        })
+      });
+      const servicesData = await servicesRes.json();
+      if (servicesData.success) {
+        setServices(servicesData.result || []);
+        
+        // Calculate average rating from services
+        const servicesWithRatings = (servicesData.result || []).filter((s: SanityService) => s.rating);
+        const avgServiceRating = servicesWithRatings.length > 0 
+          ? servicesWithRatings.reduce((sum: number, s: SanityService) => sum + (s.rating || 0), 0) / servicesWithRatings.length 
+          : 0;
+        const totalServiceReviews = (servicesData.result || []).reduce((sum: number, s: SanityService) => sum + (s.reviewCount || 0), 0);
+        
+        setStats(prev => ({
+          ...prev,
+          averageRating: avgServiceRating,
+          totalReviews: totalServiceReviews,
+        }));
+      }
+
+      // Fetch products for this provider
+      const productsRes = await fetch(`/api/sanity/mutate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "fetch",
+          data: {
+            query: `*[_type == "product" && provider._ref == $providerId] | order(name asc) {
+              _id, name, "slug": slug.current, category, price, salePrice, stock, rating, reviewCount, images
+            }`,
+            params: { providerId: sanityProviderId }
+          }
+        })
+      });
+      const productsData = await productsRes.json();
+      if (productsData.success) {
+        setProducts(productsData.result || []);
+        
+        // Add product reviews to total
+        const totalProductReviews = (productsData.result || []).reduce((sum: number, p: SanityProduct) => sum + (p.reviewCount || 0), 0);
+        setStats(prev => ({
+          ...prev,
+          totalReviews: prev.totalReviews + totalProductReviews,
+        }));
+      }
+
+    } catch (error) {
+      console.error("Error fetching Sanity data:", error);
+    }
+  };
+
+  const createService = async () => {
+    if (!provider || !newItem.title) return;
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/sanity/mutate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "create",
+          data: {
+            _type: "service",
+            title: newItem.title,
+            slug: { _type: "slug", current: newItem.title.toLowerCase().replace(/\s+/g, "-") },
+            description: newItem.description || "",
+            category: newItem.category || "wellness",
+            basePrice: parseFloat(newItem.basePrice) || 0,
+            duration: parseInt(newItem.duration) || 60,
+            provider: { _type: "reference", _ref: provider.sanity_provider_id },
+            rating: 0,
+            reviewCount: 0,
+          }
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast({ title: "Success", description: "Service created" });
+        setShowAddModal(null);
+        setNewItem({});
+        fetchSanityData(provider.sanity_provider_id);
+      }
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to create service", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const createProduct = async () => {
+    if (!provider || !newItem.name) return;
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/sanity/mutate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "create",
+          data: {
+            _type: "product",
+            name: newItem.name,
+            slug: { _type: "slug", current: newItem.name.toLowerCase().replace(/\s+/g, "-") },
+            description: newItem.description || "",
+            category: newItem.category || "wellness",
+            price: parseFloat(newItem.price) || 0,
+            salePrice: newItem.salePrice ? parseFloat(newItem.salePrice) : undefined,
+            stock: parseInt(newItem.stock) || 0,
+            provider: { _type: "reference", _ref: provider.sanity_provider_id },
+            rating: 0,
+            reviewCount: 0,
+            isActive: true,
+          }
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast({ title: "Success", description: "Product created" });
+        setShowAddModal(null);
+        setNewItem({});
+        fetchSanityData(provider.sanity_provider_id);
+      }
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to create product", variant: "destructive" });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -430,6 +626,36 @@ export default function PartnerDashboard() {
                       <div>
                         <p className="text-2xl font-bold text-slate-900">{stats.revenue.toFixed(0)} AED</p>
                         <p className="text-xs text-slate-500">Revenue</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Rating Stats */}
+              <div className="grid grid-cols-2 gap-4">
+                <Card className="border-0 shadow-sm bg-gradient-to-br from-amber-50 to-amber-100">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-12 w-12 rounded-xl bg-amber-200 flex items-center justify-center">
+                        <Star className="h-6 w-6 text-amber-600 fill-amber-600" />
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold text-slate-900">{stats.averageRating.toFixed(1)}</p>
+                        <p className="text-xs text-slate-500">Avg Rating</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-12 w-12 rounded-xl bg-blue-200 flex items-center justify-center">
+                        <MessageSquare className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold text-slate-900">{stats.totalReviews}</p>
+                        <p className="text-xs text-slate-500">Total Reviews</p>
                       </div>
                     </div>
                   </CardContent>
@@ -718,79 +944,206 @@ export default function PartnerDashboard() {
           {activeTab === "services" && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-slate-900">Services & Products</h1>
-                <Button className="bg-teal-500 hover:bg-teal-600">
+                <h1 className="text-2xl font-bold text-slate-900">My Services</h1>
+                <Button onClick={() => { setShowAddModal("service"); setNewItem({}); }} className="bg-teal-500 hover:bg-teal-600">
                   <Plus className="h-4 w-4 mr-2" />
-                  Add New
+                  Add Service
                 </Button>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
+              {services.length > 0 ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {services.map((service) => (
+                    <Card key={service._id} className="border-0 shadow-sm overflow-hidden">
+                      <div className="h-32 bg-gradient-to-br from-teal-100 to-teal-200 flex items-center justify-center">
+                        <Package className="h-12 w-12 text-teal-600" />
+                      </div>
+                      <CardContent className="p-4">
+                        <h3 className="font-semibold text-slate-900 mb-1">{service.title}</h3>
+                        <p className="text-sm text-slate-500 mb-2">{service.category}</p>
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-teal-600">{service.basePrice} AED</span>
+                          <span className="text-xs text-slate-400">{service.duration} min</span>
+                        </div>
+                        {service.rating && (
+                          <div className="flex items-center gap-1 mt-2">
+                            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                            <span className="text-sm font-medium">{service.rating.toFixed(1)}</span>
+                            <span className="text-xs text-slate-400">({service.reviewCount || 0})</span>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
                 <Card className="border-0 shadow-sm">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="h-12 w-12 rounded-xl bg-teal-100 flex items-center justify-center">
-                        <Package className="h-6 w-6 text-teal-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-slate-900">Services</h3>
-                        <p className="text-sm text-slate-500">Manage your service offerings</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-slate-600 mb-4">
-                      Add, edit, or remove services. Set pricing, duration, and availability for each service.
-                    </p>
-                    <Button variant="outline" className="w-full">
-                      Manage Services
-                    </Button>
+                  <CardContent className="p-12 text-center">
+                    <Package className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+                    <p className="text-slate-500">No services yet</p>
+                    <p className="text-sm text-slate-400 mt-1">Add your first service to get started</p>
                   </CardContent>
                 </Card>
+              )}
+            </div>
+          )}
 
-                <Card className="border-0 shadow-sm">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="h-12 w-12 rounded-xl bg-purple-100 flex items-center justify-center">
-                        <ShoppingBag className="h-6 w-6 text-purple-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-slate-900">Products</h3>
-                        <p className="text-sm text-slate-500">Manage your product catalog</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-slate-600 mb-4">
-                      Add, edit, or remove products. Set pricing, stock levels, and product details.
-                    </p>
-                    <Button variant="outline" className="w-full">
-                      Manage Products
-                    </Button>
-                  </CardContent>
-                </Card>
+          {/* Products Tab */}
+          {activeTab === "products" && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold text-slate-900">My Products</h1>
+                <Button onClick={() => { setShowAddModal("product"); setNewItem({}); }} className="bg-purple-500 hover:bg-purple-600">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Product
+                </Button>
               </div>
 
-              <Card className="border-0 shadow-sm">
+              {products.length > 0 ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {products.map((product) => (
+                    <Card key={product._id} className="border-0 shadow-sm overflow-hidden">
+                      <div className="h-32 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
+                        <ShoppingBag className="h-12 w-12 text-purple-600" />
+                      </div>
+                      <CardContent className="p-4">
+                        <h3 className="font-semibold text-slate-900 mb-1">{product.name}</h3>
+                        <p className="text-sm text-slate-500 mb-2">{product.category}</p>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            {product.salePrice ? (
+                              <>
+                                <span className="font-bold text-purple-600">{product.salePrice} AED</span>
+                                <span className="text-xs text-slate-400 line-through ml-2">{product.price}</span>
+                              </>
+                            ) : (
+                              <span className="font-bold text-purple-600">{product.price} AED</span>
+                            )}
+                          </div>
+                          <span className="text-xs text-slate-400">Stock: {product.stock || 0}</span>
+                        </div>
+                        {product.rating && (
+                          <div className="flex items-center gap-1 mt-2">
+                            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                            <span className="text-sm font-medium">{product.rating.toFixed(1)}</span>
+                            <span className="text-xs text-slate-400">({product.reviewCount || 0})</span>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <Card className="border-0 shadow-sm">
+                  <CardContent className="p-12 text-center">
+                    <ShoppingBag className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+                    <p className="text-slate-500">No products yet</p>
+                    <p className="text-sm text-slate-400 mt-1">Add your first product to get started</p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+
+          {/* Reviews Tab */}
+          {activeTab === "reviews" && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold text-slate-900">Reviews & Ratings</h1>
+              </div>
+
+              {/* Rating Summary */}
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-amber-50 to-orange-50">
                 <CardContent className="p-6">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="h-12 w-12 rounded-xl bg-amber-100 flex items-center justify-center">
-                      <Calendar className="h-6 w-6 text-amber-600" />
+                  <div className="flex items-center gap-6">
+                    <div className="text-center">
+                      <p className="text-5xl font-bold text-amber-600">{stats.averageRating.toFixed(1)}</p>
+                      <div className="flex items-center justify-center gap-1 mt-2">
+                        {[1,2,3,4,5].map((star) => (
+                          <Star key={star} className={`h-5 w-5 ${star <= Math.round(stats.averageRating) ? 'fill-amber-400 text-amber-400' : 'text-slate-300'}`} />
+                        ))}
+                      </div>
+                      <p className="text-sm text-slate-500 mt-1">{stats.totalReviews} total reviews</p>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-slate-900">Availability Schedule</h3>
-                      <p className="text-sm text-slate-500">Set your working hours and blocked dates</p>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-slate-900 mb-3">Rating Breakdown</h3>
+                      <div className="space-y-2">
+                        {[5,4,3,2,1].map((rating) => (
+                          <div key={rating} className="flex items-center gap-2">
+                            <span className="text-sm text-slate-600 w-8">{rating}★</span>
+                            <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                              <div className="h-full bg-amber-400 rounded-full" style={{ width: `${rating * 20}%` }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                  <p className="text-sm text-slate-600 mb-4">
-                    Configure your weekly schedule and block specific dates for holidays or maintenance.
-                  </p>
-                  <Button variant="outline">
-                    Configure Schedule
-                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Services Reviews */}
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-0">
+                  <div className="p-4 border-b border-slate-100">
+                    <h3 className="font-semibold text-slate-900">Service Reviews</h3>
+                  </div>
+                  <div className="divide-y divide-slate-100">
+                    {services.filter(s => s.rating).map((service) => (
+                      <div key={service._id} className="p-4 flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-slate-900">{service.title}</p>
+                          <p className="text-sm text-slate-500">{service.category}</p>
+                        </div>
+                        <div className="text-right">
+                          <div className="flex items-center gap-1">
+                            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                            <span className="font-medium">{service.rating?.toFixed(1)}</span>
+                          </div>
+                          <p className="text-xs text-slate-400">{service.reviewCount || 0} reviews</p>
+                        </div>
+                      </div>
+                    ))}
+                    {services.filter(s => s.rating).length === 0 && (
+                      <div className="p-8 text-center text-slate-500">No service reviews yet</div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Products Reviews */}
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-0">
+                  <div className="p-4 border-b border-slate-100">
+                    <h3 className="font-semibold text-slate-900">Product Reviews</h3>
+                  </div>
+                  <div className="divide-y divide-slate-100">
+                    {products.filter(p => p.rating).map((product) => (
+                      <div key={product._id} className="p-4 flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-slate-900">{product.name}</p>
+                          <p className="text-sm text-slate-500">{product.category}</p>
+                        </div>
+                        <div className="text-right">
+                          <div className="flex items-center gap-1">
+                            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                            <span className="font-medium">{product.rating?.toFixed(1)}</span>
+                          </div>
+                          <p className="text-xs text-slate-400">{product.reviewCount || 0} reviews</p>
+                        </div>
+                      </div>
+                    ))}
+                    {products.filter(p => p.rating).length === 0 && (
+                      <div className="p-8 text-center text-slate-500">No product reviews yet</div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
           )}
 
-          {/* Analytics Tab */}
-          {activeTab === "analytics" && (
+          {/* Settings Tab - removed Analytics */}
+          {activeTab === "settings" && (
             <div className="space-y-6">
               <h1 className="text-2xl font-bold text-slate-900">Analytics</h1>
               
@@ -887,6 +1240,173 @@ export default function PartnerDashboard() {
           )}
         </div>
       </main>
+
+      {/* Add Service/Product Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-slate-100">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-slate-900">
+                  Add New {showAddModal === "service" ? "Service" : "Product"}
+                </h2>
+                <button onClick={() => setShowAddModal(null)} className="p-2 hover:bg-slate-100 rounded-lg">
+                  <X className="h-5 w-5 text-slate-500" />
+                </button>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              {showAddModal === "service" ? (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Service Name *</label>
+                    <input
+                      type="text"
+                      value={newItem.title || ""}
+                      onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
+                      className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      placeholder="e.g., Deep Tissue Massage"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                    <textarea
+                      value={newItem.description || ""}
+                      onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                      className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      rows={3}
+                      placeholder="Describe your service..."
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Price (AED) *</label>
+                      <input
+                        type="number"
+                        value={newItem.basePrice || ""}
+                        onChange={(e) => setNewItem({ ...newItem, basePrice: e.target.value })}
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        placeholder="150"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Duration (min)</label>
+                      <input
+                        type="number"
+                        value={newItem.duration || ""}
+                        onChange={(e) => setNewItem({ ...newItem, duration: e.target.value })}
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        placeholder="60"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Category</label>
+                    <select
+                      value={newItem.category || ""}
+                      onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+                      className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    >
+                      <option value="">Select category</option>
+                      <option value="massage">Massage</option>
+                      <option value="facial">Facial</option>
+                      <option value="yoga">Yoga</option>
+                      <option value="fitness">Fitness</option>
+                      <option value="therapy">Therapy</option>
+                      <option value="coaching">Coaching</option>
+                      <option value="wellness">Wellness</option>
+                    </select>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Product Name *</label>
+                    <input
+                      type="text"
+                      value={newItem.name || ""}
+                      onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                      className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="e.g., Aromatherapy Oil Set"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                    <textarea
+                      value={newItem.description || ""}
+                      onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                      className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      rows={3}
+                      placeholder="Describe your product..."
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Price (AED) *</label>
+                      <input
+                        type="number"
+                        value={newItem.price || ""}
+                        onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="99"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Sale Price</label>
+                      <input
+                        type="number"
+                        value={newItem.salePrice || ""}
+                        onChange={(e) => setNewItem({ ...newItem, salePrice: e.target.value })}
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="79"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Stock</label>
+                      <input
+                        type="number"
+                        value={newItem.stock || ""}
+                        onChange={(e) => setNewItem({ ...newItem, stock: e.target.value })}
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="50"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Category</label>
+                      <select
+                        value={newItem.category || ""}
+                        onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      >
+                        <option value="">Select category</option>
+                        <option value="wellness">Wellness</option>
+                        <option value="self-care">Self-Care</option>
+                        <option value="supplements">Supplements</option>
+                        <option value="equipment">Equipment</option>
+                        <option value="books">Books</option>
+                      </select>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+            <div className="p-6 border-t border-slate-100 flex gap-3">
+              <Button variant="outline" className="flex-1" onClick={() => setShowAddModal(null)}>
+                Cancel
+              </Button>
+              <Button
+                className={`flex-1 ${showAddModal === "service" ? "bg-teal-500 hover:bg-teal-600" : "bg-purple-500 hover:bg-purple-600"}`}
+                onClick={showAddModal === "service" ? createService : createProduct}
+                disabled={saving}
+              >
+                {saving ? "Saving..." : `Create ${showAddModal === "service" ? "Service" : "Product"}`}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1253,7 +1253,7 @@ const sectionContent: Record<string, React.ReactNode> = {
           <Building2 className="h-6 w-6" />
           Partner Dashboard
         </h3>
-        <p className="opacity-90">Full-featured portal for providers to manage their wellness business.</p>
+        <p className="opacity-90">Full-featured portal for providers to manage their wellness business, products, services, and reviews.</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
@@ -1278,31 +1278,65 @@ const sectionContent: Record<string, React.ReactNode> = {
         </div>
       </div>
 
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-teal-200">
+          <h4 className="font-semibold text-gray-900 mb-3">✨ Service Management</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <strong>Create services</strong> directly to Sanity CMS</li>
+            <li>• Set pricing, duration, category</li>
+            <li>• View all your services with ratings</li>
+            <li>• Track review counts per service</li>
+          </ul>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-purple-200">
+          <h4 className="font-semibold text-gray-900 mb-3">📦 Product Management</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <strong>Create products</strong> directly to Sanity CMS</li>
+            <li>• Set price, sale price, stock</li>
+            <li>• View all your products with ratings</li>
+            <li>• Track review counts per product</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-amber-200">
+        <h4 className="font-semibold text-gray-900 mb-3">⭐ Reviews & Ratings</h4>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <p className="text-sm text-gray-600 mb-2"><strong>Overview Dashboard Shows:</strong></p>
+            <ul className="space-y-1 text-sm text-gray-600">
+              <li>• Average rating across all items</li>
+              <li>• Total review count</li>
+              <li>• Rating breakdown (5★ to 1★)</li>
+            </ul>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600 mb-2"><strong>Reviews Tab Shows:</strong></p>
+            <ul className="space-y-1 text-sm text-gray-600">
+              <li>• Service reviews with ratings</li>
+              <li>• Product reviews with ratings</li>
+              <li>• Individual item performance</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div className="bg-white rounded-xl p-5 border border-gray-100">
-        <h4 className="font-semibold text-gray-900 mb-3">📊 Dashboard Features</h4>
-        <div className="grid md:grid-cols-3 gap-4">
-          <div className="bg-teal-50 rounded-lg p-4 text-center">
-            <div className="text-2xl mb-2">📈</div>
-            <p className="text-sm font-medium text-teal-800">Analytics</p>
-            <p className="text-xs text-teal-600">Revenue & stats</p>
-          </div>
-          <div className="bg-slate-50 rounded-lg p-4 text-center">
-            <div className="text-2xl mb-2">⚙️</div>
-            <p className="text-sm font-medium text-slate-800">Settings</p>
-            <p className="text-xs text-slate-600">Business config</p>
-          </div>
-          <div className="bg-amber-50 rounded-lg p-4 text-center">
-            <div className="text-2xl mb-2">🔔</div>
-            <p className="text-sm font-medium text-amber-800">Notifications</p>
-            <p className="text-xs text-amber-600">Real-time alerts</p>
-          </div>
+        <h4 className="font-semibold text-gray-900 mb-3">📊 Dashboard Tabs</h4>
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+          {["Overview", "Appointments", "Orders", "Services", "Products", "Reviews"].map((tab) => (
+            <div key={tab} className="bg-slate-100 rounded-lg p-2 text-center">
+              <p className="text-xs font-medium text-slate-700">{tab}</p>
+            </div>
+          ))}
         </div>
       </div>
 
       <div className="bg-white rounded-xl p-5 border border-gray-100">
         <h4 className="font-semibold text-gray-900 mb-3">🔗 Access</h4>
         <p className="text-sm text-gray-600 mb-3">
-          Partners can access their dashboard at <code className="bg-gray-100 px-2 py-0.5 rounded">/partners</code>
+          Partners can access their dashboard at <code className="bg-gray-100 px-2 py-0.5 rounded">/partners/dashboard</code>
         </p>
         <div className="bg-slate-900 rounded-lg p-4 text-sm">
           <p className="text-slate-400 mb-2">Demo Credentials:</p>
@@ -1312,13 +1346,12 @@ const sectionContent: Record<string, React.ReactNode> = {
       </div>
 
       <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
-        <h4 className="font-semibold text-slate-800 mb-2">🗂️ Database Tables</h4>
+        <h4 className="font-semibold text-slate-800 mb-2">🗂️ Technical Details</h4>
         <ul className="text-sm text-slate-600 space-y-1">
           <li>• <code>provider_accounts</code> - Links auth users to Sanity providers</li>
-          <li>• <code>appointments</code> - Booking records with status tracking</li>
-          <li>• <code>provider_orders</code> - Product order management</li>
-          <li>• <code>provider_availability</code> - Weekly schedules</li>
-          <li>• <code>provider_blocked_dates</code> - Holiday/vacation dates</li>
+          <li>• <code>/api/sanity/mutate</code> - API route for Sanity CMS writes</li>
+          <li>• Services/products created go directly to Sanity</li>
+          <li>• Ratings/reviews fetched from Sanity in real-time</li>
         </ul>
       </div>
     </div>
