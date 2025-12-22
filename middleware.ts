@@ -4,8 +4,11 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 // Routes that require authentication (main app only)
 const protectedRoutes = ["/dashboard", "/booking", "/my-appointments", "/perks", "/profile"];
 
-// App routes - /appx main page requires auth, but /appx/welcome, /appx/login, /appx/signup don't
+// App routes - /appx main page requires auth, but these pages are public
 const appxAuthPages = ["/appx/welcome", "/appx/login", "/appx/signup", "/appx/terms", "/appx/privacy", "/appx/onboarding"];
+
+// Pages that should be accessible after external redirects (Stripe, etc)
+const appxPublicPages = ["/appx/order/success", "/appx/order/failed", "/appx/booking/success", "/appx/booking/failed"];
 
 // Admin and Partner routes handle their own authentication internally
 // DO NOT protect these in middleware - they have separate session handling
@@ -62,7 +65,8 @@ export async function middleware(request: NextRequest) {
 
   // Check if this is an appx auth page (public) or appx main page (protected)
   const isAppxAuthPage = appxAuthPages.some((route) => pathname === route || pathname.startsWith(route + "/"));
-  const isAppxMainPage = pathname === "/appx" || (pathname.startsWith("/appx/") && !isAppxAuthPage);
+  const isAppxPublicPage = appxPublicPages.some((route) => pathname === route || pathname.startsWith(route));
+  const isAppxMainPage = pathname === "/appx" || (pathname.startsWith("/appx/") && !isAppxAuthPage && !isAppxPublicPage);
 
   // For protected routes, redirect to welcome page
   if (isProtectedRoute && !user) {
