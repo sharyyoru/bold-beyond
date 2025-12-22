@@ -132,49 +132,66 @@ export async function POST(request: NextRequest) {
               }
             }
           }
-        } else if (metadata?.type === "product_order" && metadata?.order_id) {
-          // Update product order status
-          await supabase
+        } else if (metadata?.type === "product_order" && metadata?.order_number) {
+          // Create the order in database after successful payment
+          const items = metadata.items_json ? JSON.parse(metadata.items_json) : [];
+          const total = parseFloat(metadata.total || "0");
+
+          const { data: order, error: orderError } = await supabase
             .from("provider_orders")
-            .update({
+            .insert({
+              order_number: metadata.order_number,
+              provider_id: metadata.provider_id,
+              user_id: metadata.user_id || null,
               status: "processing",
               payment_status: "paid",
               payment_id: session.payment_intent as string,
+              stripe_session_id: session.id,
+              total_amount: total,
               paid_at: new Date().toISOString(),
             })
-            .eq("id", metadata.order_id);
-
-          // Fetch the order details
-          const { data: order } = await supabase
-            .from("provider_orders")
-            .select("*")
-            .eq("id", metadata.order_id)
+            .select()
             .single();
 
-          if (order && order.user_id) {
-            // Create activity for user
+          if (orderError) {
+            console.error("Error creating order:", orderError);
+          }
+
+          // Create order items
+          if (order && items.length > 0) {
+            for (const item of items) {
+              await supabase.from("order_items").insert({
+                order_id: order.id,
+                sanity_product_id: item.id,
+                product_name: item.name,
+                product_price: item.price,
+                quantity: item.qty,
+              });
+            }
+          }
+
+          // Create activity and notification if we have user_id
+          if (order && metadata.user_id) {
             await supabase.from("user_activities").insert({
-              user_id: order.user_id,
+              user_id: metadata.user_id,
               activity_type: "order_placed",
               title: "Order Placed",
-              description: `Order #${order.order_number} - ${order.items?.length || 1} item(s)`,
+              description: `Order #${metadata.order_number} - ${items.length} item(s)`,
               reference_id: order.id,
               reference_type: "order",
-              amount: order.total,
+              amount: total,
               metadata: {
-                order_number: order.order_number,
-                items: order.items,
+                order_number: metadata.order_number,
+                items: items,
                 payment_id: session.payment_intent,
-                invoice_url: session.invoice,
               }
             });
 
-            // Create notification
             await supabase.from("user_notifications").insert({
-              user_id: order.user_id,
+              user_id: metadata.user_id,
               type: "order_update",
               title: "Order Confirmed",
-              message: `Your order #${order.order_number} has been placed. Total: ${order.total} AED`,
+              message: `Your order #${metadata.order_number} has been placed. Total: ${total} AED`,
               reference_id: order.id,
               reference_type: "order",
               sent_at: new Date().toISOString(),

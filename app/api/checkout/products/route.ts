@@ -30,47 +30,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get user from auth header or session
-    const authHeader = request.headers.get("authorization");
-    let userId: string | null = null;
-
-    if (authHeader) {
-      const token = authHeader.replace("Bearer ", "");
-      const { data: { user } } = await supabase.auth.getUser(token);
-      userId = user?.id || null;
-    }
-
-    // Create order in database
-    const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-    
-    const { data: order, error: orderError } = await supabase
-      .from("provider_orders")
-      .insert({
-        provider_id: providerId,
-        user_id: userId,
-        order_number: orderNumber,
-        items: items,
-        total: total,
-        status: "pending",
-        payment_status: "pending",
-        customer_name: customer.fullName,
-        customer_phone: customer.phone,
-        customer_email: customer.email,
-        delivery_address: customer.address,
-        notes: customer.notes,
-      })
-      .select()
-      .single();
-
-    if (orderError) {
-      console.error("Error creating order:", orderError);
+    if (!customer?.fullName || !customer?.phone || !customer?.address) {
       return NextResponse.json(
-        { error: "Failed to create order" },
-        { status: 500 }
+        { error: "Customer details required" },
+        { status: 400 }
       );
     }
 
-    // Create Stripe checkout session
+    // Create order number
+    const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+
+    // Create Stripe checkout session first (before database)
     const lineItems = items.map((item: CartItem) => ({
       price_data: {
         currency: "aed",
@@ -86,31 +56,33 @@ export async function POST(request: NextRequest) {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://bold-beyond.vercel.app"}/appx/order/success?order_id=${order.id}`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://bold-beyond.vercel.app"}/appx/order/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://bold-beyond.vercel.app"}/appx/cart`,
       metadata: {
         type: "product_order",
-        order_id: order.id,
+        order_number: orderNumber,
         provider_id: providerId,
-        user_id: userId || "",
+        customer_name: customer.fullName,
+        customer_phone: customer.phone,
+        customer_email: customer.email || "",
+        delivery_address: customer.address,
+        notes: customer.notes || "",
+        items_json: JSON.stringify(items.map((i: CartItem) => ({
+          id: i.productId,
+          name: i.productName,
+          price: i.price,
+          qty: i.quantity,
+        }))),
+        total: total.toString(),
       },
       customer_email: customer.email || undefined,
     });
 
-    // Update order with payment intent
-    await supabase
-      .from("provider_orders")
-      .update({
-        stripe_session_id: session.id,
-        stripe_payment_intent: session.payment_intent,
-      })
-      .eq("id", order.id);
-
     return NextResponse.json({ url: session.url });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Checkout error:", error);
     return NextResponse.json(
-      { error: "Failed to create checkout session" },
+      { error: error.message || "Failed to create checkout session" },
       { status: 500 }
     );
   }

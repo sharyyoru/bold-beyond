@@ -444,35 +444,24 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {/* Added to Cart Toast */}
+      {/* Added to Cart Toast - compact version */}
       {showAddedToCart && (
-        <div className="fixed top-20 left-4 right-4 z-50 animate-in slide-in-from-top">
-          <div className="bg-white rounded-2xl shadow-lg p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-              <Check className="h-5 w-5 text-green-600" />
-            </div>
-            <div className="flex-1">
-              <p className="font-medium text-gray-900">Added to cart!</p>
-              <p className="text-sm text-gray-500">{quantity}x {product.name}</p>
-            </div>
-            <button
-              onClick={goToCart}
-              className="bg-[#0D9488] text-white px-4 py-2 rounded-xl text-sm font-medium"
-            >
-              View Cart
-            </button>
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-top">
+          <div className="bg-green-600 text-white rounded-full shadow-lg px-4 py-2 flex items-center gap-2">
+            <Check className="h-4 w-4" />
+            <span className="text-sm font-medium">Added to cart</span>
           </div>
         </div>
       )}
 
-      {/* Cart Badge */}
+      {/* Cart Badge - positioned below header buttons */}
       {getCartItemCount() > 0 && (
         <button
           onClick={goToCart}
-          className="fixed top-4 right-4 z-50 h-12 w-12 rounded-full bg-[#0D9488] text-white flex items-center justify-center shadow-lg"
+          className="fixed top-20 right-4 z-40 h-11 w-11 rounded-full bg-[#0D9488] text-white flex items-center justify-center shadow-lg"
         >
-          <ShoppingBag className="h-5 w-5" />
-          <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-xs flex items-center justify-center">
+          <ShoppingBag className="h-4 w-4" />
+          <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-[10px] flex items-center justify-center">
             {getCartItemCount()}
           </span>
         </button>

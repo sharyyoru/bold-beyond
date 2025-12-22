@@ -20,7 +20,7 @@ interface Order {
 function OrderSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const orderId = searchParams.get("order_id");
+  const sessionId = searchParams.get("session_id");
   const { clearAllCarts } = useCart();
   
   const [order, setOrder] = useState<Order | null>(null);
@@ -30,9 +30,9 @@ function OrderSuccessContent() {
     // Clear the cart after successful order
     clearAllCarts();
 
-    // Fetch order details
+    // Fetch order details by session_id
     const fetchOrder = async () => {
-      if (!orderId) {
+      if (!sessionId) {
         setLoading(false);
         return;
       }
@@ -42,7 +42,7 @@ function OrderSuccessContent() {
         const { data, error } = await supabase
           .from("provider_orders")
           .select("*")
-          .eq("id", orderId)
+          .eq("stripe_session_id", sessionId)
           .single();
 
         if (!error && data) {
@@ -55,8 +55,9 @@ function OrderSuccessContent() {
       }
     };
 
-    fetchOrder();
-  }, [orderId, clearAllCarts]);
+    // Small delay to allow webhook to process
+    setTimeout(fetchOrder, 1000);
+  }, [sessionId, clearAllCarts]);
 
   if (loading) {
     return (

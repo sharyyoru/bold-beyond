@@ -24,18 +24,14 @@ export function FavoriteButton({ item, className = "", size = "md" }: FavoriteBu
     
     setIsLoading(true);
     try {
-      const nowFavorited = await toggleFavorite(item);
-      toast({
-        title: nowFavorited ? "Added to favorites" : "Removed from favorites",
-        description: nowFavorited 
-          ? `${item.item_name} has been saved to your favorites.`
-          : `${item.item_name} has been removed from your favorites.`,
-      });
+      await toggleFavorite(item);
+      // Silent success - no toast needed for favorites
     } catch (error) {
       toast({
         title: "Please log in",
-        description: "You need to be logged in to save favorites.",
+        description: "Sign in to save favorites.",
         variant: "destructive",
+        duration: 2000,
       });
     }
     setIsLoading(false);

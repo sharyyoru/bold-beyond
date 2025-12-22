@@ -70,6 +70,7 @@ export default function ServiceDetailPage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [bookingLoading, setBookingLoading] = useState(false);
   
   // Check if service is favorited using context
   const isFavorite = service ? isFavorited('service', service._id) : false;
@@ -133,10 +134,71 @@ export default function ServiceDetailPage() {
     }
   };
 
-  const confirmBooking = () => {
-    alert(`Booking confirmed for ${selectedDate} at ${selectedTime}!`);
-    setShowBookingModal(false);
-    router.push("/appx");
+  const confirmBooking = async () => {
+    if (!service || !selectedDate || !selectedTime) return;
+    
+    setBookingLoading(true);
+    try {
+      // Get user info
+      const { createSupabaseClient } = await import("@/lib/supabase");
+      const supabase = createSupabaseClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      let customerEmail = user?.email || "";
+      let customerName = "";
+      let customerPhone = "";
+      
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name, phone")
+          .eq("id", user.id)
+          .single();
+        
+        customerName = profile?.full_name || user.user_metadata?.full_name || "";
+        customerPhone = profile?.phone || "";
+      }
+      
+      if (!customerEmail) {
+        alert("Please log in to book appointments.");
+        router.push("/appx/login");
+        return;
+      }
+
+      const response = await fetch("/api/checkout/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          serviceId: service._id,
+          serviceName: service.title,
+          servicePrice: service.basePrice,
+          serviceDuration: service.duration,
+          providerId: service.provider?._id,
+          providerName: service.provider?.name,
+          appointmentDate: selectedDate,
+          appointmentTime: selectedTime,
+          customerName,
+          customerEmail,
+          customerPhone,
+          userId: user?.id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.sessionUrl) {
+        // Redirect to Stripe checkout
+        window.location.href = data.sessionUrl;
+      } else if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || "Failed to create booking");
+      }
+    } catch (error: any) {
+      console.error("Booking error:", error);
+      alert(error.message || "Failed to process booking. Please try again.");
+      setBookingLoading(false);
+    }
   };
 
   if (loading) {
@@ -466,19 +528,28 @@ export default function ServiceDetailPage() {
                 </span>
               </div>
             </div>
+            
+            <div className="bg-[#0D9488]/10 rounded-xl p-3 mb-4">
+              <p className="text-sm text-gray-600">
+                You'll be redirected to secure payment to complete your booking.
+              </p>
+            </div>
+            
             <div className="flex gap-3">
               <Button
                 variant="outline"
                 onClick={() => setShowBookingModal(false)}
                 className="flex-1"
+                disabled={bookingLoading}
               >
                 Cancel
               </Button>
               <Button
                 onClick={confirmBooking}
+                disabled={bookingLoading}
                 className="flex-1 bg-[#0D9488] hover:bg-[#0B7B71]"
               >
-                Confirm
+                {bookingLoading ? "Processing..." : "Pay & Confirm"}
               </Button>
             </div>
           </div>
