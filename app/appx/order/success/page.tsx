@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Check, Package, Home, ShoppingBag } from "lucide-react";
+import { Check, Package, Home, ShoppingBag, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/cart-context";
 import { createSupabaseClient } from "@/lib/supabase";
@@ -17,7 +17,7 @@ interface Order {
   created_at: string;
 }
 
-export default function OrderSuccessPage() {
+function OrderSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("order_id");
@@ -138,5 +138,19 @@ export default function OrderSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OrderSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+          <Loader2 className="h-12 w-12 animate-spin text-[#0D9488]" />
+        </div>
+      }
+    >
+      <OrderSuccessContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { FavoritesProvider } from "@/contexts/favorites-context";
+import { CartProvider } from "@/contexts/cart-context";
 
 export default function AppXLayout({
   children,
@@ -9,9 +10,11 @@ export default function AppXLayout({
 }) {
   return (
     <FavoritesProvider>
-      <div data-app="true" className="min-h-screen bg-gray-100 overflow-hidden">
-        {children}
-      </div>
+      <CartProvider>
+        <div data-app="true" className="min-h-screen bg-gray-100 overflow-hidden">
+          {children}
+        </div>
+      </CartProvider>
     </FavoritesProvider>
   );
 }
