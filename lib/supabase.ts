@@ -2,41 +2,48 @@ import { createBrowserClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
 
-// Portal types for separate session management
-export type PortalType = "app" | "admin" | "partner";
-
-// Create portal-specific storage key
-function getStorageKey(portal: PortalType): string {
-  return `sb-boldandbeyond-${portal}-auth-token`;
+// Main app client - uses default cookie storage so middleware can read it
+// This is the primary client for /appx routes
+export function createAppClient() {
+  return createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 }
 
-// Client-side Supabase client (default - for /appx)
-export function createSupabaseClient(portal: PortalType = "app") {
-  const storageKey = getStorageKey(portal);
-  
+// Alias for backwards compatibility
+export function createSupabaseClient() {
+  return createAppClient();
+}
+
+// Admin portal client - uses localStorage with custom key for isolation
+// This allows separate admin sessions from the main app
+export function createAdminClient() {
   return createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       auth: {
-        storageKey,
+        storageKey: "sb-boldandbeyond-admin-auth-token",
         storage: typeof window !== "undefined" ? window.localStorage : undefined,
       },
     }
   );
 }
 
-// Convenience functions for each portal
-export function createAppClient() {
-  return createSupabaseClient("app");
-}
-
-export function createAdminClient() {
-  return createSupabaseClient("admin");
-}
-
+// Partner portal client - uses localStorage with custom key for isolation
+// This allows separate partner sessions from the main app
 export function createPartnerClient() {
-  return createSupabaseClient("partner");
+  return createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      auth: {
+        storageKey: "sb-boldandbeyond-partner-auth-token",
+        storage: typeof window !== "undefined" ? window.localStorage : undefined,
+      },
+    }
+  );
 }
 
 // Server-side admin client (use only in server components/API routes)
@@ -53,14 +60,8 @@ export function createSupabaseAdmin() {
   );
 }
 
-// Default client for backwards compatibility (uses app portal)
+// Default client for backwards compatibility
 export const supabase = createBrowserClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  {
-    auth: {
-      storageKey: getStorageKey("app"),
-      storage: typeof window !== "undefined" ? window.localStorage : undefined,
-    },
-  }
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
