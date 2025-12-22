@@ -220,21 +220,24 @@ export default function PartnerDashboard() {
 
   const fetchDashboardData = async (providerId: string, sanityProviderId?: string) => {
     try {
-      // Fetch appointments - check both provider_id (UUID) and sanity_provider_id
-      let appointmentsQuery = supabase
+      console.log("Fetching dashboard data for:", { providerId, sanityProviderId });
+      
+      // Fetch ALL appointments first to see what's in the database (for debugging)
+      const { data: allAppts, error: allError } = await supabase
+        .from("appointments")
+        .select("id, provider_id, sanity_provider_id, customer_name, status")
+        .limit(10);
+      
+      console.log("All appointments in DB (first 10):", allAppts, allError);
+      
+      // Fetch appointments - the RLS policy should handle provider filtering
+      const { data: appointmentsData, error: apptError } = await supabase
         .from("appointments")
         .select("*")
         .order("appointment_date", { ascending: true })
         .order("appointment_time", { ascending: true });
       
-      // Query by provider_id OR sanity_provider_id
-      if (sanityProviderId) {
-        appointmentsQuery = appointmentsQuery.or(`provider_id.eq.${providerId},sanity_provider_id.eq.${sanityProviderId}`);
-      } else {
-        appointmentsQuery = appointmentsQuery.eq("provider_id", providerId);
-      }
-      
-      const { data: appointmentsData, error: apptError } = await appointmentsQuery;
+      console.log("Appointments for this provider:", appointmentsData, apptError);
       
       if (apptError) {
         console.error("Error fetching appointments:", apptError);
