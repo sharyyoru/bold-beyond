@@ -1117,7 +1117,7 @@ export default function AppXPage() {
                   </div>
                 ))
               ) : providers.length > 0 ? (
-                providers.slice(0, 5).map((provider: SanityProvider) => (
+                [...providers].sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 5).map((provider: SanityProvider) => (
                   <Link
                     key={provider._id}
                     href={`/appx/providers/${provider.slug.current}`}

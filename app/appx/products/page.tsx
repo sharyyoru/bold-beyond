@@ -67,17 +67,17 @@ export default function ProductsPage() {
       {/* Header */}
       <div className="sticky top-0 z-50">
         <div className="bg-gradient-to-r from-[#0D9488] to-[#7DD3D3] px-4 py-4 pb-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3 mb-4">
             <Link
               href="/appx"
-              className="h-10 w-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center"
+              className="h-10 w-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0"
             >
               <ArrowLeft className="h-5 w-5 text-white" />
             </Link>
-            <h1 className="text-xl font-bold text-white">
-              Discover Wellness Products You'll Love
+            <h1 className="text-lg font-bold text-white flex-1">
+              Wellness Products
             </h1>
-            <button className="h-10 w-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+            <button className="h-10 w-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0">
               <ShoppingBag className="h-5 w-5 text-white" />
             </button>
           </div>

@@ -58,6 +58,7 @@ export default function CheckoutPage() {
             fullName: profile.full_name || "",
             email: user.email || "",
             phone: profile.phone || "",
+            address: profile.address || profile.location || "",
           }));
         }
       }

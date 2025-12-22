@@ -34,16 +34,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // Create a pending appointment first
+    // Look up provider_accounts by sanity_provider_id
+    let dbProviderId = null;
+    const { data: providerAccount } = await supabase
+      .from("provider_accounts")
+      .select("id")
+      .eq("sanity_provider_id", providerId)
+      .single();
+    
+    if (providerAccount) {
+      dbProviderId = providerAccount.id;
+    }
+
+    // Create a pending appointment
     const { data: appointment, error: appointmentError } = await supabase
       .from("appointments")
       .insert({
-        provider_id: providerId,
+        provider_id: dbProviderId,
+        sanity_provider_id: providerId,
         user_id: userId || null,
         customer_name: customerName,
         customer_email: customerEmail,
         customer_phone: customerPhone,
-        service_id: serviceId,
+        sanity_service_id: serviceId,
         service_name: serviceName,
         service_price: servicePrice,
         appointment_date: appointmentDate,

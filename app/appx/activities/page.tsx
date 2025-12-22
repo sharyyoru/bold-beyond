@@ -164,10 +164,12 @@ export default function ActivitiesPage() {
         });
       });
 
-      // Process paid appointments
-      (appointmentsRes.data || []).filter((a: any) => a.payment_status === "paid").forEach((apt: any) => {
+      // Process all appointments (paid or confirmed)
+      (appointmentsRes.data || []).forEach((apt: any) => {
         // Skip if already in userActivities
         if (userActivities?.some((ua: any) => ua.reference_id === apt.id)) return;
+        // Include paid, confirmed, or pending appointments
+        if (!["paid", "confirmed", "pending", "completed"].includes(apt.payment_status || apt.status)) return;
         allActivities.push({
           id: `apt-${apt.id}`,
           type: "booking",
@@ -183,15 +185,15 @@ export default function ActivitiesPage() {
         });
       });
 
-      // Process paid orders
-      (ordersRes.data || []).filter((o: any) => o.payment_status === "paid").forEach((order: any) => {
+      // Process all orders (paid or processing)
+      (ordersRes.data || []).forEach((order: any) => {
         // Skip if already in userActivities
         if (userActivities?.some((ua: any) => ua.reference_id === order.id)) return;
         allActivities.push({
           id: `order-${order.id}`,
           type: "purchase",
-          title: `Order #${order.order_number}`,
-          subtitle: `${order.total} AED`,
+          title: `Order #${order.order_number || order.id}`,
+          subtitle: `${order.total_amount || order.total || 0} AED`,
           date: order.created_at,
           status: order.status,
           wellness_contribution: 10,
