@@ -298,21 +298,26 @@ export default function PartnerDashboard() {
 
   const fetchSanityData = async (sanityProviderId: string) => {
     try {
-      // Fetch services for this provider
+      console.log("Fetching Sanity data for provider:", sanityProviderId);
+      
+      // Fetch services for this provider - try multiple query patterns
       const servicesRes = await fetch(`/api/sanity/mutate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "fetch",
           data: {
-            query: `*[_type == "service" && provider._ref == $providerId] | order(title asc) {
-              _id, title, "slug": slug.current, category, basePrice, duration, rating, reviewCount, image
+            query: `*[_type == "service" && (provider._ref == $providerId || provider._ref match $providerId)] | order(title asc) {
+              _id, title, "slug": slug.current, category, basePrice, duration, rating, reviewCount, image,
+              "providerId": provider._ref
             }`,
             params: { providerId: sanityProviderId }
           }
         })
       });
       const servicesData = await servicesRes.json();
+      console.log("Services fetch result:", { success: servicesData.success, count: servicesData.result?.length, providerId: sanityProviderId });
+      
       if (servicesData.success) {
         setServices(servicesData.result || []);
         
@@ -337,13 +342,15 @@ export default function PartnerDashboard() {
         body: JSON.stringify({
           action: "fetch",
           data: {
-            query: `*[_type == "product" && provider._ref == $providerId] | order(name asc) {
-              _id, name, "slug": slug.current, category, price, salePrice, stock, rating, reviewCount, images
+            query: `*[_type == "product" && (provider._ref == $providerId || provider._ref match $providerId)] | order(name asc) {
+              _id, name, "slug": slug.current, category, price, salePrice, stock, rating, reviewCount, images,
+              "providerId": provider._ref
             }`,
             params: { providerId: sanityProviderId }
           }
         })
       });
+      console.log("Products fetch for provider:", sanityProviderId);
       const productsData = await productsRes.json();
       if (productsData.success) {
         setProducts(productsData.result || []);
