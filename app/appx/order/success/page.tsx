@@ -120,22 +120,22 @@ function OrderSuccessContent() {
         )}
 
         <div className="flex flex-col gap-3 w-full max-w-sm">
-          <Button
-            onClick={() => router.push("/appx/activities")}
-            className="w-full bg-[#0D9488] hover:bg-[#0B7B71] text-white py-6 rounded-xl"
-          >
-            <ShoppingBag className="h-5 w-5 mr-2" />
-            View My Orders
-          </Button>
+          <Link href="/appx/activities" className="w-full">
+            <Button className="w-full bg-[#0D9488] hover:bg-[#0B7B71] text-white py-6 rounded-xl">
+              <ShoppingBag className="h-5 w-5 mr-2" />
+              View My Orders
+            </Button>
+          </Link>
 
-          <Button
-            onClick={() => router.push("/appx")}
-            variant="outline"
-            className="w-full py-6 rounded-xl border-gray-200"
-          >
-            <Home className="h-5 w-5 mr-2" />
-            Continue Shopping
-          </Button>
+          <Link href="/appx" className="w-full">
+            <Button
+              variant="outline"
+              className="w-full py-6 rounded-xl border-gray-200"
+            >
+              <Home className="h-5 w-5 mr-2" />
+              Continue Shopping
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
