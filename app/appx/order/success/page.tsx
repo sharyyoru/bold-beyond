@@ -43,20 +43,26 @@ function OrderSuccessContent() {
           .from("provider_orders")
           .select("*")
           .eq("stripe_session_id", sessionId)
-          .single();
+          .maybeSingle();
 
-        if (!error && data) {
+        if (error) {
+          console.log("Order fetch info:", error.message);
+          // Don't throw - just show success without order details
+        }
+        
+        if (data) {
           setOrder(data);
         }
       } catch (error) {
-        console.error("Error fetching order:", error);
+        // Silently handle - page will still show success message
+        console.log("Order fetch skipped:", error);
       } finally {
         setLoading(false);
       }
     };
 
     // Small delay to allow webhook to process
-    setTimeout(fetchOrder, 1000);
+    setTimeout(fetchOrder, 1500);
   }, [sessionId, clearAllCarts]);
 
   if (loading) {

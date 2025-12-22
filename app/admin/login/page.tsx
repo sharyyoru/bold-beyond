@@ -30,18 +30,38 @@ export default function AdminLoginPage() {
         password,
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        console.error("Auth error:", authError);
+        throw authError;
+      }
+
+      console.log("Auth successful for:", email);
 
       // Check if user is an admin using the authenticated session
       let adminAccount: any = null;
       
-      const { data: adminData, error: adminError } = await supabase
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Request timed out. Please try again.")), 10000)
+      );
+      
+      const adminQueryPromise = supabase
         .from("admin_accounts")
         .select("*")
         .eq("email", email)
         .maybeSingle();
 
+      const { data: adminData, error: adminError } = await Promise.race([
+        adminQueryPromise,
+        timeoutPromise
+      ]) as any;
+
       console.log("Admin lookup result:", { adminData, adminError, email });
+
+      if (adminError) {
+        console.error("Admin query error:", adminError);
+        // RLS might be blocking - try to proceed if auth was successful
+      }
 
       if (adminData) {
         adminAccount = adminData;
@@ -52,6 +72,8 @@ export default function AdminLoginPage() {
           .select("*")
           .ilike("email", email)
           .maybeSingle();
+        
+        console.log("Alt lookup result:", { adminAccountAlt, altError });
           
         if (adminAccountAlt) {
           adminAccount = adminAccountAlt;

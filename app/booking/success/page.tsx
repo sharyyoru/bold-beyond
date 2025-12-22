@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { CheckCircle, Calendar, Clock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 
 function BookingSuccessContent() {
   const searchParams = useSearchParams();
@@ -23,16 +23,22 @@ function BookingSuccessContent() {
 
   const fetchAppointment = async () => {
     try {
-      const supabase = createSupabaseClient();
-      const { data } = await supabase
+      const supabase = createAppClient();
+      const { data, error } = await supabase
         .from("appointments")
         .select("*")
         .eq("id", appointmentId)
-        .single();
+        .maybeSingle();
       
-      setAppointment(data);
+      if (error) {
+        console.log("Appointment fetch info:", error.message);
+      }
+      
+      if (data) {
+        setAppointment(data);
+      }
     } catch (error) {
-      console.error("Error fetching appointment:", error);
+      console.log("Appointment fetch skipped:", error);
     } finally {
       setLoading(false);
     }
