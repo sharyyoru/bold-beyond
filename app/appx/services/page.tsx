@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Search, Star, Clock, Filter, Heart, ChevronRight } from "lucide-react";
+import { ArrowLeft, Search, Star, Clock, Filter, Heart, ChevronRight, Loader2 } from "lucide-react";
 import { sanityClient, urlFor, queries } from "@/lib/sanity";
 
 interface Service {
@@ -39,7 +39,7 @@ const categories = [
   { id: "spa", label: "Spa" },
 ];
 
-export default function ServicesPage() {
+function ServicesContent() {
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get("category");
   
@@ -250,5 +250,17 @@ export default function ServicesPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ServicesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[#0D9488]" />
+      </div>
+    }>
+      <ServicesContent />
+    </Suspense>
   );
 }

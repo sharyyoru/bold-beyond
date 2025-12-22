@@ -32,31 +32,36 @@ export default function AdminLoginPage() {
 
       if (authError) throw authError;
 
-      // Check if user is an admin - use service role for RLS bypass
-      const { createClient } = await import("@supabase/supabase-js");
-      const adminSupabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      );
+      // Check if user is an admin using the authenticated session
+      let adminAccount: any = null;
       
-      const { data: adminAccount, error: adminError } = await adminSupabase
+      const { data: adminData, error: adminError } = await supabase
         .from("admin_accounts")
         .select("*")
         .eq("email", email)
         .maybeSingle();
 
-      if (adminError) {
-        console.error("Admin lookup error:", adminError);
-        await supabase.auth.signOut();
-        throw new Error("Failed to verify admin access");
-      }
-      
-      if (!adminAccount) {
-        await supabase.auth.signOut();
-        throw new Error("You don't have admin access");
+      console.log("Admin lookup result:", { adminData, adminError, email });
+
+      if (adminData) {
+        adminAccount = adminData;
+      } else {
+        // Try with ilike for case-insensitive match
+        const { data: adminAccountAlt, error: altError } = await supabase
+          .from("admin_accounts")
+          .select("*")
+          .ilike("email", email)
+          .maybeSingle();
+          
+        if (adminAccountAlt) {
+          adminAccount = adminAccountAlt;
+        } else {
+          await supabase.auth.signOut();
+          throw new Error("You don't have admin access. Contact support if you believe this is an error.");
+        }
       }
 
-      if (!adminAccount.is_active) {
+      if (!adminAccount || !adminAccount.is_active) {
         await supabase.auth.signOut();
         throw new Error("Your admin account has been deactivated");
       }
