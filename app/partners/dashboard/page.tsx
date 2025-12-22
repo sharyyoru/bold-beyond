@@ -207,7 +207,7 @@ export default function PartnerDashboard() {
       }
 
       setProvider(providerAccount);
-      await fetchDashboardData(providerAccount.id);
+      await fetchDashboardData(providerAccount.id, providerAccount.sanity_provider_id);
       await fetchSanityData(providerAccount.sanity_provider_id);
       await fetchSchedule(providerAccount.id);
     } catch (error) {
@@ -218,15 +218,27 @@ export default function PartnerDashboard() {
     }
   };
 
-  const fetchDashboardData = async (providerId: string) => {
+  const fetchDashboardData = async (providerId: string, sanityProviderId?: string) => {
     try {
-      // Fetch appointments
-      const { data: appointmentsData } = await supabase
+      // Fetch appointments - check both provider_id (UUID) and sanity_provider_id
+      let appointmentsQuery = supabase
         .from("appointments")
         .select("*")
-        .eq("provider_id", providerId)
         .order("appointment_date", { ascending: true })
         .order("appointment_time", { ascending: true });
+      
+      // Query by provider_id OR sanity_provider_id
+      if (sanityProviderId) {
+        appointmentsQuery = appointmentsQuery.or(`provider_id.eq.${providerId},sanity_provider_id.eq.${sanityProviderId}`);
+      } else {
+        appointmentsQuery = appointmentsQuery.eq("provider_id", providerId);
+      }
+      
+      const { data: appointmentsData, error: apptError } = await appointmentsQuery;
+      
+      if (apptError) {
+        console.error("Error fetching appointments:", apptError);
+      }
 
       if (appointmentsData) {
         setAppointments(appointmentsData);
@@ -858,6 +870,14 @@ export default function PartnerDashboard() {
               <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-slate-900">Appointments</h1>
                 <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => provider && fetchDashboardData(provider.id, provider.sanity_provider_id)}
+                  >
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Refresh
+                  </Button>
                   <Button variant="outline" size="sm">
                     <Filter className="h-4 w-4 mr-2" />
                     Filter

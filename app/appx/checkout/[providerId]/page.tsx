@@ -43,24 +43,36 @@ export default function CheckoutPage() {
 
     // Pre-fill from user profile
     const fetchProfile = async () => {
-      const supabase = createAppClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", user.id)
-          .single();
-        
-        if (profile) {
+      try {
+        const supabase = createAppClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          // Pre-fill email from auth user
           setFormData((prev) => ({
             ...prev,
-            fullName: profile.full_name || "",
             email: user.email || "",
-            phone: profile.phone || "",
-            address: profile.address || profile.location || "",
+            fullName: user.user_metadata?.full_name || user.user_metadata?.name || "",
           }));
+          
+          // Try to get additional profile data
+          const { data: profile, error } = await supabase
+            .from("profiles")
+            .select("full_name, phone, address, area, city")
+            .eq("id", user.id)
+            .single();
+          
+          if (!error && profile) {
+            setFormData((prev) => ({
+              ...prev,
+              fullName: profile.full_name || prev.fullName || "",
+              phone: profile.phone || "",
+              address: [profile.address, profile.area, profile.city].filter(Boolean).join(", ") || "",
+            }));
+          }
         }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        // Continue without profile data - user can enter manually
       }
     };
     fetchProfile();
