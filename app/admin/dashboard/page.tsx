@@ -86,6 +86,8 @@ interface Appointment {
   status: string;
   payment_status: string;
   provider_id: string;
+  sanity_provider_id: string;
+  provider_name?: string;
 }
 
 interface Order {
@@ -98,6 +100,8 @@ interface Order {
   payment_status: string;
   created_at: string;
   provider_id: string;
+  sanity_provider_id: string;
+  provider_name?: string;
 }
 
 const navItems = [
@@ -151,6 +155,16 @@ export default function AdminDashboard() {
   const [reviewSearch, setReviewSearch] = useState("");
   const [reviewFilter, setReviewFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState("all");
+  
+  // Appointments search/filter
+  const [appointmentSearch, setAppointmentSearch] = useState("");
+  const [appointmentStatusFilter, setAppointmentStatusFilter] = useState("all");
+  const [appointmentProviderFilter, setAppointmentProviderFilter] = useState("all");
+  
+  // Orders search/filter
+  const [orderSearch, setOrderSearch] = useState("");
+  const [orderStatusFilter, setOrderStatusFilter] = useState("all");
+  const [orderProviderFilter, setOrderProviderFilter] = useState("all");
 
   useEffect(() => {
     checkAuth();
@@ -290,18 +304,30 @@ export default function AdminDashboard() {
   const fetchAppointments = async () => {
     const { data } = await supabase
       .from("appointments")
-      .select("*")
+      .select("*, provider_accounts(provider_name)")
       .order("appointment_date", { ascending: false })
       .order("appointment_time", { ascending: false });
-    setAppointments(data || []);
+    
+    // Map provider names from the join
+    const appointmentsWithProviders = (data || []).map((apt: any) => ({
+      ...apt,
+      provider_name: apt.provider_accounts?.provider_name || "Unknown Provider",
+    }));
+    setAppointments(appointmentsWithProviders);
   };
 
   const fetchOrders = async () => {
     const { data } = await supabase
       .from("provider_orders")
-      .select("*")
+      .select("*, provider_accounts(provider_name)")
       .order("created_at", { ascending: false });
-    setOrders(data || []);
+    
+    // Map provider names from the join
+    const ordersWithProviders = (data || []).map((order: any) => ({
+      ...order,
+      provider_name: order.provider_accounts?.provider_name || "Unknown Provider",
+    }));
+    setOrders(ordersWithProviders);
   };
 
   const updateAppointmentStatus = async (appointmentId: string, newStatus: string) => {
@@ -458,6 +484,37 @@ export default function AdminDashboard() {
     
     return matchesSearch && matchesType && matchesRating;
   });
+
+  // Filter appointments
+  const filteredAppointments = appointments.filter(apt => {
+    const matchesSearch = appointmentSearch === "" || 
+      apt.customer_name?.toLowerCase().includes(appointmentSearch.toLowerCase()) ||
+      apt.customer_email?.toLowerCase().includes(appointmentSearch.toLowerCase()) ||
+      apt.service_name?.toLowerCase().includes(appointmentSearch.toLowerCase()) ||
+      apt.provider_name?.toLowerCase().includes(appointmentSearch.toLowerCase());
+    
+    const matchesStatus = appointmentStatusFilter === "all" || apt.status === appointmentStatusFilter;
+    const matchesProvider = appointmentProviderFilter === "all" || apt.provider_name === appointmentProviderFilter;
+    
+    return matchesSearch && matchesStatus && matchesProvider;
+  });
+
+  // Filter orders
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = orderSearch === "" || 
+      order.customer_name?.toLowerCase().includes(orderSearch.toLowerCase()) ||
+      order.customer_email?.toLowerCase().includes(orderSearch.toLowerCase()) ||
+      order.order_number?.toLowerCase().includes(orderSearch.toLowerCase()) ||
+      order.provider_name?.toLowerCase().includes(orderSearch.toLowerCase());
+    
+    const matchesStatus = orderStatusFilter === "all" || order.status === orderStatusFilter;
+    const matchesProvider = orderProviderFilter === "all" || order.provider_name === orderProviderFilter;
+    
+    return matchesSearch && matchesStatus && matchesProvider;
+  });
+
+  // Get unique provider names for filter dropdowns
+  const uniqueProviders = Array.from(new Set(appointments.map(a => a.provider_name).filter(Boolean))) as string[];
 
   if (loading) {
     return (
@@ -711,20 +768,57 @@ export default function AdminDashboard() {
           {/* Appointments Tab */}
           {activeTab === "appointments" && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-slate-900">All Appointments</h1>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">All Appointments</h1>
                 <Button onClick={fetchAppointments} variant="outline" size="sm">
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Refresh
                 </Button>
               </div>
 
+              {/* Search and Filters */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search customer, service, provider..."
+                    value={appointmentSearch}
+                    onChange={(e) => setAppointmentSearch(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                  />
+                </div>
+                <select
+                  value={appointmentStatusFilter}
+                  onChange={(e) => setAppointmentStatusFilter(e.target.value)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="all">All Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="pending_payment">Pending Payment</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+                <select
+                  value={appointmentProviderFilter}
+                  onChange={(e) => setAppointmentProviderFilter(e.target.value)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="all">All Providers</option>
+                  {uniqueProviders.map(provider => (
+                    <option key={provider} value={provider}>{provider}</option>
+                  ))}
+                </select>
+              </div>
+
               <Card className="border-0 shadow-sm">
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full min-w-[800px]">
                     <thead className="bg-slate-50">
                       <tr>
                         <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Customer</th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Provider</th>
                         <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Service</th>
                         <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Date & Time</th>
                         <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Payment</th>
@@ -733,11 +827,16 @@ export default function AdminDashboard() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {appointments.map((apt) => (
+                      {filteredAppointments.map((apt) => (
                         <tr key={apt.id} className="hover:bg-slate-50">
                           <td className="px-4 py-4">
                             <p className="font-medium text-slate-900">{apt.customer_name}</p>
                             <p className="text-xs text-slate-500">{apt.customer_email}</p>
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className="px-2 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">
+                              {apt.provider_name || "Unknown"}
+                            </span>
                           </td>
                           <td className="px-4 py-4">
                             <p className="text-sm text-slate-900">{apt.service_name}</p>
@@ -787,10 +886,10 @@ export default function AdminDashboard() {
                       ))}
                     </tbody>
                   </table>
-                  {appointments.length === 0 && (
+                  {filteredAppointments.length === 0 && (
                     <div className="p-12 text-center text-slate-500">
                       <Calendar className="h-12 w-12 mx-auto mb-4 text-slate-300" />
-                      <p>No appointments yet</p>
+                      <p>{appointments.length === 0 ? "No appointments yet" : "No matching appointments"}</p>
                     </div>
                   )}
                 </div>
@@ -801,20 +900,47 @@ export default function AdminDashboard() {
           {/* Orders Tab */}
           {activeTab === "orders" && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-slate-900">All Orders</h1>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">All Orders</h1>
                 <Button onClick={fetchOrders} variant="outline" size="sm">
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Refresh
                 </Button>
               </div>
 
+              {/* Search and Filters */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search order, customer, provider..."
+                    value={orderSearch}
+                    onChange={(e) => setOrderSearch(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                  />
+                </div>
+                <select
+                  value={orderStatusFilter}
+                  onChange={(e) => setOrderStatusFilter(e.target.value)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="all">All Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="processing">Processing</option>
+                  <option value="shipped">Shipped</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+
               <Card className="border-0 shadow-sm">
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full min-w-[800px]">
                     <thead className="bg-slate-50">
                       <tr>
                         <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Order</th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Provider</th>
                         <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Customer</th>
                         <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Total</th>
                         <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Payment</th>
@@ -823,11 +949,16 @@ export default function AdminDashboard() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {orders.map((order) => (
+                      {filteredOrders.map((order) => (
                         <tr key={order.id} className="hover:bg-slate-50">
                           <td className="px-4 py-4">
                             <p className="font-medium text-slate-900">#{order.order_number}</p>
                             <p className="text-xs text-slate-500">{new Date(order.created_at).toLocaleDateString()}</p>
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+                              {order.provider_name || "Unknown"}
+                            </span>
                           </td>
                           <td className="px-4 py-4">
                             <p className="text-sm text-slate-900">{order.customer_name}</p>
@@ -876,7 +1007,7 @@ export default function AdminDashboard() {
                       ))}
                     </tbody>
                   </table>
-                  {orders.length === 0 && (
+                  {filteredOrders.length === 0 && (
                     <div className="p-12 text-center text-slate-500">
                       <ShoppingBag className="h-12 w-12 mx-auto mb-4 text-slate-300" />
                       <p>No orders yet</p>
