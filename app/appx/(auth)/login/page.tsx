@@ -46,8 +46,11 @@ function LoginForm() {
         description: "Successfully logged in.",
       });
 
-      router.push(redirect);
-      router.refresh();
+      // Use hard redirect to ensure session is properly loaded
+      // Small delay to let session propagate
+      setTimeout(() => {
+        window.location.href = redirect;
+      }, 500);
     } catch (error) {
       toast({
         title: "Error",
@@ -110,6 +113,7 @@ function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               className="w-full text-gray-900 bg-transparent focus:outline-none"
+              autoComplete="email"
               required
             />
           </div>
@@ -126,6 +130,7 @@ function LoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••••"
                 className="flex-1 text-gray-900 bg-transparent focus:outline-none"
+                autoComplete="current-password"
                 required
               />
               <button

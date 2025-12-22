@@ -351,6 +351,7 @@ export default function AppXPage() {
   const [products, setProducts] = useState<SanityProduct[]>([]);
   const [providers, setProviders] = useState<SanityProvider[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [sessionChecked, setSessionChecked] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -381,39 +382,49 @@ export default function AppXPage() {
   // Check session and fetch user profile - redirect to welcome if no session
   useEffect(() => {
     let isMounted = true;
+    let hasChecked = false;
     
     const checkSessionAndFetchProfile = async () => {
-      const { createAppClient } = await import("@/lib/supabase");
-      const supabase = createAppClient();
+      if (hasChecked) return;
+      hasChecked = true;
       
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      // If no session, redirect to welcome page
-      if (!session) {
-        if (isMounted) {
-          window.location.replace("/appx/welcome");
+      try {
+        const { createAppClient } = await import("@/lib/supabase");
+        const supabase = createAppClient();
+        
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        // If no session, redirect to welcome page
+        if (!session) {
+          if (isMounted) {
+            window.location.replace("/appx/welcome");
+          }
+          return;
         }
-        return;
-      }
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user && isMounted) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", user.id)
-          .single();
         
-        // Merge profile data with user metadata (auth has the name sometimes)
-        const mergedProfile = {
-          ...profile,
-          id: user.id,
-          email: user.email || profile?.email,
-          // Check multiple sources for name: profile table, user_metadata, email
-          full_name: profile?.full_name || user.user_metadata?.full_name || user.user_metadata?.name || null,
-        };
-        
-        setUserProfile(mergedProfile);
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user && isMounted) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+          
+          // Merge profile data with user metadata (auth has the name sometimes)
+          const mergedProfile = {
+            ...profile,
+            id: user.id,
+            email: user.email || profile?.email,
+            // Check multiple sources for name: profile table, user_metadata, email
+            full_name: profile?.full_name || user.user_metadata?.full_name || user.user_metadata?.name || null,
+          };
+          
+          setUserProfile(mergedProfile);
+        }
+      } finally {
+        if (isMounted) {
+          setSessionChecked(true);
+        }
       }
     };
     
@@ -524,6 +535,18 @@ export default function AppXPage() {
   const getGradientClass = (from: string, to: string) => {
     return `from-${from} to-${to}`;
   };
+
+  // Show loading screen until session is checked
+  if (!sessionChecked) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-[#FDFBF7]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-12 w-12 rounded-full border-4 border-[#0D9488] border-t-transparent animate-spin" />
+          <p className="text-gray-500 text-sm">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-brand-navy select-none">
