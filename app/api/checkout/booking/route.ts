@@ -30,6 +30,8 @@ export async function POST(request: NextRequest) {
       notes,
     } = body;
 
+    console.log("Booking request received:", { providerId, providerName, serviceId, serviceName });
+
     if (!providerId || !serviceId || !appointmentDate || !appointmentTime || !customerEmail) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
@@ -38,13 +40,19 @@ export async function POST(request: NextRequest) {
     let dbProviderId = null;
     const { data: providerAccount } = await supabase
       .from("provider_accounts")
-      .select("id")
+      .select("id, provider_name")
       .eq("sanity_provider_id", providerId)
       .single();
     
     if (providerAccount) {
       dbProviderId = providerAccount.id;
+      console.log("Found provider_account:", providerAccount);
+    } else {
+      console.log("No provider_account found for sanity_provider_id:", providerId);
     }
+
+    // Use provider name from request or from provider_accounts
+    const finalProviderName = providerName || providerAccount?.provider_name || null;
 
     // Create a pending appointment
     const { data: appointment, error: appointmentError } = await supabase
@@ -52,6 +60,7 @@ export async function POST(request: NextRequest) {
       .insert({
         provider_id: dbProviderId,
         sanity_provider_id: providerId,
+        provider_name: finalProviderName,
         user_id: userId || null,
         customer_name: customerName,
         customer_email: customerEmail,
@@ -68,6 +77,8 @@ export async function POST(request: NextRequest) {
       })
       .select()
       .single();
+    
+    console.log("Appointment created:", { id: appointment?.id, sanity_provider_id: providerId, provider_name: finalProviderName });
 
     if (appointmentError) {
       console.error("Appointment creation error:", appointmentError);

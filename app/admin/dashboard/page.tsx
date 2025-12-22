@@ -308,10 +308,27 @@ export default function AdminDashboard() {
       .order("appointment_date", { ascending: false })
       .order("appointment_time", { ascending: false });
     
-    // Map provider names from the join
-    const appointmentsWithProviders = (data || []).map((apt: any) => ({
-      ...apt,
-      provider_name: apt.provider_accounts?.provider_name || "Unknown Provider",
+    // Map provider names - prefer direct provider_name, then join, then Sanity lookup
+    const appointmentsWithProviders = await Promise.all((data || []).map(async (apt: any) => {
+      let providerName = apt.provider_name || apt.provider_accounts?.provider_name;
+      
+      // If still no provider name and we have sanity_provider_id, try to fetch from Sanity
+      if (!providerName && apt.sanity_provider_id) {
+        try {
+          const provider = await sanityClient.fetch(
+            `*[_type == "provider" && _id == $id][0]{ name }`,
+            { id: apt.sanity_provider_id }
+          );
+          providerName = provider?.name;
+        } catch (e) {
+          console.log("Sanity fetch failed for provider:", apt.sanity_provider_id);
+        }
+      }
+      
+      return {
+        ...apt,
+        provider_name: providerName || "Unknown Provider",
+      };
     }));
     setAppointments(appointmentsWithProviders);
   };
