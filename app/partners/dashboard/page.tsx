@@ -166,6 +166,14 @@ export default function PartnerDashboard() {
   const [newItem, setNewItem] = useState<any>({});
   const [saving, setSaving] = useState(false);
   
+  // Cancellation and Rescheduling state
+  const [showCancelModal, setShowCancelModal] = useState<Appointment | null>(null);
+  const [showRescheduleModal, setShowRescheduleModal] = useState<Appointment | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [rescheduleData, setRescheduleData] = useState({ date: "", time: "", reason: "" });
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  
   // Availability schedule state
   const [schedule, setSchedule] = useState<{
     [key: number]: { isOpen: boolean; openTime: string; closeTime: string };
@@ -570,6 +578,134 @@ export default function PartnerDashboard() {
     }
   };
 
+  // Cancel appointment with refund
+  const handleCancelAppointment = async () => {
+    if (!showCancelModal || !provider) return;
+    setSaving(true);
+    try {
+      // Check 1-hour rule
+      const appointmentDateTime = new Date(`${showCancelModal.appointment_date}T${showCancelModal.appointment_time}`);
+      const now = new Date();
+      const hoursBefore = (appointmentDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+      if (hoursBefore < 1) {
+        toast({ title: "Error", description: "Cannot cancel appointment less than 1 hour before scheduled time", variant: "destructive" });
+        return;
+      }
+
+      const response = await fetch("/api/appointments/cancel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          appointmentId: showCancelModal.id,
+          cancelledBy: "provider",
+          reason: cancelReason,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast({ title: "Cancelled", description: `Appointment cancelled. ${data.refundAmount} AED refunded to customer wallet.` });
+        setAppointments(prev => prev.map(a => a.id === showCancelModal.id ? { ...a, status: "cancelled" } : a));
+        setShowCancelModal(null);
+        setCancelReason("");
+      } else {
+        toast({ title: "Error", description: data.error, variant: "destructive" });
+      }
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to cancel appointment", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Request reschedule
+  const handleRescheduleRequest = async () => {
+    if (!showRescheduleModal || !provider || !rescheduleData.date || !rescheduleData.time) return;
+    setSaving(true);
+    try {
+      const response = await fetch("/api/appointments/reschedule", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          appointmentId: showRescheduleModal.id,
+          providerId: provider.id,
+          proposedDate: rescheduleData.date,
+          proposedTime: rescheduleData.time,
+          reason: rescheduleData.reason,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast({ title: "Sent", description: "Reschedule request sent to customer. They have 24 hours to respond." });
+        setShowRescheduleModal(null);
+        setRescheduleData({ date: "", time: "", reason: "" });
+      } else {
+        toast({ title: "Error", description: data.error, variant: "destructive" });
+      }
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to send reschedule request", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Cancel order with refund
+  const handleCancelOrder = async (order: Order) => {
+    if (!provider) return;
+    try {
+      const response = await fetch("/api/orders/cancel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: order.id,
+          cancelledBy: "provider",
+          reason: "Cancelled by provider",
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast({ title: "Cancelled", description: `Order cancelled. ${data.refundAmount} AED refunded to customer wallet.` });
+        setOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: "cancelled" } : o));
+      } else {
+        toast({ title: "Error", description: data.error, variant: "destructive" });
+      }
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to cancel order", variant: "destructive" });
+    }
+  };
+
+  // Fetch notifications
+  const fetchNotifications = async () => {
+    if (!provider) return;
+    try {
+      const { data } = await supabase
+        .from("provider_notifications")
+        .select("*")
+        .eq("provider_id", provider.id)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      setNotifications(data || []);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
+
+  // Mark notification as read
+  const markNotificationRead = async (notificationId: string) => {
+    try {
+      await supabase
+        .from("provider_notifications")
+        .update({ is_read: true })
+        .eq("id", notificationId);
+      setNotifications(prev => prev.map(n => n.id === notificationId ? { ...n, is_read: true } : n));
+    } catch (error) {
+      console.error("Error marking notification read:", error);
+    }
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push("/partners/login");
@@ -925,7 +1061,7 @@ export default function PartnerDashboard() {
                             </span>
                           </td>
                           <td className="px-4 py-4">
-                            <div className="flex gap-1">
+                            <div className="flex gap-1 flex-wrap">
                               {apt.status === "pending" && (
                                 <>
                                   <button
@@ -936,22 +1072,38 @@ export default function PartnerDashboard() {
                                     <CheckCircle2 className="h-4 w-4" />
                                   </button>
                                   <button
-                                    onClick={() => updateAppointmentStatus(apt.id, "cancelled")}
+                                    onClick={() => setShowCancelModal(apt)}
                                     className="p-1.5 rounded-lg bg-red-100 text-red-600 hover:bg-red-200"
-                                    title="Cancel"
+                                    title="Cancel & Refund"
                                   >
                                     <XCircle className="h-4 w-4" />
                                   </button>
                                 </>
                               )}
                               {apt.status === "confirmed" && (
-                                <button
-                                  onClick={() => updateAppointmentStatus(apt.id, "completed")}
-                                  className="p-1.5 rounded-lg bg-teal-100 text-teal-600 hover:bg-teal-200"
-                                  title="Mark Complete"
-                                >
-                                  <CheckCircle2 className="h-4 w-4" />
-                                </button>
+                                <>
+                                  <button
+                                    onClick={() => updateAppointmentStatus(apt.id, "completed")}
+                                    className="p-1.5 rounded-lg bg-teal-100 text-teal-600 hover:bg-teal-200"
+                                    title="Mark Complete"
+                                  >
+                                    <CheckCircle2 className="h-4 w-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => setShowRescheduleModal(apt)}
+                                    className="p-1.5 rounded-lg bg-amber-100 text-amber-600 hover:bg-amber-200"
+                                    title="Reschedule"
+                                  >
+                                    <Clock className="h-4 w-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => setShowCancelModal(apt)}
+                                    className="p-1.5 rounded-lg bg-red-100 text-red-600 hover:bg-red-200"
+                                    title="Cancel & Refund"
+                                  >
+                                    <XCircle className="h-4 w-4" />
+                                  </button>
+                                </>
                               )}
                               <a
                                 href={`tel:${apt.customer_phone}`}
@@ -1582,6 +1734,157 @@ export default function PartnerDashboard() {
               >
                 {saving ? "Saving..." : `Create ${showAddModal === "service" ? "Service" : "Product"}`}
               </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cancel Appointment Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl max-w-md w-full">
+            <div className="p-6 border-b border-slate-100">
+              <h2 className="text-xl font-bold text-slate-900">Cancel Appointment</h2>
+              <p className="text-sm text-slate-500 mt-1">This will refund the customer to their wallet</p>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="bg-slate-50 rounded-xl p-4">
+                <p className="font-medium text-slate-900">{showCancelModal.service_name}</p>
+                <p className="text-sm text-slate-500">{showCancelModal.customer_name}</p>
+                <p className="text-sm text-slate-500">
+                  {new Date(showCancelModal.appointment_date).toLocaleDateString()} at {showCancelModal.appointment_time}
+                </p>
+                <p className="text-sm font-medium text-teal-600 mt-2">Refund: {showCancelModal.service_price} AED</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Reason for cancellation</label>
+                <textarea
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                  rows={3}
+                  placeholder="Enter reason..."
+                />
+              </div>
+            </div>
+            <div className="p-6 border-t border-slate-100 flex gap-3">
+              <Button variant="outline" className="flex-1" onClick={() => { setShowCancelModal(null); setCancelReason(""); }}>
+                Keep Appointment
+              </Button>
+              <Button
+                className="flex-1 bg-red-500 hover:bg-red-600"
+                onClick={handleCancelAppointment}
+                disabled={saving}
+              >
+                {saving ? "Cancelling..." : "Cancel & Refund"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reschedule Appointment Modal */}
+      {showRescheduleModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl max-w-md w-full">
+            <div className="p-6 border-b border-slate-100">
+              <h2 className="text-xl font-bold text-slate-900">Reschedule Appointment</h2>
+              <p className="text-sm text-slate-500 mt-1">Customer will be notified and can accept or decline</p>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="bg-slate-50 rounded-xl p-4">
+                <p className="font-medium text-slate-900">{showRescheduleModal.service_name}</p>
+                <p className="text-sm text-slate-500">{showRescheduleModal.customer_name}</p>
+                <p className="text-sm text-slate-500">
+                  Current: {new Date(showRescheduleModal.appointment_date).toLocaleDateString()} at {showRescheduleModal.appointment_time}
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">New Date</label>
+                  <input
+                    type="date"
+                    value={rescheduleData.date}
+                    onChange={(e) => setRescheduleData({ ...rescheduleData, date: e.target.value })}
+                    min={new Date().toISOString().split("T")[0]}
+                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">New Time</label>
+                  <input
+                    type="time"
+                    value={rescheduleData.time}
+                    onChange={(e) => setRescheduleData({ ...rescheduleData, time: e.target.value })}
+                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Reason (optional)</label>
+                <textarea
+                  value={rescheduleData.reason}
+                  onChange={(e) => setRescheduleData({ ...rescheduleData, reason: e.target.value })}
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  rows={2}
+                  placeholder="Enter reason for rescheduling..."
+                />
+              </div>
+            </div>
+            <div className="p-6 border-t border-slate-100 flex gap-3">
+              <Button variant="outline" className="flex-1" onClick={() => { setShowRescheduleModal(null); setRescheduleData({ date: "", time: "", reason: "" }); }}>
+                Cancel
+              </Button>
+              <Button
+                className="flex-1 bg-teal-500 hover:bg-teal-600"
+                onClick={handleRescheduleRequest}
+                disabled={saving || !rescheduleData.date || !rescheduleData.time}
+              >
+                {saving ? "Sending..." : "Send Request"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notifications Panel */}
+      {showNotifications && (
+        <div className="fixed inset-0 bg-black/50 flex items-end lg:items-center justify-center z-50" onClick={() => setShowNotifications(false)}>
+          <div className="bg-white rounded-t-2xl lg:rounded-2xl max-w-md w-full max-h-[80vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+              <h2 className="font-bold text-slate-900">Notifications</h2>
+              <button onClick={() => setShowNotifications(false)} className="p-2 hover:bg-slate-100 rounded-lg">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="overflow-y-auto max-h-[60vh]">
+              {notifications.length === 0 ? (
+                <div className="p-8 text-center text-slate-500">
+                  <Bell className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+                  <p>No notifications yet</p>
+                </div>
+              ) : (
+                notifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    onClick={() => markNotificationRead(notification.id)}
+                    className={`p-4 border-b border-slate-100 cursor-pointer hover:bg-slate-50 ${!notification.is_read ? "bg-teal-50" : ""}`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className={`h-10 w-10 rounded-full flex items-center justify-center ${!notification.is_read ? "bg-teal-100" : "bg-slate-100"}`}>
+                        <Bell className={`h-5 w-5 ${!notification.is_read ? "text-teal-600" : "text-slate-400"}`} />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-slate-900">{notification.title}</p>
+                        <p className="text-sm text-slate-500">{notification.message}</p>
+                        <p className="text-xs text-slate-400 mt-1">
+                          {new Date(notification.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

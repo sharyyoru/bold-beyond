@@ -145,6 +145,20 @@ const docSections = [
     description: "System administration, user management, and analytics",
   },
   {
+    id: "wallet",
+    title: "Wallet System",
+    icon: ShoppingBag,
+    color: "#10B981",
+    description: "User wallet balance, refunds, and payment options",
+  },
+  {
+    id: "cancellation",
+    title: "Cancellation & Rescheduling",
+    icon: Calendar,
+    color: "#F59E0B",
+    description: "Appointment cancellation with refunds and rescheduling flow",
+  },
+  {
     id: "booking",
     title: "Smart Booking System",
     icon: Calendar,
@@ -1421,6 +1435,106 @@ const sectionContent: Record<string, React.ReactNode> = {
           <li>• Payment status tracking (pending, paid, refunded)</li>
           <li>• Appointment status workflow (pending → confirmed → completed)</li>
         </ul>
+      </div>
+    </div>
+  ),
+
+  wallet: (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <ShoppingBag className="h-6 w-6" />
+          Wallet System
+        </h3>
+        <p className="opacity-90">User wallet balance for refunds, payments, and seamless checkout experience.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-emerald-200">
+          <h4 className="font-semibold text-gray-900 mb-3">💰 Wallet Features</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <strong>Balance Tracking</strong> - Real-time wallet balance</li>
+            <li>• <strong>Transaction History</strong> - All credits & debits with filters</li>
+            <li>• <strong>Automatic Refunds</strong> - Cancelled appointments/orders credit wallet</li>
+            <li>• <strong>Checkout Integration</strong> - Use balance during checkout</li>
+          </ul>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-teal-200">
+          <h4 className="font-semibold text-gray-900 mb-3">💳 Payment Options</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Full wallet payment (if balance covers total)</li>
+            <li>• Partial wallet + Stripe card payment</li>
+            <li>• Toggle wallet usage on/off at checkout</li>
+            <li>• Clear breakdown of amounts</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-slate-50 rounded-xl p-5 border border-slate-200">
+        <h4 className="font-semibold text-slate-800 mb-3">🔌 API Endpoints</h4>
+        <div className="space-y-2 text-sm font-mono">
+          <p className="text-slate-600">GET/POST <code className="bg-white px-2 py-0.5 rounded">/api/wallet</code></p>
+          <p className="text-xs text-slate-500 ml-4">Get balance or credit/debit wallet</p>
+          <p className="text-slate-600">POST <code className="bg-white px-2 py-0.5 rounded">/api/orders/create</code></p>
+          <p className="text-xs text-slate-500 ml-4">Create order with wallet-only payment</p>
+        </div>
+      </div>
+    </div>
+  ),
+
+  cancellation: (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Calendar className="h-6 w-6" />
+          Cancellation & Rescheduling
+        </h3>
+        <p className="opacity-90">Complete cancellation and rescheduling flow with automatic refunds to user wallet.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-amber-200">
+          <h4 className="font-semibold text-gray-900 mb-3">❌ Cancellation Rules</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <strong>1-Hour Rule</strong> - Provider must cancel 1+ hour before appointment</li>
+            <li>• <strong>Full Refund</strong> - Automatic credit to user wallet</li>
+            <li>• <strong>User Notification</strong> - Instant notification of cancellation</li>
+            <li>• <strong>Slot Release</strong> - Booking slot freed for others</li>
+          </ul>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-orange-200">
+          <h4 className="font-semibold text-gray-900 mb-3">🔄 Rescheduling Flow</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• Provider proposes new date/time</li>
+            <li>• User receives notification with 24hr to respond</li>
+            <li>• Accept: Appointment updated, provider notified</li>
+            <li>• Decline: Appointment cancelled, refund to wallet</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">📦 Order Cancellation</h4>
+        <ul className="space-y-2 text-sm text-gray-600">
+          <li>• Provider can cancel orders not yet delivered</li>
+          <li>• Full refund to user wallet</li>
+          <li>• User notification with refund details</li>
+          <li>• Order status updated to cancelled</li>
+        </ul>
+      </div>
+
+      <div className="bg-slate-50 rounded-xl p-5 border border-slate-200">
+        <h4 className="font-semibold text-slate-800 mb-3">🔌 API Endpoints</h4>
+        <div className="space-y-2 text-sm font-mono">
+          <p className="text-slate-600">POST <code className="bg-white px-2 py-0.5 rounded">/api/appointments/cancel</code></p>
+          <p className="text-xs text-slate-500 ml-4">Cancel appointment with refund</p>
+          <p className="text-slate-600">POST/PUT <code className="bg-white px-2 py-0.5 rounded">/api/appointments/reschedule</code></p>
+          <p className="text-xs text-slate-500 ml-4">Create or respond to reschedule request</p>
+          <p className="text-slate-600">POST <code className="bg-white px-2 py-0.5 rounded">/api/orders/cancel</code></p>
+          <p className="text-xs text-slate-500 ml-4">Cancel order with refund</p>
+        </div>
       </div>
     </div>
   ),

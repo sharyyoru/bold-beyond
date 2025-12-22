@@ -26,6 +26,9 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [userId, setUserId] = useState<string | null>(null);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [useWallet, setUseWallet] = useState(false);
+  const [walletAmount, setWalletAmount] = useState(0);
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -71,6 +74,17 @@ export default function CheckoutPage() {
               address: [profile.address, profile.area, profile.city].filter(Boolean).join(", ") || "",
             }));
           }
+
+          // Fetch wallet balance
+          const { data: wallet } = await supabase
+            .from("user_wallets")
+            .select("balance")
+            .eq("user_id", user.id)
+            .single();
+          
+          if (wallet) {
+            setWalletBalance(wallet.balance || 0);
+          }
         }
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -79,6 +93,11 @@ export default function CheckoutPage() {
     };
     fetchProfile();
   }, [providerId, getProviderCart, router]);
+
+  // Calculate amounts
+  const cartTotal = cart?.total || 0;
+  const effectiveWalletAmount = useWallet ? Math.min(walletBalance, cartTotal) : 0;
+  const amountToPay = cartTotal - effectiveWalletAmount;
 
   const handleCheckout = async () => {
     if (step < 2) {
@@ -89,31 +108,84 @@ export default function CheckoutPage() {
     // Process payment
     setLoading(true);
     try {
-      const response = await fetch("/api/checkout/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          providerId,
-          providerName: cart?.providerName || "",
-          userId,
-          items: cart?.items.map((item) => ({
-            productId: item.productId,
-            productName: item.productName,
-            price: item.salePrice || item.price,
-            quantity: item.quantity,
-          })),
-          total: cart?.total,
-          customer: formData,
-        }),
-      });
+      // If using wallet and it covers the full amount
+      if (useWallet && effectiveWalletAmount >= cartTotal) {
+        // Deduct from wallet and create order directly
+        const walletResponse = await fetch("/api/wallet", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId,
+            type: "debit",
+            amount: cartTotal,
+            category: "order_payment",
+            description: `Payment for order from ${cart?.providerName}`,
+            referenceType: "order",
+          }),
+        });
 
-      const data = await response.json();
+        if (!walletResponse.ok) {
+          throw new Error("Failed to process wallet payment");
+        }
 
-      if (data.url) {
-        // Redirect to Stripe
-        window.location.href = data.url;
+        // Create order directly without Stripe
+        const orderResponse = await fetch("/api/orders/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            providerId,
+            providerName: cart?.providerName || "",
+            userId,
+            items: cart?.items.map((item) => ({
+              productId: item.productId,
+              productName: item.productName,
+              price: item.salePrice || item.price,
+              quantity: item.quantity,
+            })),
+            total: cartTotal,
+            walletAmountUsed: cartTotal,
+            cardAmountPaid: 0,
+            customer: formData,
+          }),
+        });
+
+        const orderData = await orderResponse.json();
+        if (orderData.success) {
+          clearProviderCart(providerId);
+          router.push(`/appx/order/success?order_id=${orderData.orderId}`);
+        } else {
+          throw new Error(orderData.error || "Failed to create order");
+        }
       } else {
-        throw new Error(data.error || "Failed to create checkout session");
+        // Use Stripe for remaining amount (with optional wallet deduction)
+        const response = await fetch("/api/checkout/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            providerId,
+            providerName: cart?.providerName || "",
+            userId,
+            items: cart?.items.map((item) => ({
+              productId: item.productId,
+              productName: item.productName,
+              price: item.salePrice || item.price,
+              quantity: item.quantity,
+            })),
+            total: amountToPay,
+            originalTotal: cartTotal,
+            walletAmountUsed: effectiveWalletAmount,
+            customer: formData,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.url) {
+          // Redirect to Stripe
+          window.location.href = data.url;
+        } else {
+          throw new Error(data.error || "Failed to create checkout session");
+        }
       }
     } catch (error) {
       console.error("Checkout error:", error);
@@ -299,20 +371,62 @@ export default function CheckoutPage() {
               <p className="text-sm text-gray-600">{formData.address}</p>
             </div>
 
+            {/* Wallet Payment Option */}
+            {walletBalance > 0 && (
+              <div className="bg-white rounded-2xl p-4 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-[#0D9488]/10 flex items-center justify-center">
+                      <CreditCard className="h-5 w-5 text-[#0D9488]" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">Use Wallet Balance</p>
+                      <p className="text-sm text-gray-500">Available: AED {walletBalance.toFixed(2)}</p>
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={useWallet}
+                      onChange={(e) => setUseWallet(e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#0D9488]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0D9488]"></div>
+                  </label>
+                </div>
+                {useWallet && (
+                  <div className="mt-3 p-3 bg-green-50 rounded-xl">
+                    <p className="text-sm text-green-700">
+                      {effectiveWalletAmount >= cartTotal 
+                        ? `Full payment from wallet: AED ${cartTotal.toFixed(2)}`
+                        : `AED ${effectiveWalletAmount.toFixed(2)} from wallet, AED ${amountToPay.toFixed(2)} to pay`
+                      }
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Order Summary */}
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Subtotal</span>
-                  <span>AED {cart.total.toFixed(2)}</span>
+                  <span>AED {cartTotal.toFixed(2)}</span>
                 </div>
+                {useWallet && effectiveWalletAmount > 0 && (
+                  <div className="flex justify-between text-sm text-green-600">
+                    <span>Wallet Balance</span>
+                    <span>- AED {effectiveWalletAmount.toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Delivery</span>
                   <span className="text-green-600">Free</span>
                 </div>
                 <div className="flex justify-between font-bold text-lg pt-2 border-t">
-                  <span>Total</span>
-                  <span className="text-[#0D9488]">AED {cart.total.toFixed(2)}</span>
+                  <span>To Pay</span>
+                  <span className="text-[#0D9488]">AED {amountToPay.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -321,10 +435,15 @@ export default function CheckoutPage() {
             <div className="bg-[#0D9488]/10 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <CreditCard className="h-5 w-5 text-[#0D9488]" />
-                <span className="font-medium text-gray-900">Secure Payment</span>
+                <span className="font-medium text-gray-900">
+                  {useWallet && effectiveWalletAmount >= cartTotal ? "Wallet Payment" : "Secure Payment"}
+                </span>
               </div>
               <p className="text-sm text-gray-600">
-                You'll be redirected to Stripe for secure payment processing.
+                {useWallet && effectiveWalletAmount >= cartTotal 
+                  ? "Your order will be paid using your wallet balance."
+                  : "You'll be redirected to Stripe for secure payment processing."
+                }
               </p>
             </div>
           </div>
@@ -346,10 +465,15 @@ export default function CheckoutPage() {
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : step === 1 ? (
             "Continue to Review"
+          ) : useWallet && effectiveWalletAmount >= cartTotal ? (
+            <>
+              <Check className="h-5 w-5 mr-2" />
+              Pay with Wallet
+            </>
           ) : (
             <>
               <CreditCard className="h-5 w-5 mr-2" />
-              Pay AED {cart.total.toFixed(2)}
+              Pay AED {amountToPay.toFixed(2)}
             </>
           )}
         </Button>
