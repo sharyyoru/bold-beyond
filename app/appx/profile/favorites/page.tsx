@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 
 interface Favorite {
@@ -48,7 +48,7 @@ export default function FavoritesPage() {
 
   const fetchFavorites = async () => {
     try {
-      const supabase = createSupabaseClient();
+      const supabase = createAppClient();
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
@@ -78,7 +78,7 @@ export default function FavoritesPage() {
 
   const removeFavorite = async (favoriteId: string) => {
     try {
-      const supabase = createSupabaseClient();
+      const supabase = createAppClient();
       const { error } = await supabase
         .from("favorites")
         .delete()

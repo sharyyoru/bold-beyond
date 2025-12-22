@@ -17,7 +17,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 
 interface Message {
   id: string;
@@ -205,7 +205,7 @@ export default function WellnessChatPage() {
 
     // Save to database
     try {
-      const supabase = createSupabaseClient();
+      const supabase = createAppClient();
       const { data: { user } } = await supabase.auth.getUser();
 
       if (user) {

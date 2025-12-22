@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft, Star, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 
 interface Appointment {
@@ -32,7 +32,7 @@ export default function ReviewPage() {
   const [hoverService, setHoverService] = useState(0);
   const [hoverProfessional, setHoverProfessional] = useState(0);
 
-  const supabase = createSupabaseClient();
+  const supabase = createAppClient();
 
   useEffect(() => {
     fetchAppointment();

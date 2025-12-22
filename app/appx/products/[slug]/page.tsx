@@ -411,24 +411,24 @@ export default function ProductDetailPage() {
       </div>
 
       {/* Fixed Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50">
-        <div className="flex items-center gap-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 sm:p-4 z-50 safe-area-inset-bottom">
+        <div className="flex items-center gap-2 sm:gap-4 max-w-screen-sm mx-auto">
           {/* Quantity Selector */}
-          <div className="flex items-center gap-3 bg-gray-100 rounded-xl px-3 py-2">
+          <div className="flex items-center gap-2 bg-gray-100 rounded-xl px-2 py-1.5 flex-shrink-0">
             <button
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              className="h-8 w-8 rounded-full bg-white flex items-center justify-center shadow-sm"
+              className="h-7 w-7 rounded-full bg-white flex items-center justify-center shadow-sm"
             >
-              <Minus className="h-4 w-4 text-gray-600" />
+              <Minus className="h-3 w-3 text-gray-600" />
             </button>
-            <span className="font-semibold text-gray-900 w-6 text-center">
+            <span className="font-semibold text-gray-900 w-5 text-center text-sm">
               {quantity}
             </span>
             <button
               onClick={() => setQuantity(quantity + 1)}
-              className="h-8 w-8 rounded-full bg-white flex items-center justify-center shadow-sm"
+              className="h-7 w-7 rounded-full bg-white flex items-center justify-center shadow-sm"
             >
-              <Plus className="h-4 w-4 text-gray-600" />
+              <Plus className="h-3 w-3 text-gray-600" />
             </button>
           </div>
 
@@ -436,10 +436,10 @@ export default function ProductDetailPage() {
           <Button
             onClick={handleAddToCart}
             disabled={product.stock === 0}
-            className="flex-1 bg-[#0D9488] hover:bg-[#0B7B71] text-white py-6 rounded-xl text-lg font-semibold disabled:opacity-50"
+            className="flex-1 min-w-0 bg-[#0D9488] hover:bg-[#0B7B71] text-white py-5 sm:py-6 rounded-xl text-sm sm:text-base font-semibold disabled:opacity-50"
           >
-            <ShoppingBag className="h-5 w-5 mr-2" />
-            Add to Cart - AED {totalPrice}
+            <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2 flex-shrink-0" />
+            <span className="truncate">Add - AED {totalPrice}</span>
           </Button>
         </div>
       </div>

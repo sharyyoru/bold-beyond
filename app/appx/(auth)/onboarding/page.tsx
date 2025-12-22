@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 
 // 5-question onboarding flow
 const onboardingQuestions = [
@@ -71,7 +71,7 @@ export default function OnboardingPage() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const supabase = createSupabaseClient();
+  const supabase = createAppClient();
   const question = onboardingQuestions[currentQuestion];
   const isLastQuestion = currentQuestion === onboardingQuestions.length - 1;
   const progress = ((currentQuestion + 1) / onboardingQuestions.length) * 100;

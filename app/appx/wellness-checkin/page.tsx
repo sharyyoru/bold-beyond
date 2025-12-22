@@ -21,7 +21,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 
 // Mood options with emoji and scores
@@ -146,7 +146,7 @@ export default function WellnessCheckinPage() {
   // Check if user already completed today's check-in
   useEffect(() => {
     const checkTodayCheckin = async () => {
-      const supabase = createSupabaseClient();
+      const supabase = createAppClient();
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
@@ -246,7 +246,7 @@ export default function WellnessCheckinPage() {
 
     // Save to Supabase
     try {
-      const supabase = createSupabaseClient();
+      const supabase = createAppClient();
       const { data: { user } } = await supabase.auth.getUser();
 
       if (user) {

@@ -15,7 +15,7 @@ import {
   Trash2,
   Check,
 } from "lucide-react";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 
 interface Notification {
@@ -41,7 +41,7 @@ const typeConfig: Record<string, { icon: React.ElementType; color: string; bgCol
 
 export default function NotificationsPage() {
   const router = useRouter();
-  const supabase = createSupabaseClient();
+  const supabase = createAppClient();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "unread">("all");

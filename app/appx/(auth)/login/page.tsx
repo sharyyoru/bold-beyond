@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { DecorativeBackground, BrandLogo } from "@/components/ui/decorative-bg";
 
@@ -20,7 +20,7 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const supabase = createSupabaseClient();
+  const supabase = createAppClient();
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();

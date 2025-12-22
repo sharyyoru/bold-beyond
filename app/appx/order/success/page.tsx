@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Check, Package, Home, ShoppingBag, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/cart-context";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 
 interface Order {
   id: string;
@@ -38,7 +38,7 @@ function OrderSuccessContent() {
       }
 
       try {
-        const supabase = createSupabaseClient();
+        const supabase = createAppClient();
         const { data, error } = await supabase
           .from("provider_orders")
           .select("*")

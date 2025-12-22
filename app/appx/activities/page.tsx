@@ -28,7 +28,7 @@ import {
   Truck,
   BarChart3,
 } from "lucide-react";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 
 interface Booking {
   id: string;
@@ -119,7 +119,7 @@ export default function ActivitiesPage() {
 
   const fetchActivities = async () => {
     try {
-      const supabase = createSupabaseClient();
+      const supabase = createAppClient();
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {

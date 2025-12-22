@@ -380,20 +380,24 @@ export default function AppXPage() {
 
   // Check session and fetch user profile - redirect to welcome if no session
   useEffect(() => {
+    let isMounted = true;
+    
     const checkSessionAndFetchProfile = async () => {
-      const { createSupabaseClient } = await import("@/lib/supabase");
-      const supabase = createSupabaseClient();
+      const { createAppClient } = await import("@/lib/supabase");
+      const supabase = createAppClient();
       
       const { data: { session } } = await supabase.auth.getSession();
       
       // If no session, redirect to welcome page
       if (!session) {
-        window.location.href = "/appx/welcome";
+        if (isMounted) {
+          window.location.replace("/appx/welcome");
+        }
         return;
       }
       
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
+      if (user && isMounted) {
         const { data: profile } = await supabase
           .from("profiles")
           .select("*")
@@ -414,6 +418,8 @@ export default function AppXPage() {
     };
     
     checkSessionAndFetchProfile();
+    
+    return () => { isMounted = false; };
   }, []);
 
   // Get user display name and initials - check multiple sources

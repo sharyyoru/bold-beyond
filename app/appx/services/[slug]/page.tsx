@@ -140,8 +140,8 @@ export default function ServiceDetailPage() {
     setBookingLoading(true);
     try {
       // Get user info
-      const { createSupabaseClient } = await import("@/lib/supabase");
-      const supabase = createSupabaseClient();
+      const { createAppClient } = await import("@/lib/supabase");
+      const supabase = createAppClient();
       const { data: { user } } = await supabase.auth.getUser();
       
       let customerEmail = user?.email || "";

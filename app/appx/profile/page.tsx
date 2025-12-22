@@ -32,7 +32,7 @@ import {
   Crown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 
 interface UserProfile {
@@ -112,7 +112,7 @@ export default function ProfilePage() {
 
   const fetchProfile = async () => {
     try {
-      const supabase = createSupabaseClient();
+      const supabase = createAppClient();
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
@@ -190,25 +190,41 @@ export default function ProfilePage() {
 
     setSaving(true);
     try {
-      const supabase = createSupabaseClient();
+      const supabase = createAppClient();
+      
+      // Only update fields that have changed and are valid
+      const updateData: Record<string, any> = {};
+      const allowedFields = ['full_name', 'phone', 'date_of_birth', 'gender', 'height_cm', 'weight_kg', 'address', 'area', 'city', 'wellness_goals', 'interests', 'dietary_preferences', 'preferred_times', 'notification_preferences'];
+      
+      for (const field of allowedFields) {
+        if (editedProfile[field as keyof typeof editedProfile] !== undefined) {
+          updateData[field] = editedProfile[field as keyof typeof editedProfile];
+        }
+      }
+      
+      console.log("Updating profile with:", updateData);
+      
       const { error } = await supabase
         .from("profiles")
-        .update(editedProfile)
+        .update(updateData)
         .eq("id", profile.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
 
-      setProfile({ ...profile, ...editedProfile });
+      setProfile({ ...profile, ...updateData });
       setEditMode(false);
       toast({
         title: "Success",
         description: "Profile updated successfully",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating profile:", error);
       toast({
         title: "Error",
-        description: "Failed to update profile",
+        description: error?.message || "Failed to update profile",
         variant: "destructive",
       });
     } finally {
@@ -217,7 +233,7 @@ export default function ProfilePage() {
   };
 
   const handleLogout = async () => {
-    const supabase = createSupabaseClient();
+    const supabase = createAppClient();
     await supabase.auth.signOut();
     router.push("/appx/login");
   };

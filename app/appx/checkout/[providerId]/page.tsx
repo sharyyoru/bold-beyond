@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart, ProviderCart } from "@/contexts/cart-context";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 
 export default function CheckoutPage() {
   const params = useParams();
@@ -43,7 +43,7 @@ export default function CheckoutPage() {
 
     // Pre-fill from user profile
     const fetchProfile = async () => {
-      const supabase = createSupabaseClient();
+      const supabase = createAppClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: profile } = await supabase

@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAppClient } from "@/lib/supabase";
 
 interface WellnessData {
   mind: number;
@@ -69,7 +69,7 @@ export default function WellnessTrackerPage() {
 
   const fetchWellnessData = async () => {
     try {
-      const supabase = createSupabaseClient();
+      const supabase = createAppClient();
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
