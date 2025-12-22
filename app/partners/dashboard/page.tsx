@@ -166,6 +166,7 @@ export default function PartnerDashboard() {
   const [newItem, setNewItem] = useState<any>({});
   const [editingItem, setEditingItem] = useState<any>(null);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   
   // Cancellation and Rescheduling state
   const [showCancelModal, setShowCancelModal] = useState<Appointment | null>(null);
@@ -466,6 +467,39 @@ export default function PartnerDashboard() {
     }
   };
 
+  const handleImageUpload = async (file: File) => {
+    if (!editingItem || !file) return;
+    
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("documentId", editingItem._id);
+      formData.append("documentType", editingItem.type);
+      formData.append("fieldName", editingItem.type === "service" ? "image" : "images");
+
+      const res = await fetch("/api/sanity/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        toast({ title: "Success", description: "Image uploaded successfully" });
+        // Refresh the data
+        if (provider) {
+          fetchSanityData(provider.sanity_provider_id);
+        }
+      } else {
+        toast({ title: "Error", description: data.error || "Upload failed", variant: "destructive" });
+      }
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to upload image", variant: "destructive" });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const fetchSchedule = async (providerId: string) => {
     try {
       const { data } = await supabase
@@ -758,15 +792,74 @@ export default function PartnerDashboard() {
           <Menu className="h-6 w-6 text-slate-600" />
         </button>
         <h1 className="font-bold text-slate-900">{provider?.provider_name}</h1>
-        <button className="p-2 hover:bg-slate-100 rounded-lg relative">
+        <button 
+          onClick={() => { fetchNotifications(); setShowNotifications(!showNotifications); }}
+          className="p-2 hover:bg-slate-100 rounded-lg relative"
+        >
           <Bell className="h-6 w-6 text-slate-600" />
-          {stats.pendingAppointments > 0 && (
+          {notifications.filter(n => !n.is_read).length > 0 && (
             <span className="absolute top-1 right-1 h-4 w-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center">
-              {stats.pendingAppointments}
+              {notifications.filter(n => !n.is_read).length}
             </span>
           )}
         </button>
       </div>
+
+      {/* Notification Dropdown */}
+      {showNotifications && (
+        <div className="fixed top-16 right-4 w-80 max-h-96 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden">
+          <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+            <h3 className="font-semibold text-slate-900">Notifications</h3>
+            <button onClick={() => setShowNotifications(false)} className="p-1 hover:bg-slate-100 rounded-lg">
+              <X className="h-4 w-4 text-slate-400" />
+            </button>
+          </div>
+          <div className="max-h-72 overflow-y-auto">
+            {notifications.length === 0 ? (
+              <div className="p-8 text-center">
+                <Bell className="h-10 w-10 text-slate-300 mx-auto mb-2" />
+                <p className="text-sm text-slate-500">No notifications</p>
+              </div>
+            ) : (
+              notifications.map((notif) => (
+                <div
+                  key={notif.id}
+                  onClick={() => markNotificationRead(notif.id)}
+                  className={`p-4 border-b border-slate-50 cursor-pointer hover:bg-slate-50 transition-colors ${
+                    !notif.is_read ? "bg-teal-50/50" : ""
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                      notif.type.includes("accept") ? "bg-green-100" :
+                      notif.type.includes("decline") || notif.type.includes("cancel") ? "bg-red-100" :
+                      notif.type.includes("new") || notif.type.includes("booking") ? "bg-teal-100" :
+                      "bg-slate-100"
+                    }`}>
+                      {notif.type.includes("accept") ? <CheckCircle2 className="h-4 w-4 text-green-600" /> :
+                       notif.type.includes("decline") || notif.type.includes("cancel") ? <XCircle className="h-4 w-4 text-red-600" /> :
+                       notif.type.includes("order") ? <ShoppingBag className="h-4 w-4 text-purple-600" /> :
+                       <Calendar className="h-4 w-4 text-teal-600" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm ${!notif.is_read ? "font-semibold text-slate-900" : "text-slate-600"}`}>
+                        {notif.title}
+                      </p>
+                      <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{notif.message}</p>
+                      <p className="text-xs text-slate-400 mt-1">
+                        {new Date(notif.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    {!notif.is_read && (
+                      <div className="h-2 w-2 rounded-full bg-teal-500 flex-shrink-0" />
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Sidebar Overlay */}
       {sidebarOpen && (
@@ -1656,9 +1749,9 @@ export default function PartnerDashboard() {
             <div className="p-6 border-b border-slate-100">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-slate-900">
-                  Add New {showAddModal === "service" ? "Service" : "Product"}
+                  {editingItem ? "Edit" : "Add New"} {showAddModal === "service" ? "Service" : "Product"}
                 </h2>
-                <button onClick={() => setShowAddModal(null)} className="p-2 hover:bg-slate-100 rounded-lg">
+                <button onClick={() => { setShowAddModal(null); setEditingItem(null); }} className="p-2 hover:bg-slate-100 rounded-lg">
                   <X className="h-5 w-5 text-slate-500" />
                 </button>
               </div>
@@ -1725,6 +1818,43 @@ export default function PartnerDashboard() {
                       <option value="wellness">Wellness</option>
                     </select>
                   </div>
+                  {/* Image Upload - Only for editing existing items */}
+                  {editingItem && (
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Service Image</label>
+                      <div className="border-2 border-dashed border-slate-200 rounded-xl p-4">
+                        {editingItem.image && (
+                          <div className="mb-3">
+                            <img src={editingItem.image} alt="Current" className="w-full h-32 object-cover rounded-lg" />
+                          </div>
+                        )}
+                        <label className="flex flex-col items-center justify-center cursor-pointer">
+                          {uploadingImage ? (
+                            <div className="flex items-center gap-2 text-slate-500">
+                              <RefreshCw className="h-5 w-5 animate-spin" />
+                              <span>Uploading...</span>
+                            </div>
+                          ) : (
+                            <>
+                              <Image className="h-8 w-8 text-slate-400 mb-2" />
+                              <span className="text-sm text-slate-500">Click to upload image</span>
+                              <span className="text-xs text-slate-400 mt-1">JPG, PNG up to 5MB</span>
+                            </>
+                          )}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleImageUpload(file);
+                            }}
+                            disabled={uploadingImage}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  )}
                 </>
               ) : (
                 <>
@@ -1797,11 +1927,48 @@ export default function PartnerDashboard() {
                       </select>
                     </div>
                   </div>
+                  {/* Image Upload - Only for editing existing items */}
+                  {editingItem && (
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Product Images</label>
+                      <div className="border-2 border-dashed border-slate-200 rounded-xl p-4">
+                        {editingItem.images?.[0] && (
+                          <div className="mb-3">
+                            <img src={editingItem.images[0]} alt="Current" className="w-full h-32 object-cover rounded-lg" />
+                          </div>
+                        )}
+                        <label className="flex flex-col items-center justify-center cursor-pointer">
+                          {uploadingImage ? (
+                            <div className="flex items-center gap-2 text-slate-500">
+                              <RefreshCw className="h-5 w-5 animate-spin" />
+                              <span>Uploading...</span>
+                            </div>
+                          ) : (
+                            <>
+                              <Image className="h-8 w-8 text-slate-400 mb-2" />
+                              <span className="text-sm text-slate-500">Click to upload image</span>
+                              <span className="text-xs text-slate-400 mt-1">JPG, PNG up to 5MB</span>
+                            </>
+                          )}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleImageUpload(file);
+                            }}
+                            disabled={uploadingImage}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  )}
                 </>
               )}
             </div>
             <div className="p-6 border-t border-slate-100 flex gap-3">
-              <Button variant="outline" className="flex-1" onClick={() => setShowAddModal(null)}>
+              <Button variant="outline" className="flex-1" onClick={() => { setShowAddModal(null); setEditingItem(null); }}>
                 Cancel
               </Button>
               <Button
@@ -1809,7 +1976,7 @@ export default function PartnerDashboard() {
                 onClick={showAddModal === "service" ? createService : createProduct}
                 disabled={saving}
               >
-                {saving ? "Saving..." : `Create ${showAddModal === "service" ? "Service" : "Product"}`}
+                {saving ? "Saving..." : editingItem ? `Update ${showAddModal === "service" ? "Service" : "Product"}` : `Create ${showAddModal === "service" ? "Service" : "Product"}`}
               </Button>
             </div>
           </div>

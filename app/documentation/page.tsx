@@ -1555,8 +1555,10 @@ const sectionContent: Record<string, React.ReactNode> = {
           <ul className="space-y-2 text-sm text-gray-600">
             <li>• <strong>Appointment Reminders</strong> - 1 day & 1 hour before</li>
             <li>• <strong>Booking Confirmations</strong> - When provider accepts</li>
+            <li>• <strong>Reschedule Requests</strong> - Accept/decline buttons inline</li>
+            <li>• <strong>Cancellation Notices</strong> - With wallet refund info</li>
             <li>• <strong>Order Updates</strong> - Processing, shipped, delivered</li>
-            <li>• <strong>Payment Receipts</strong> - Successful payments</li>
+            <li>• <strong>Wallet Refunds</strong> - When money is added</li>
           </ul>
         </div>
         

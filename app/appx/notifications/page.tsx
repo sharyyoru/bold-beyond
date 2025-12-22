@@ -14,6 +14,8 @@ import {
   Settings,
   Trash2,
   Check,
+  X,
+  RefreshCw,
 } from "lucide-react";
 import { createAppClient } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
@@ -49,6 +51,7 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "unread">("all");
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchNotifications();
@@ -140,6 +143,48 @@ export default function NotificationsPage() {
       setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
     } catch (error) {
       console.error("Error deleting notification:", error);
+    }
+  };
+
+  const handleRescheduleResponse = async (notificationId: string, referenceId: string, accept: boolean) => {
+    setProcessingId(notificationId);
+    try {
+      const res = await fetch("/api/appointments/reschedule/respond", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rescheduleRequestId: referenceId,
+          accept,
+        }),
+      });
+      
+      const data = await res.json();
+      if (data.success) {
+        // Update the notification to show it's been handled
+        await supabase
+          .from("user_notifications")
+          .update({ 
+            is_read: true,
+            type: accept ? "appointment_rescheduled" : "reschedule_declined",
+            message: accept ? "You accepted the new appointment time" : "You declined the reschedule request"
+          })
+          .eq("id", notificationId);
+        
+        // Update local state
+        setNotifications((prev) =>
+          prev.map((n) =>
+            n.id === notificationId
+              ? { ...n, is_read: true, type: accept ? "appointment_rescheduled" : "reschedule_declined", message: accept ? "You accepted the new appointment time" : "You declined the reschedule request" }
+              : n
+          )
+        );
+      } else {
+        console.error("Failed to respond to reschedule:", data.error);
+      }
+    } catch (error) {
+      console.error("Error responding to reschedule:", error);
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -283,6 +328,41 @@ export default function NotificationsPage() {
                           <Trash2 className="h-4 w-4 text-gray-400" />
                         </button>
                       </div>
+
+                      {/* Reschedule Accept/Decline Buttons */}
+                      {notification.type === "reschedule_request" && notification.reference_id && (
+                        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+                          {processingId === notification.id ? (
+                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                              <RefreshCw className="h-4 w-4 animate-spin" />
+                              Processing...
+                            </div>
+                          ) : (
+                            <>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRescheduleResponse(notification.id, notification.reference_id!, true);
+                                }}
+                                className="flex-1 flex items-center justify-center gap-2 py-2 px-4 bg-[#0D9488] text-white rounded-xl text-sm font-medium hover:bg-[#0B7B71] transition-colors"
+                              >
+                                <Check className="h-4 w-4" />
+                                Accept
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRescheduleResponse(notification.id, notification.reference_id!, false);
+                                }}
+                                className="flex-1 flex items-center justify-center gap-2 py-2 px-4 bg-red-100 text-red-600 rounded-xl text-sm font-medium hover:bg-red-200 transition-colors"
+                              >
+                                <X className="h-4 w-4" />
+                                Decline
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      )}
 
                       <div className="flex items-center justify-between mt-2">
                         <p className="text-xs text-gray-400">
