@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Shield, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAdminClient } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function AdminLoginPage() {
@@ -22,7 +22,7 @@ export default function AdminLoginPage() {
     setError("");
 
     try {
-      const supabase = createSupabaseClient();
+      const supabase = createAdminClient();
       
       // Sign in with email/password
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({

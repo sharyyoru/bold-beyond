@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createPartnerClient } from "@/lib/supabase";
 
 export default function PartnersPage() {
   const router = useRouter();
@@ -12,7 +12,7 @@ export default function PartnersPage() {
   }, []);
 
   const checkAuth = async () => {
-    const supabase = createSupabaseClient();
+    const supabase = createPartnerClient();
     const { data: { user } } = await supabase.auth.getUser();
 
     if (user) {

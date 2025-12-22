@@ -37,7 +37,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createPartnerClient } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 
 interface ProviderAccount {
@@ -180,7 +180,7 @@ export default function PartnerDashboard() {
   });
   const [serviceDurations, setServiceDurations] = useState<{ [key: string]: number }>({});
 
-  const supabase = createSupabaseClient();
+  const supabase = createPartnerClient();
 
   useEffect(() => {
     checkAuth();

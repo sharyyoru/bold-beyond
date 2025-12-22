@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2, Eye, EyeOff, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createPartnerClient } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function PartnerLoginPage() {
@@ -17,7 +17,7 @@ export default function PartnerLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const supabase = createSupabaseClient();
+  const supabase = createPartnerClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

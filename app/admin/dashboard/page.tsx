@@ -40,7 +40,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { createSupabaseClient } from "@/lib/supabase";
+import { createAdminClient } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { sanityClient } from "@/lib/sanity";
 
@@ -113,7 +113,7 @@ const navItems = [
 export default function AdminDashboard() {
   const router = useRouter();
   const { toast } = useToast();
-  const supabase = createSupabaseClient();
+  const supabase = createAdminClient();
   
   const [admin, setAdmin] = useState<AdminAccount | null>(null);
   const [loading, setLoading] = useState(true);
