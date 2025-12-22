@@ -135,14 +135,21 @@ export default function ActivitiesPage() {
         .order("created_at", { ascending: false });
 
       // Also fetch from legacy tables for backwards compatibility
-      const [bookingsRes, purchasesRes, checkinsRes, chatsRes, appointmentsRes, ordersRes] = await Promise.all([
+      // Fetch orders via API to bypass RLS
+      const ordersApiRes = await fetch(`/api/user/orders?userId=${user.id}`);
+      const ordersApiData = await ordersApiRes.json();
+
+      const [bookingsRes, purchasesRes, checkinsRes, chatsRes, appointmentsRes] = await Promise.all([
         supabase.from("bookings").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
         supabase.from("purchases").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
         supabase.from("wellness_checkins").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
         supabase.from("wellness_chat_logs").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
         supabase.from("appointments").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
-        supabase.from("provider_orders").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
       ]);
+
+      // Use API response for orders
+      const ordersRes = { data: ordersApiData.orders || [] };
+      console.log("Activities: orders fetched via API:", ordersRes.data?.length);
 
       const allActivities: ActivityItem[] = [];
 

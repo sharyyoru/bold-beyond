@@ -259,8 +259,10 @@ export default function PartnerDashboard() {
       const { data: ordersData } = await supabase
         .from("provider_orders")
         .select("*")
-        .eq("provider_id", providerId)
+        .or(`provider_id.eq.${providerId},sanity_provider_id.eq.${sanityProviderId}`)
         .order("created_at", { ascending: false });
+
+      console.log("Orders fetched for provider:", { providerId, sanityProviderId, count: ordersData?.length });
 
       if (ordersData) {
         setOrders(ordersData);

@@ -334,17 +334,22 @@ export default function AdminDashboard() {
   };
 
   const fetchOrders = async () => {
-    const { data } = await supabase
-      .from("provider_orders")
-      .select("*, provider_accounts(provider_name)")
-      .order("created_at", { ascending: false });
-    
-    // Map provider names from the join
-    const ordersWithProviders = (data || []).map((order: any) => ({
-      ...order,
-      provider_name: order.provider_accounts?.provider_name || "Unknown Provider",
-    }));
-    setOrders(ordersWithProviders);
+    try {
+      // Use API endpoint to bypass RLS
+      const response = await fetch("/api/admin/orders");
+      const result = await response.json();
+      
+      console.log("Admin fetchOrders result:", { count: result.orders?.length });
+      
+      // Map provider names - use direct provider_name field
+      const ordersWithProviders = (result.orders || []).map((order: any) => ({
+        ...order,
+        provider_name: order.provider_name || "Unknown Provider",
+      }));
+      setOrders(ordersWithProviders);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
   };
 
   const updateAppointmentStatus = async (appointmentId: string, newStatus: string) => {

@@ -137,39 +137,70 @@ export async function POST(request: NextRequest) {
           const items = metadata.items_json ? JSON.parse(metadata.items_json) : [];
           const total = parseFloat(metadata.total || "0");
 
+          console.log("Processing product order webhook:", {
+            order_number: metadata.order_number,
+            provider_id: metadata.provider_id,
+            provider_name: metadata.provider_name,
+            user_id: metadata.user_id,
+            customer_name: metadata.customer_name,
+            total,
+          });
+
           // Look up provider_accounts by sanity_provider_id to get UUID
           let dbProviderId = null;
           if (metadata.provider_id) {
-            const { data: providerAccount } = await supabase
+            const { data: providerAccount, error: providerError } = await supabase
               .from("provider_accounts")
-              .select("id")
+              .select("id, provider_name")
               .eq("sanity_provider_id", metadata.provider_id)
               .single();
+            
+            console.log("Provider lookup result:", { providerAccount, providerError, sanityId: metadata.provider_id });
+            
             if (providerAccount) {
               dbProviderId = providerAccount.id;
             }
           }
 
+          // Determine user_id - check if it's a valid UUID
+          let userId = null;
+          if (metadata.user_id && metadata.user_id.length > 10) {
+            userId = metadata.user_id;
+          }
+
+          const orderData = {
+            order_number: metadata.order_number,
+            provider_id: dbProviderId,
+            sanity_provider_id: metadata.provider_id || null,
+            provider_name: metadata.provider_name || null,
+            user_id: userId,
+            customer_name: metadata.customer_name || null,
+            customer_email: metadata.customer_email || null,
+            customer_phone: metadata.customer_phone || null,
+            delivery_address: metadata.delivery_address || null,
+            notes: metadata.notes || null,
+            status: "processing",
+            payment_status: "paid",
+            payment_id: session.payment_intent as string,
+            stripe_session_id: session.id,
+            total_amount: total,
+            total: total,
+            items: items,
+            paid_at: new Date().toISOString(),
+          };
+
+          console.log("Inserting order:", orderData);
+
           const { data: order, error: orderError } = await supabase
             .from("provider_orders")
-            .insert({
-              order_number: metadata.order_number,
-              provider_id: dbProviderId,
-              sanity_provider_id: metadata.provider_id || null,
-              provider_name: metadata.provider_name || null,
-              user_id: metadata.user_id || null,
-              status: "processing",
-              payment_status: "paid",
-              payment_id: session.payment_intent as string,
-              stripe_session_id: session.id,
-              total_amount: total,
-              paid_at: new Date().toISOString(),
-            })
+            .insert(orderData)
             .select()
             .single();
 
           if (orderError) {
             console.error("Error creating order:", orderError);
+          } else {
+            console.log("Order created successfully:", order?.id);
           }
 
           // Create order items
