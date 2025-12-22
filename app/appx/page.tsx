@@ -379,30 +379,17 @@ export default function AppXPage() {
     fetchSanityData();
   }, []);
 
-  // Check session and fetch user profile - redirect to welcome if no session
+  // Fetch user profile - middleware handles auth redirect, we just fetch profile
   useEffect(() => {
     let isMounted = true;
-    let hasChecked = false;
     
-    const checkSessionAndFetchProfile = async () => {
-      if (hasChecked) return;
-      hasChecked = true;
-      
+    const fetchUserProfile = async () => {
       try {
         const { createAppClient } = await import("@/lib/supabase");
         const supabase = createAppClient();
         
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        // If no session, redirect to welcome page
-        if (!session) {
-          if (isMounted) {
-            window.location.replace("/appx/welcome");
-          }
-          return;
-        }
-        
         const { data: { user } } = await supabase.auth.getUser();
+        
         if (user && isMounted) {
           const { data: profile } = await supabase
             .from("profiles")
@@ -428,7 +415,7 @@ export default function AppXPage() {
       }
     };
     
-    checkSessionAndFetchProfile();
+    fetchUserProfile();
     
     return () => { isMounted = false; };
   }, []);
