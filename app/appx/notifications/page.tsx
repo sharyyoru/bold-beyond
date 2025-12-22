@@ -29,12 +29,16 @@ interface Notification {
   created_at: string;
 }
 
-const typeConfig: Record<string, { icon: React.ElementType; color: string; bgColor: string }> = {
-  appointment_reminder: { icon: Calendar, color: "#0D9488", bgColor: "#0D948815" },
-  appointment_confirmed: { icon: CheckCircle, color: "#10B981", bgColor: "#10B98115" },
-  appointment_cancelled: { icon: Calendar, color: "#EF4444", bgColor: "#EF444415" },
-  order_update: { icon: ShoppingBag, color: "#D4AF37", bgColor: "#D4AF3715" },
-  payment: { icon: CreditCard, color: "#8B5CF6", bgColor: "#8B5CF615" },
+const typeConfig: Record<string, { icon: React.ElementType; color: string; bgColor: string; action?: string }> = {
+  appointment_reminder: { icon: Clock, color: "#0D9488", bgColor: "#0D948815", action: "/appx/activities" },
+  appointment_confirmed: { icon: CheckCircle, color: "#10B981", bgColor: "#10B98115", action: "/appx/activities" },
+  appointment_cancelled: { icon: Calendar, color: "#EF4444", bgColor: "#EF444415", action: "/appx/activities" },
+  appointment_rescheduled: { icon: Calendar, color: "#F59E0B", bgColor: "#F59E0B15", action: "/appx/activities" },
+  reschedule_request: { icon: Clock, color: "#8B5CF6", bgColor: "#8B5CF615", action: "/appx/activities" },
+  order_update: { icon: ShoppingBag, color: "#D4AF37", bgColor: "#D4AF3715", action: "/appx/activities" },
+  order_cancelled: { icon: ShoppingBag, color: "#EF4444", bgColor: "#EF444415", action: "/appx/activities" },
+  refund: { icon: CreditCard, color: "#10B981", bgColor: "#10B98115", action: "/appx/wallet" },
+  payment: { icon: CreditCard, color: "#8B5CF6", bgColor: "#8B5CF615", action: "/appx/activities" },
   promotion: { icon: Megaphone, color: "#F59E0B", bgColor: "#F59E0B15" },
   system: { icon: Settings, color: "#6B7280", bgColor: "#6B728015" },
 };

@@ -164,6 +164,7 @@ export default function PartnerDashboard() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [showAddModal, setShowAddModal] = useState<"service" | "product" | null>(null);
   const [newItem, setNewItem] = useState<any>({});
+  const [editingItem, setEditingItem] = useState<any>(null);
   const [saving, setSaving] = useState(false);
   
   // Cancellation and Rescheduling state
@@ -372,12 +373,19 @@ export default function PartnerDashboard() {
     if (!provider || !newItem.title) return;
     setSaving(true);
     try {
+      const isEditing = editingItem && editingItem.type === 'service';
       const res = await fetch(`/api/sanity/mutate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: "create",
-          data: {
+          action: isEditing ? "update" : "create",
+          documentId: isEditing ? editingItem._id : undefined,
+          data: isEditing ? {
+            title: newItem.title,
+            category: newItem.category || "wellness",
+            basePrice: parseFloat(newItem.basePrice) || 0,
+            duration: parseInt(newItem.duration) || 60,
+          } : {
             _type: "service",
             title: newItem.title,
             slug: { _type: "slug", current: newItem.title.toLowerCase().replace(/\s+/g, "-") },
@@ -393,13 +401,16 @@ export default function PartnerDashboard() {
       });
       const data = await res.json();
       if (data.success) {
-        toast({ title: "Success", description: "Service created" });
+        toast({ title: "Success", description: isEditing ? "Service updated" : "Service created" });
         setShowAddModal(null);
         setNewItem({});
+        setEditingItem(null);
         fetchSanityData(provider.sanity_provider_id);
+      } else {
+        toast({ title: "Error", description: data.error || "Operation failed", variant: "destructive" });
       }
     } catch (error) {
-      toast({ title: "Error", description: "Failed to create service", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to save service", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -409,12 +420,20 @@ export default function PartnerDashboard() {
     if (!provider || !newItem.name) return;
     setSaving(true);
     try {
+      const isEditing = editingItem && editingItem.type === 'product';
       const res = await fetch(`/api/sanity/mutate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: "create",
-          data: {
+          action: isEditing ? "update" : "create",
+          documentId: isEditing ? editingItem._id : undefined,
+          data: isEditing ? {
+            name: newItem.name,
+            category: newItem.category || "wellness",
+            price: parseFloat(newItem.price) || 0,
+            salePrice: newItem.salePrice ? parseFloat(newItem.salePrice) : undefined,
+            stock: parseInt(newItem.stock) || 0,
+          } : {
             _type: "product",
             name: newItem.name,
             slug: { _type: "slug", current: newItem.name.toLowerCase().replace(/\s+/g, "-") },
@@ -432,13 +451,16 @@ export default function PartnerDashboard() {
       });
       const data = await res.json();
       if (data.success) {
-        toast({ title: "Success", description: "Product created" });
+        toast({ title: "Success", description: isEditing ? "Product updated" : "Product created" });
         setShowAddModal(null);
         setNewItem({});
+        setEditingItem(null);
         fetchSanityData(provider.sanity_provider_id);
+      } else {
+        toast({ title: "Error", description: data.error || "Operation failed", variant: "destructive" });
       }
     } catch (error) {
-      toast({ title: "Error", description: "Failed to create product", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to save product", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -1242,7 +1264,7 @@ export default function PartnerDashboard() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-slate-900">My Services</h1>
-                <Button onClick={() => { setShowAddModal("service"); setNewItem({}); }} className="bg-teal-500 hover:bg-teal-600">
+                <Button onClick={() => { setShowAddModal("service"); setNewItem({}); setEditingItem(null); }} className="bg-teal-500 hover:bg-teal-600">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Service
                 </Button>
@@ -1251,9 +1273,28 @@ export default function PartnerDashboard() {
               {services.length > 0 ? (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {services.map((service) => (
-                    <Card key={service._id} className="border-0 shadow-sm overflow-hidden">
-                      <div className="h-32 bg-gradient-to-br from-teal-100 to-teal-200 flex items-center justify-center">
-                        <Package className="h-12 w-12 text-teal-600" />
+                    <Card key={service._id} className="border-0 shadow-sm overflow-hidden group relative">
+                      <div className="h-32 bg-gradient-to-br from-teal-100 to-teal-200 flex items-center justify-center relative">
+                        {service.image ? (
+                          <img src={service.image} alt={service.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <Package className="h-12 w-12 text-teal-600" />
+                        )}
+                        <button
+                          onClick={() => {
+                            setEditingItem({ ...service, type: 'service' });
+                            setShowAddModal("service");
+                            setNewItem({
+                              title: service.title,
+                              category: service.category,
+                              basePrice: service.basePrice,
+                              duration: service.duration,
+                            });
+                          }}
+                          className="absolute top-2 right-2 p-2 bg-white/90 rounded-lg shadow opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <Edit className="h-4 w-4 text-slate-600" />
+                        </button>
                       </div>
                       <CardContent className="p-4">
                         <h3 className="font-semibold text-slate-900 mb-1">{service.title}</h3>
@@ -1290,7 +1331,7 @@ export default function PartnerDashboard() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-slate-900">My Products</h1>
-                <Button onClick={() => { setShowAddModal("product"); setNewItem({}); }} className="bg-purple-500 hover:bg-purple-600">
+                <Button onClick={() => { setShowAddModal("product"); setNewItem({}); setEditingItem(null); }} className="bg-purple-500 hover:bg-purple-600">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Product
                 </Button>
@@ -1299,9 +1340,29 @@ export default function PartnerDashboard() {
               {products.length > 0 ? (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {products.map((product) => (
-                    <Card key={product._id} className="border-0 shadow-sm overflow-hidden">
-                      <div className="h-32 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
-                        <ShoppingBag className="h-12 w-12 text-purple-600" />
+                    <Card key={product._id} className="border-0 shadow-sm overflow-hidden group relative">
+                      <div className="h-32 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center relative">
+                        {product.images?.[0] ? (
+                          <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <ShoppingBag className="h-12 w-12 text-purple-600" />
+                        )}
+                        <button
+                          onClick={() => {
+                            setEditingItem({ ...product, type: 'product' });
+                            setShowAddModal("product");
+                            setNewItem({
+                              name: product.name,
+                              category: product.category,
+                              price: product.price,
+                              salePrice: product.salePrice,
+                              stock: product.stock,
+                            });
+                          }}
+                          className="absolute top-2 right-2 p-2 bg-white/90 rounded-lg shadow opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <Edit className="h-4 w-4 text-slate-600" />
+                        </button>
                       </div>
                       <CardContent className="p-4">
                         <h3 className="font-semibold text-slate-900 mb-1">{product.name}</h3>

@@ -34,11 +34,13 @@ import {
   Clock,
   ShoppingBag,
   MapPin,
+  Bell,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FavoriteButton } from "@/components/ui/favorite-button";
 import { sanityClient, urlFor, queries } from "@/lib/sanity";
+import { createAppClient } from "@/lib/supabase";
 
 // Sand/Water/Air color palette for welcoming feel
 const colors = {
@@ -352,6 +354,7 @@ export default function AppXPage() {
   const [providers, setProviders] = useState<SanityProvider[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [sessionChecked, setSessionChecked] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -407,6 +410,15 @@ export default function AppXPage() {
           };
           
           setUserProfile(mergedProfile);
+          
+          // Fetch unread notification count
+          const { count } = await supabase
+            .from("user_notifications")
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", user.id)
+            .eq("is_read", false);
+          
+          setUnreadNotifications(count || 0);
         }
       } finally {
         if (isMounted) {
@@ -742,6 +754,17 @@ export default function AppXPage() {
               <div className="w-full pl-12 pr-4 py-3.5 bg-white rounded-full text-sm text-gray-400 shadow-lg cursor-pointer hover:ring-2 hover:ring-brand-gold transition-all">
                 Discover anything
               </div>
+            </Link>
+            <Link 
+              href="/appx/notifications"
+              className="h-12 w-12 rounded-full bg-white/20 backdrop-blur flex items-center justify-center relative"
+            >
+              <Bell className="h-5 w-5 text-white" />
+              {unreadNotifications > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white border-2 border-white">
+                  {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                </span>
+              )}
             </Link>
             <button 
               onClick={() => setIsMenuOpen(true)}
