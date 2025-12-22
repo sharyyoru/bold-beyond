@@ -159,6 +159,13 @@ const docSections = [
     description: "Real-time notifications with appointment reminders",
   },
   {
+    id: "cart-system",
+    title: "Cart & Checkout",
+    icon: ShoppingBag,
+    color: "#F59E0B",
+    description: "Provider-specific cart system with Stripe payments",
+  },
+  {
     id: "partner-dashboard",
     title: "Partner Dashboard",
     icon: Building2,
@@ -1468,6 +1475,49 @@ const sectionContent: Record<string, React.ReactNode> = {
           <p>• 1 day before appointment → "Appointment Tomorrow"</p>
           <p>• 1 hour before appointment → "Appointment in 1 Hour"</p>
         </div>
+      </div>
+    </div>
+  ),
+
+  "cart-system": (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <ShoppingBag className="h-6 w-6" />
+          Provider-Specific Cart System
+        </h3>
+        <p className="opacity-90">Cart system that groups products by provider for separate checkout per provider.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-amber-200">
+          <h4 className="font-semibold text-gray-900 mb-3">🛒 Cart Features</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <strong>Provider-specific carts</strong> - Each provider has own cart</li>
+            <li>• <strong>Persistent storage</strong> - LocalStorage saves cart state</li>
+            <li>• <strong>Quantity management</strong> - Add, update, remove items</li>
+            <li>• <strong>Cart badge</strong> - Shows total items across all carts</li>
+          </ul>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-orange-200">
+          <h4 className="font-semibold text-gray-900 mb-3">💳 Checkout Flow</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• View all provider carts on /appx/cart</li>
+            <li>• Checkout per provider separately</li>
+            <li>• Delivery details form</li>
+            <li>• Stripe payment integration</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">📦 API Endpoints</h4>
+        <ul className="space-y-2 text-sm text-gray-600">
+          <li>• <code className="bg-gray-100 px-2 py-1 rounded">/api/checkout/products</code> - Create product checkout session</li>
+          <li>• <code className="bg-gray-100 px-2 py-1 rounded">/api/checkout/booking</code> - Create service booking checkout</li>
+          <li>• <code className="bg-gray-100 px-2 py-1 rounded">/api/webhooks/stripe</code> - Handle payment confirmations</li>
+        </ul>
       </div>
     </div>
   ),

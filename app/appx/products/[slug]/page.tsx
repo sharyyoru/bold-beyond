@@ -21,6 +21,8 @@ import {
 import { sanityClient, urlFor, queries } from "@/lib/sanity";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/contexts/favorites-context";
+import { useCart } from "@/contexts/cart-context";
+import { urlFor as sanityUrlFor } from "@/lib/sanity";
 
 interface Product {
   _id: string;
@@ -71,12 +73,12 @@ export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { isFavorited, toggleFavorite } = useFavorites();
+  const { addToCart, getCartItemCount } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [checkoutStep, setCheckoutStep] = useState(1);
+  const [showAddedToCart, setShowAddedToCart] = useState(false);
   
   // Check if product is favorited using context
   const isFavorite = product ? isFavorited('product', product._id) : false;
@@ -113,17 +115,26 @@ export default function ProductDetailPage() {
   }, [params.slug]);
 
   const handleAddToCart = () => {
-    setShowCheckout(true);
+    if (!product || !product.provider) return;
+    
+    addToCart({
+      productId: product._id,
+      productName: product.name,
+      productSlug: product.slug.current,
+      productImage: product.images?.[0] ? urlFor(product.images[0]).width(200).url() : undefined,
+      price: product.price,
+      salePrice: product.salePrice,
+      providerId: product.provider._id,
+      providerName: product.provider.name,
+      providerSlug: product.provider.slug.current,
+    }, quantity);
+    
+    setShowAddedToCart(true);
+    setTimeout(() => setShowAddedToCart(false), 2000);
   };
 
-  const handleCheckout = () => {
-    if (checkoutStep < 3) {
-      setCheckoutStep(checkoutStep + 1);
-    } else {
-      alert("Order placed successfully!");
-      setShowCheckout(false);
-      router.push("/appx");
-    }
+  const goToCart = () => {
+    router.push("/appx/cart");
   };
 
   const currentPrice = product?.salePrice || product?.price || 0;
@@ -433,172 +444,38 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {/* Checkout Modal */}
-      {showCheckout && (
-        <div className="fixed inset-0 bg-black/50 flex items-end z-50">
-          <div className="bg-white rounded-t-3xl w-full max-h-[80vh] overflow-y-auto">
-            <div className="p-4 border-b sticky top-0 bg-white">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900">
-                  {checkoutStep === 1 && "Cart"}
-                  {checkoutStep === 2 && "Delivery Details"}
-                  {checkoutStep === 3 && "Payment"}
-                </h2>
-                <button
-                  onClick={() => {
-                    setShowCheckout(false);
-                    setCheckoutStep(1);
-                  }}
-                  className="text-gray-500"
-                >
-                  ✕
-                </button>
-              </div>
-              {/* Progress Bar */}
-              <div className="flex gap-2 mt-4">
-                {[1, 2, 3].map((step) => (
-                  <div
-                    key={step}
-                    className={`flex-1 h-1 rounded-full ${
-                      step <= checkoutStep ? "bg-[#0D9488]" : "bg-gray-200"
-                    }`}
-                  />
-                ))}
-              </div>
+      {/* Added to Cart Toast */}
+      {showAddedToCart && (
+        <div className="fixed top-20 left-4 right-4 z-50 animate-in slide-in-from-top">
+          <div className="bg-white rounded-2xl shadow-lg p-4 flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+              <Check className="h-5 w-5 text-green-600" />
             </div>
-
-            <div className="p-4">
-              {checkoutStep === 1 && (
-                <div className="space-y-4">
-                  {/* Cart Item */}
-                  <div className="flex gap-4 p-3 bg-gray-50 rounded-xl">
-                    <div className="h-20 w-20 bg-gray-200 rounded-lg overflow-hidden">
-                      {product.images && product.images[0] && (
-                        <Image
-                          src={urlFor(product.images[0]).width(100).height(100).url()}
-                          alt={product.name}
-                          width={80}
-                          height={80}
-                          className="object-cover"
-                        />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">{product.name}</h3>
-                      <p className="text-sm text-gray-500">Qty: {quantity}</p>
-                      <p className="font-bold text-[#0D9488]">
-                        AED {totalPrice}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Order Summary */}
-                  <div className="border-t pt-4 space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Subtotal</span>
-                      <span>AED {totalPrice}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Delivery</span>
-                      <span className="text-green-600">Free</span>
-                    </div>
-                    <div className="flex justify-between font-bold text-lg pt-2 border-t">
-                      <span>Total</span>
-                      <span className="text-[#0D9488]">AED {totalPrice}</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {checkoutStep === 2 && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0D9488]"
-                      placeholder="Enter your name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0D9488]"
-                      placeholder="+971 XX XXX XXXX"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Delivery Address
-                    </label>
-                    <textarea
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0D9488]"
-                      rows={3}
-                      placeholder="Enter your full address"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {checkoutStep === 3 && (
-                <div className="space-y-4">
-                  <div className="p-4 bg-gray-50 rounded-xl">
-                    <h3 className="font-medium text-gray-900 mb-3">
-                      Payment Method
-                    </h3>
-                    <div className="space-y-2">
-                      <label className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[#0D9488] cursor-pointer">
-                        <input
-                          type="radio"
-                          name="payment"
-                          defaultChecked
-                          className="text-[#0D9488]"
-                        />
-                        <span>Cash on Delivery</span>
-                      </label>
-                      <label className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer">
-                        <input type="radio" name="payment" />
-                        <span>Credit/Debit Card</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Final Summary */}
-                  <div className="p-4 bg-[#0D9488]/10 rounded-xl">
-                    <h3 className="font-medium text-gray-900 mb-2">
-                      Order Summary
-                    </h3>
-                    <div className="text-sm space-y-1">
-                      <p>
-                        {quantity}x {product.name}
-                      </p>
-                      <p className="font-bold text-lg text-[#0D9488]">
-                        Total: AED {totalPrice}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
+            <div className="flex-1">
+              <p className="font-medium text-gray-900">Added to cart!</p>
+              <p className="text-sm text-gray-500">{quantity}x {product.name}</p>
             </div>
-
-            {/* Checkout Button */}
-            <div className="p-4 border-t bg-white">
-              <Button
-                onClick={handleCheckout}
-                className="w-full bg-[#0D9488] hover:bg-[#0B7B71] text-white py-6 rounded-xl text-lg font-semibold"
-              >
-                {checkoutStep === 1 && "Continue to Delivery"}
-                {checkoutStep === 2 && "Continue to Payment"}
-                {checkoutStep === 3 && "Place Order"}
-              </Button>
-            </div>
+            <button
+              onClick={goToCart}
+              className="bg-[#0D9488] text-white px-4 py-2 rounded-xl text-sm font-medium"
+            >
+              View Cart
+            </button>
           </div>
         </div>
+      )}
+
+      {/* Cart Badge */}
+      {getCartItemCount() > 0 && (
+        <button
+          onClick={goToCart}
+          className="fixed top-4 right-4 z-50 h-12 w-12 rounded-full bg-[#0D9488] text-white flex items-center justify-center shadow-lg"
+        >
+          <ShoppingBag className="h-5 w-5" />
+          <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-xs flex items-center justify-center">
+            {getCartItemCount()}
+          </span>
+        </button>
       )}
     </div>
   );
