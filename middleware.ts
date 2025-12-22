@@ -1,16 +1,25 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
-// Routes that require authentication (main app only, not auth pages within appx)
+// Routes that require authentication (main app only)
 const protectedRoutes = ["/dashboard", "/booking", "/my-appointments", "/perks", "/profile"];
-const portalRoutes = ["/portal"];
-const adminRoutes = ["/admin"];
 
 // App routes - /appx main page requires auth, but /appx/welcome, /appx/login, /appx/signup don't
-const appxAuthPages = ["/appx/welcome", "/appx/login", "/appx/signup", "/appx/terms", "/appx/privacy"];
-const appxProtectedPages = ["/appx"];
+const appxAuthPages = ["/appx/welcome", "/appx/login", "/appx/signup", "/appx/terms", "/appx/privacy", "/appx/onboarding"];
+
+// Admin and Partner routes handle their own authentication internally
+// DO NOT protect these in middleware - they have separate session handling
+const selfAuthRoutes = ["/admin", "/partners"];
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Skip middleware for admin and partner routes - they handle auth themselves
+  const isSelfAuthRoute = selfAuthRoutes.some((route) => pathname.startsWith(route));
+  if (isSelfAuthRoute) {
+    return NextResponse.next();
+  }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -45,31 +54,21 @@ export async function middleware(request: NextRequest) {
 
   // Refresh session
   const { data: { user } } = await supabase.auth.getUser();
-  
-  const { pathname } = request.nextUrl;
 
   // Check if route requires auth
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );
-  const isPortalRoute = portalRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
-  const isAdminRoute = adminRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
 
   // Check if this is an appx auth page (public) or appx main page (protected)
   const isAppxAuthPage = appxAuthPages.some((route) => pathname === route || pathname.startsWith(route + "/"));
-  const isAppxMainPage = pathname === "/appx" || (pathname.startsWith("/appx/") && !isAppxAuthPage && !pathname.startsWith("/appx/onboarding"));
+  const isAppxMainPage = pathname === "/appx" || (pathname.startsWith("/appx/") && !isAppxAuthPage);
 
-  // For protected routes, redirect to appropriate welcome page
-  if (isProtectedRoute || isPortalRoute || isAdminRoute) {
-    if (!user) {
-      const welcomeUrl = new URL("/welcome", request.url);
-      welcomeUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(welcomeUrl);
-    }
+  // For protected routes, redirect to welcome page
+  if (isProtectedRoute && !user) {
+    const welcomeUrl = new URL("/appx/welcome", request.url);
+    welcomeUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(welcomeUrl);
   }
 
   // For appx main page, redirect to /appx/welcome if not authenticated
