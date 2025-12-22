@@ -45,6 +45,9 @@ interface UserProfile {
   gender: string | null;
   height_cm: number | null;
   weight_kg: number | null;
+  address: string | null;
+  city: string | null;
+  area: string | null;
   wellness_goals: string[];
   interests: string[];
   dietary_preferences: string[];
@@ -136,6 +139,9 @@ export default function ProfilePage() {
           gender: null,
           height_cm: null,
           weight_kg: null,
+          address: null,
+          city: null,
+          area: null,
           wellness_goals: [],
           interests: [],
           dietary_preferences: [],
@@ -297,7 +303,7 @@ export default function ProfilePage() {
                 </button>
               )}
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               {editMode ? (
                 <input
                   type="text"
@@ -307,9 +313,9 @@ export default function ProfilePage() {
                   placeholder="Your Name"
                 />
               ) : (
-                <h2 className="text-xl font-bold">{profile.full_name || "User"}</h2>
+                <h2 className="text-xl font-bold truncate">{profile.full_name || "Your Name"}</h2>
               )}
-              <p className="text-white/80 text-sm">{profile.email}</p>
+              <p className="text-white/80 text-sm truncate">{profile.email}</p>
               <div className={`inline-flex items-center gap-1 mt-2 px-3 py-1 rounded-full text-xs font-medium ${membershipColors[profile.membership_tier] || membershipColors.free}`}>
                 <Crown className="h-3 w-3" />
                 {profile.membership_tier?.charAt(0).toUpperCase() + profile.membership_tier?.slice(1) || "Free"} Member
@@ -485,6 +491,66 @@ export default function ProfilePage() {
                         />
                       ) : (
                         <p className="text-sm text-gray-900">{profile.weight_kg || "Not set"}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Delivery Address Section */}
+            <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <h3 className="font-semibold text-gray-900 mb-4">Delivery Address</h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="h-10 w-10 rounded-full bg-orange-50 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="h-5 w-5 text-orange-500" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs text-gray-500">Street Address</p>
+                    {editMode ? (
+                      <textarea
+                        value={editedProfile.address || ""}
+                        onChange={(e) => setEditedProfile({ ...editedProfile, address: e.target.value })}
+                        className="text-sm text-gray-900 bg-gray-100 rounded px-2 py-1 w-full"
+                        placeholder="Building, Street Name"
+                        rows={2}
+                      />
+                    ) : (
+                      <p className="text-sm text-gray-900">{profile.address || "Not set"}</p>
+                    )}
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <p className="text-xs text-gray-500">Area</p>
+                      {editMode ? (
+                        <input
+                          type="text"
+                          value={editedProfile.area || ""}
+                          onChange={(e) => setEditedProfile({ ...editedProfile, area: e.target.value })}
+                          className="text-sm text-gray-900 bg-gray-100 rounded px-2 py-1 w-full"
+                          placeholder="e.g. Downtown Dubai"
+                        />
+                      ) : (
+                        <p className="text-sm text-gray-900">{profile.area || "Not set"}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <p className="text-xs text-gray-500">City</p>
+                      {editMode ? (
+                        <input
+                          type="text"
+                          value={editedProfile.city || ""}
+                          onChange={(e) => setEditedProfile({ ...editedProfile, city: e.target.value })}
+                          className="text-sm text-gray-900 bg-gray-100 rounded px-2 py-1 w-full"
+                          placeholder="e.g. Dubai"
+                        />
+                      ) : (
+                        <p className="text-sm text-gray-900">{profile.city || "Not set"}</p>
                       )}
                     </div>
                   </div>

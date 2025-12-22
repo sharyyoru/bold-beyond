@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Search, Star, Clock, Filter, Heart, ChevronRight } from "lucide-react";
@@ -28,18 +29,31 @@ interface Service {
 
 const categories = [
   { id: "all", label: "All" },
+  { id: "therapy", label: "Therapy" },
+  { id: "coaching", label: "Coaching" },
+  { id: "wellness", label: "Wellness" },
+  { id: "groups", label: "Groups" },
+  { id: "clinics", label: "Clinics" },
+  { id: "fitness", label: "Fitness" },
   { id: "meditation", label: "Meditation" },
   { id: "spa", label: "Spa" },
-  { id: "therapy", label: "Therapy" },
-  { id: "wellness", label: "Wellness" },
-  { id: "coaching", label: "Coaching" },
 ];
 
 export default function ServicesPage() {
+  const searchParams = useSearchParams();
+  const categoryFromUrl = searchParams.get("category");
+  
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
+  const [activeCategory, setActiveCategory] = useState(categoryFromUrl || "all");
+
+  useEffect(() => {
+    // Update category when URL changes
+    if (categoryFromUrl) {
+      setActiveCategory(categoryFromUrl);
+    }
+  }, [categoryFromUrl]);
 
   useEffect(() => {
     async function fetchServices() {

@@ -32,14 +32,26 @@ export default function AdminLoginPage() {
 
       if (authError) throw authError;
 
-      // Check if user is an admin
-      const { data: adminAccount, error: adminError } = await supabase
+      // Check if user is an admin - use service role for RLS bypass
+      const { createClient } = await import("@supabase/supabase-js");
+      const adminSupabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+      
+      const { data: adminAccount, error: adminError } = await adminSupabase
         .from("admin_accounts")
         .select("*")
         .eq("email", email)
-        .single();
+        .maybeSingle();
 
-      if (adminError || !adminAccount) {
+      if (adminError) {
+        console.error("Admin lookup error:", adminError);
+        await supabase.auth.signOut();
+        throw new Error("Failed to verify admin access");
+      }
+      
+      if (!adminAccount) {
         await supabase.auth.signOut();
         throw new Error("You don't have admin access");
       }

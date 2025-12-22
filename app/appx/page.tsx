@@ -877,7 +877,7 @@ export default function AppXPage() {
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 {serviceCategories.map((service) => (
-                  <Link key={service.id} href={`/appx/${service.id}`} className="flex flex-col items-center gap-1.5 flex-shrink-0">
+                  <Link key={service.id} href={`/appx/services?category=${service.id}`} className="flex flex-col items-center gap-1.5 flex-shrink-0">
                     <div className="relative">
                       <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
                         <service.icon className="h-8 w-8 text-white" />
