@@ -126,22 +126,19 @@ function OrderSuccessContent() {
         )}
 
         <div className="flex flex-col gap-3 w-full max-w-sm">
-          <Link href="/appx/activities" className="w-full">
-            <Button className="w-full bg-[#0D9488] hover:bg-[#0B7B71] text-white py-6 rounded-xl">
-              <ShoppingBag className="h-5 w-5 mr-2" />
+          <a href="/appx/activities" className="w-full">
+            <button className="w-full flex items-center justify-center gap-2 bg-[#0D9488] hover:bg-[#0B7B71] text-white py-4 rounded-xl font-medium transition-colors">
+              <ShoppingBag className="h-5 w-5" />
               View My Orders
-            </Button>
-          </Link>
+            </button>
+          </a>
 
-          <Link href="/appx" className="w-full">
-            <Button
-              variant="outline"
-              className="w-full py-6 rounded-xl border-gray-200"
-            >
-              <Home className="h-5 w-5 mr-2" />
+          <a href="/appx" className="w-full">
+            <button className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-700 py-4 rounded-xl font-medium border border-gray-200 transition-colors">
+              <Home className="h-5 w-5" />
               Continue Shopping
-            </Button>
-          </Link>
+            </button>
+          </a>
         </div>
       </div>
     </div>

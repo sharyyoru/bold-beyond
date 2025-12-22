@@ -21,7 +21,9 @@ interface CartItem {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { providerId, items, total, customer } = body;
+    const { providerId, providerName, items, total, customer, userId } = body;
+
+    console.log("Product checkout request:", { providerId, providerName, userId, itemCount: items?.length });
 
     if (!providerId || !items || items.length === 0) {
       return NextResponse.json(
@@ -62,6 +64,8 @@ export async function POST(request: NextRequest) {
         type: "product_order",
         order_number: orderNumber,
         provider_id: providerId,
+        provider_name: providerName || "",
+        user_id: userId || "",
         customer_name: customer.fullName,
         customer_phone: customer.phone,
         customer_email: customer.email || "",

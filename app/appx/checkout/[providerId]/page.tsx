@@ -25,6 +25,7 @@ export default function CheckoutPage() {
   const [cart, setCart] = useState<ProviderCart | null>(null);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const [userId, setUserId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -47,6 +48,7 @@ export default function CheckoutPage() {
         const supabase = createAppClient();
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
+          setUserId(user.id);
           // Pre-fill email from auth user
           setFormData((prev) => ({
             ...prev,
@@ -92,6 +94,8 @@ export default function CheckoutPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           providerId,
+          providerName: cart?.providerName || "",
+          userId,
           items: cart?.items.map((item) => ({
             productId: item.productId,
             productName: item.productName,

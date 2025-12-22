@@ -137,11 +137,26 @@ export async function POST(request: NextRequest) {
           const items = metadata.items_json ? JSON.parse(metadata.items_json) : [];
           const total = parseFloat(metadata.total || "0");
 
+          // Look up provider_accounts by sanity_provider_id to get UUID
+          let dbProviderId = null;
+          if (metadata.provider_id) {
+            const { data: providerAccount } = await supabase
+              .from("provider_accounts")
+              .select("id")
+              .eq("sanity_provider_id", metadata.provider_id)
+              .single();
+            if (providerAccount) {
+              dbProviderId = providerAccount.id;
+            }
+          }
+
           const { data: order, error: orderError } = await supabase
             .from("provider_orders")
             .insert({
               order_number: metadata.order_number,
-              provider_id: metadata.provider_id,
+              provider_id: dbProviderId,
+              sanity_provider_id: metadata.provider_id || null,
+              provider_name: metadata.provider_name || null,
               user_id: metadata.user_id || null,
               status: "processing",
               payment_status: "paid",
