@@ -1,18 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@sanity/client";
 
+const sanityToken = process.env.SANITY_API_TOKEN || process.env.NEXT_PUBLIC_SANITY_TOKEN;
+
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "hgmgl6bw",
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
-  token: process.env.SANITY_API_TOKEN,
+  token: sanityToken,
   useCdn: false,
   apiVersion: "2024-01-01",
 });
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if token is available
+    if (!sanityToken) {
+      console.error("Sanity API token not configured");
+      return NextResponse.json(
+        { error: "Sanity API token not configured. Please add SANITY_API_TOKEN to environment variables." },
+        { status: 500 }
+      );
+    }
+
     const body = await request.json();
     const { action, data, documentId } = body;
+
+    console.log("Sanity mutation request:", { action, documentId, dataType: data?._type });
 
     if (!action) {
       return NextResponse.json({ error: "Action required" }, { status: 400 });

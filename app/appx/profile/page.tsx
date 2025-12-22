@@ -778,6 +778,21 @@ export default function ProfilePage() {
               <h3 className="font-semibold text-gray-900 mb-4">Account</h3>
               <div className="space-y-2">
                 <Link
+                  href="/appx/wallet"
+                  className="flex items-center justify-between p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-100"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-emerald-500 flex items-center justify-center">
+                      <Crown className="h-4 w-4 text-white" />
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-900">My Wallet</span>
+                      <p className="text-xs text-gray-500">Balance, refunds & transactions</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-emerald-500" />
+                </Link>
+                <Link
                   href="/appx/profile/favorites"
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-xl"
                 >

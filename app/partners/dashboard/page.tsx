@@ -1074,6 +1074,13 @@ export default function PartnerDashboard() {
                                     <CheckCircle2 className="h-4 w-4" />
                                   </button>
                                   <button
+                                    onClick={() => setShowRescheduleModal(apt)}
+                                    className="p-1.5 rounded-lg bg-amber-100 text-amber-600 hover:bg-amber-200"
+                                    title="Reschedule"
+                                  >
+                                    <Clock className="h-4 w-4" />
+                                  </button>
+                                  <button
                                     onClick={() => setShowCancelModal(apt)}
                                     className="p-1.5 rounded-lg bg-red-100 text-red-600 hover:bg-red-200"
                                     title="Cancel & Refund"
