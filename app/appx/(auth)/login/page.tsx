@@ -27,7 +27,7 @@ function LoginForm() {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -41,15 +41,30 @@ function LoginForm() {
         return;
       }
 
+      // Check if user has completed onboarding
+      let shouldRedirectToOnboarding = false;
+      if (authData.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("onboarding_complete")
+          .eq("id", authData.user.id)
+          .single();
+        
+        // Redirect to onboarding if not completed
+        if (!profile?.onboarding_complete) {
+          shouldRedirectToOnboarding = true;
+        }
+      }
+
       toast({
         title: "Welcome back!",
-        description: "Successfully logged in.",
+        description: shouldRedirectToOnboarding ? "Let's personalize your experience." : "Successfully logged in.",
       });
 
       // Use hard redirect to ensure session is properly loaded
       // Small delay to let session propagate
       setTimeout(() => {
-        window.location.href = redirect;
+        window.location.href = shouldRedirectToOnboarding ? "/appx/onboarding" : redirect;
       }, 500);
     } catch (error) {
       toast({

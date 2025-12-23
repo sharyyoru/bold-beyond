@@ -638,7 +638,7 @@ export default function AppXPage() {
             {/* Finish Profile Reminder - Shows if onboarding was skipped */}
             {typeof window !== 'undefined' && localStorage.getItem('onboarding_skipped') === 'true' && !localStorage.getItem('onboarding_complete') && (
               <Link
-                href="/onboarding"
+                href="/appx/onboarding"
                 onClick={() => setIsMenuOpen(false)}
                 className="flex items-center gap-3 p-4 mb-5 bg-gradient-to-r from-[#FFF3E0] to-[#FFE0B2] rounded-2xl border border-[#FFB74D]"
               >
