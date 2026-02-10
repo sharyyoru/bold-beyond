@@ -21,3 +21,7 @@ export { IntelligentRouting, determineRouting } from './intelligent-routing';
 export type { RoutingDecision, RoutingScenario } from './intelligent-routing';
 export { RegulationTools, tools } from './regulation-tools';
 export type { RegulationTool, ToolType } from './regulation-tools';
+
+// Coach/Practitioner Components
+export { CoachDiagnostic, generateMockClientProfile } from './coach-diagnostic';
+export type { ClientProfile } from './coach-diagnostic';
