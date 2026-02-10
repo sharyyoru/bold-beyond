@@ -27,14 +27,19 @@ import {
   MoodCheckin,
   ScoreDashboard,
   MoodHistory,
-  generateMockMoodHistory,
   AIRecommendations,
-  generateRecommendations,
   MindfulnessTimer,
   AlignmentScore,
   IntelligentRouting,
   RegulationTools,
 } from "@/components/human-os";
+import {
+  fetchUserWellnessData,
+  generateSmartRecommendations,
+  updateWellnessScores,
+  type UserWellnessData,
+  type AIRecommendation,
+} from "@/lib/human-os/wellness-data";
 
 const wellnessDimensions = [
   { id: "mind", label: "Mind", icon: Brain, color: "#5BB5B0" },
@@ -49,61 +54,25 @@ export default function HumanOSPage() {
   const router = useRouter();
   const [showMoodCheckin, setShowMoodCheckin] = useState(false);
   const [showMindfulness, setShowMindfulness] = useState(false);
-  const [wellnessScores, setWellnessScores] = useState<Record<string, number>>({
-    mind: 72,
-    body: 68,
-    sleep: 55,
-    energy: 65,
-    mood: 78,
-    stress: 45,
-    overall: 64,
-  });
-  const [previousScore, setPreviousScore] = useState(60);
-  const [moodHistory, setMoodHistory] = useState(generateMockMoodHistory());
+  const [wellnessData, setWellnessData] = useState<UserWellnessData | null>(null);
+  const [recommendations, setRecommendations] = useState<AIRecommendation[]>([]);
   const [userName, setUserName] = useState("there");
-  const [nervousSystemStatus, setNervousSystemStatus] = useState<"regulated" | "elevated" | "dysregulated">("regulated");
-  const [burnoutRisk, setBurnoutRisk] = useState<"low" | "moderate" | "high">("low");
-  const [alignmentDimensions, setAlignmentDimensions] = useState([
-    { id: "mind", label: "Mind", value: 72, description: "Mental clarity" },
-    { id: "emotion", label: "Emotion", value: 65, description: "Emotional regulation" },
-    { id: "behavior", label: "Behavior", value: 75, description: "Aligned actions" },
-    { id: "energy", label: "Energy", value: 60, description: "Vitality" },
-  ]);
   const [loading, setLoading] = useState(true);
 
-  // Calculate nervous system status based on scores
-  const calculateNervousSystemStatus = (scores: Record<string, number>): "regulated" | "elevated" | "dysregulated" => {
-    const stressScore = scores.stress || 50;
-    const moodScore = scores.mood || 50;
-    const avgScore = (stressScore + moodScore) / 2;
-    
-    if (avgScore < 40) return "dysregulated";
-    if (avgScore < 60) return "elevated";
-    return "regulated";
-  };
+  // Derived state from wellnessData
+  const wellnessScores = wellnessData?.scores || { mind: 60, body: 60, sleep: 60, energy: 60, mood: 60, stress: 60, overall: 60 };
+  const previousScore = wellnessData?.previousAlignmentScore || 60;
+  const moodHistory = wellnessData?.moodHistory || [];
+  const nervousSystemStatus = wellnessData?.nervousSystemStatus || "regulated";
+  const burnoutRisk = wellnessData?.burnoutRisk || "low";
+  const alignmentDimensions = [
+    { id: "mind", label: "Mind", value: wellnessScores.mind || 60, description: "Mental clarity" },
+    { id: "emotion", label: "Emotion", value: wellnessScores.mood || 60, description: "Emotional regulation" },
+    { id: "behavior", label: "Behavior", value: Math.round(((wellnessScores.body || 60) + (wellnessScores.energy || 60)) / 2), description: "Aligned actions" },
+    { id: "energy", label: "Energy", value: wellnessScores.energy || 60, description: "Vitality" },
+  ];
 
-  // Calculate burnout risk based on scores
-  const calculateBurnoutRisk = (scores: Record<string, number>): "low" | "moderate" | "high" => {
-    const energyScore = scores.energy || 50;
-    const stressScore = scores.stress || 50;
-    const sleepScore = scores.sleep || 50;
-    const avgScore = (energyScore + stressScore + sleepScore) / 3;
-    
-    if (avgScore < 40) return "high";
-    if (avgScore < 60) return "moderate";
-    return "low";
-  };
-
-  // Update alignment dimensions from wellness scores
-  const updateAlignmentFromScores = (scores: Record<string, number>) => {
-    setAlignmentDimensions([
-      { id: "mind", label: "Mind", value: scores.mind || 60, description: "Mental clarity" },
-      { id: "emotion", label: "Emotion", value: scores.mood || 60, description: "Emotional regulation" },
-      { id: "behavior", label: "Behavior", value: Math.round(((scores.body || 60) + (scores.energy || 60)) / 2), description: "Aligned actions" },
-      { id: "energy", label: "Energy", value: scores.energy || 60, description: "Vitality" },
-    ]);
-  };
-
+  // Load all user data using the wellness-data utility
   useEffect(() => {
     const loadUserData = async () => {
       try {
@@ -111,70 +80,25 @@ export default function HumanOSPage() {
         const { data: { user } } = await supabase.auth.getUser();
         
         if (user) {
-          // Fetch user profile with wellness scores
+          // Fetch user profile for name
           const { data: profile } = await supabase
             .from("profiles")
-            .select("full_name, wellness_scores, alignment_score")
+            .select("full_name")
             .eq("id", user.id)
             .single();
           
           if (profile) {
             setUserName(profile.full_name?.split(" ")[0] || "there");
-            if (profile.wellness_scores) {
-              setWellnessScores(profile.wellness_scores);
-              setNervousSystemStatus(calculateNervousSystemStatus(profile.wellness_scores));
-              setBurnoutRisk(calculateBurnoutRisk(profile.wellness_scores));
-              updateAlignmentFromScores(profile.wellness_scores);
-            }
-          }
-
-          // Fetch recent check-ins for mood history
-          const { data: checkins } = await supabase
-            .from("wellness_checkins")
-            .select("created_at, scores, answers")
-            .eq("user_id", user.id)
-            .order("created_at", { ascending: false })
-            .limit(7);
-
-          if (checkins && checkins.length > 0) {
-            const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-            const moodEntries = checkins.map((checkin: any) => {
-              const date = new Date(checkin.created_at);
-              const score = checkin.scores?.mood || checkin.scores?.overall || 60;
-              let moodType: "great" | "happy" | "neutral" | "low" | "sad" = "neutral";
-              if (score >= 80) moodType = "great";
-              else if (score >= 65) moodType = "happy";
-              else if (score >= 50) moodType = "neutral";
-              else if (score >= 35) moodType = "low";
-              else moodType = "sad";
-              
-              return {
-                date: date.toISOString().split('T')[0],
-                dayName: days[date.getDay()],
-                mood: moodType,
-                score: score,
-              };
-            });
-            setMoodHistory(moodEntries.reverse());
-          }
-
-          // Fetch last week's score for trend comparison
-          const oneWeekAgo = new Date();
-          oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-          
-          const { data: lastWeekCheckin } = await supabase
-            .from("wellness_checkins")
-            .select("scores")
-            .eq("user_id", user.id)
-            .lte("created_at", oneWeekAgo.toISOString())
-            .order("created_at", { ascending: false })
-            .limit(1)
-            .single();
-
-          if (lastWeekCheckin?.scores?.overall) {
-            setPreviousScore(lastWeekCheckin.scores.overall);
           }
         }
+        
+        // Fetch comprehensive wellness data
+        const data = await fetchUserWellnessData();
+        setWellnessData(data);
+        
+        // Generate smart recommendations based on all data
+        const recs = generateSmartRecommendations(data);
+        setRecommendations(recs);
       } catch (error) {
         console.error("Error loading user data:", error);
       } finally {
@@ -188,44 +112,43 @@ export default function HumanOSPage() {
   const handleMoodComplete = async (mood: any) => {
     setShowMoodCheckin(false);
     
-    // Update mood score and recalculate everything
-    const newScores = {
-      ...wellnessScores,
-      mood: mood.score,
-      overall: Math.round((wellnessScores.mind + wellnessScores.body + wellnessScores.sleep + wellnessScores.energy + mood.score + wellnessScores.stress) / 6),
-    };
-    
-    setWellnessScores(newScores);
-    setNervousSystemStatus(calculateNervousSystemStatus(newScores));
-    setBurnoutRisk(calculateBurnoutRisk(newScores));
-    updateAlignmentFromScores(newScores);
-    
-    // Save to database
     try {
       const supabase = createAppClient();
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
+        // Update wellness scores via utility
+        const newScores = await updateWellnessScores(user.id, { mood: mood.score });
+        
         // Save check-in
         await supabase.from("wellness_checkins").insert({
           user_id: user.id,
           answers: { quick_mood: mood },
-          scores: { mood: mood.score, overall: newScores.overall },
+          scores: { mood: mood.score, overall: newScores?.overall || 60 },
           created_at: new Date().toISOString(),
         });
         
-        // Update profile with new scores
-        await supabase.from("profiles").update({
-          wellness_scores: newScores,
-          last_checkin: new Date().toISOString(),
-        }).eq("id", user.id);
+        // Refresh all data
+        const data = await fetchUserWellnessData();
+        setWellnessData(data);
+        setRecommendations(generateSmartRecommendations(data));
       }
     } catch (error) {
       console.error("Error saving mood:", error);
     }
   };
 
-  const recommendations = generateRecommendations(wellnessScores);
+  // Convert recommendations to format expected by AIRecommendations component
+  const formattedRecommendations = recommendations.map(rec => ({
+    id: rec.id,
+    title: rec.title,
+    description: rec.description,
+    category: rec.category,
+    scoreImpact: rec.scoreImpact,
+    duration: rec.duration,
+    icon: rec.icon,
+    stressReduction: rec.stressReduction,
+  }));
 
   if (loading) {
     return (
@@ -395,8 +318,8 @@ export default function HumanOSPage() {
         {/* AI Recommendations */}
         <div className="mb-6">
           <AIRecommendations
-            recommendations={recommendations}
-            userScore={wellnessScores.overall}
+            recommendations={formattedRecommendations}
+            userScore={wellnessScores.overall || 60}
             onViewAll={() => router.push("/appx/services")}
           />
         </div>
@@ -422,7 +345,7 @@ export default function HumanOSPage() {
           
           <div className="grid grid-cols-2 gap-3">
             {wellnessDimensions.map((dim) => {
-              const score = wellnessScores[dim.id] || 60;
+              const score = (wellnessScores as Record<string, number>)[dim.id] || 60;
               return (
                 <div 
                   key={dim.id}
