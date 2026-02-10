@@ -144,14 +144,14 @@ function BreathingExercise({ onClose }: { onClose: () => void }) {
         transition={{ duration: 4, ease: "easeInOut" }}
       >
         <motion.div
-          className="h-32 w-32 rounded-full bg-white/30 flex items-center justify-center"
+          className="h-32 w-32 rounded-full bg-white/30 flex items-center justify-center text-center"
           animate={{
             scale: phase === "inhale" ? 1.2 : phase === "exhale" ? 0.9 : 1,
           }}
           transition={{ duration: 4, ease: "easeInOut" }}
         >
-          <span className="text-2xl font-bold text-white">
-            {isRunning ? phaseLabels[phase] : "Ready"}
+          <span className="text-xl font-bold text-white leading-tight text-center whitespace-pre-line">
+            {isRunning ? phaseLabels[phase].replace(" ", "\n") : "Ready"}
           </span>
         </motion.div>
       </motion.div>
