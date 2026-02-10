@@ -1354,7 +1354,7 @@ export default function AppXPage() {
                         <p className="text-[10px] opacity-70">Modalities</p>
                       </div>
                     </div>
-                    <Link href="/appx/wellness-tracker">
+                    <Link href="/appx/human-os">
                       <Button size="sm" className="bg-brand-gold text-brand-navy hover:bg-brand-gold/90 rounded-full">
                         View My Intelligence
                       </Button>
