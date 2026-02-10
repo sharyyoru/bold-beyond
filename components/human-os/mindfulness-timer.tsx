@@ -134,7 +134,7 @@ export function MindfulnessTimer({
             </svg>
 
             {/* Time text */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
               <span
                 className={`font-bold ${
                   isFullScreen ? "text-6xl text-white" : "text-4xl text-gray-900"
@@ -143,11 +143,11 @@ export function MindfulnessTimer({
                 {Math.floor(timeLeft / 60)}
               </span>
               <span
-                className={`text-sm ${
+                className={`text-xs leading-tight ${
                   isFullScreen ? "text-white/80" : "text-gray-500"
                 }`}
               >
-                I will meditate for {Math.floor(duration / 60)} minutes
+                I will meditate for<br />{Math.floor(duration / 60)} minutes
               </span>
             </div>
           </motion.div>

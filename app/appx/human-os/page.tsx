@@ -31,6 +31,9 @@ import {
   AIRecommendations,
   generateRecommendations,
   MindfulnessTimer,
+  AlignmentScore,
+  IntelligentRouting,
+  RegulationTools,
 } from "@/components/human-os";
 
 const wellnessDimensions = [
@@ -58,6 +61,14 @@ export default function HumanOSPage() {
   const [previousScore, setPreviousScore] = useState(60);
   const [moodHistory, setMoodHistory] = useState(generateMockMoodHistory());
   const [userName, setUserName] = useState("there");
+  const [nervousSystemStatus, setNervousSystemStatus] = useState<"regulated" | "elevated" | "dysregulated">("regulated");
+  const [burnoutRisk, setBurnoutRisk] = useState<"low" | "moderate" | "high">("low");
+  const [alignmentDimensions, setAlignmentDimensions] = useState([
+    { id: "mind", label: "Mind", value: 72, description: "Mental clarity" },
+    { id: "emotion", label: "Emotion", value: 65, description: "Emotional regulation" },
+    { id: "behavior", label: "Behavior", value: 75, description: "Aligned actions" },
+    { id: "energy", label: "Energy", value: 60, description: "Vitality" },
+  ]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -215,14 +226,35 @@ export default function HumanOSPage() {
 
       {/* Main Content */}
       <div className="px-4 -mt-2">
-        {/* Score Dashboard */}
+        {/* Intelligent Routing - Single Action */}
         <div className="mb-6">
-          <ScoreDashboard
-            score={wellnessScores.overall || 64}
+          <IntelligentRouting
+            userState={{
+              nervousSystemStatus,
+              alignmentScore: wellnessScores.overall || 64,
+              burnoutRisk,
+              currentProgram: "Sustainable Leadership",
+            }}
+          />
+        </div>
+
+        {/* Alignment Score with 4-axis Radar */}
+        <div className="mb-6">
+          <AlignmentScore
+            dimensions={alignmentDimensions}
+            overallScore={wellnessScores.overall || 64}
             previousScore={previousScore}
-            label="Human OS Score"
-            subtitle="Congratulations! You're mentally healthy."
-            onAddEntry={() => router.push("/appx/wellness-checkin")}
+            nervousSystemStatus={nervousSystemStatus}
+            burnoutRisk={burnoutRisk}
+          />
+        </div>
+
+        {/* Regulation Tools */}
+        <div className="mb-6">
+          <RegulationTools
+            onToolSelect={(tool) => {
+              console.log("Selected tool:", tool.name);
+            }}
           />
         </div>
 
