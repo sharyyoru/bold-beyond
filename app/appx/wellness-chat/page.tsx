@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createAppClient } from "@/lib/supabase";
+import { saveChatMessage, updateWellnessScores } from "@/lib/human-os/wellness-data";
 
 interface Message {
   id: string;
@@ -203,12 +204,24 @@ export default function WellnessChatPage() {
     setMessages(prev => [...prev, assistantMsg]);
     setIsTyping(false);
 
-    // Save to database
+    // Save to database using wellness-data utility
     try {
       const supabase = createAppClient();
       const { data: { user } } = await supabase.auth.getUser();
 
       if (user) {
+        // Save user message with sentiment analysis
+        await saveChatMessage(
+          user.id,
+          "user",
+          userMessage,
+          emotionAnalysis.emotion as "positive" | "neutral" | "negative"
+        );
+        
+        // Save assistant response
+        await saveChatMessage(user.id, "assistant", response);
+
+        // Also save to wellness_chat_logs for backwards compatibility
         await supabase.from("wellness_chat_logs").insert({
           user_id: user.id,
           message: userMessage,
@@ -223,10 +236,8 @@ export default function WellnessChatPage() {
           (sessionEmotionScores.length + 1)
         );
 
-        await supabase.from("profiles").update({
-          current_mood_score: avgScore,
-          last_chat: new Date().toISOString(),
-        }).eq("id", user.id);
+        // Update wellness scores with mood from chat
+        await updateWellnessScores(user.id, { mood: avgScore });
       }
     } catch (error) {
       console.error("Error saving chat:", error);
