@@ -38,6 +38,62 @@ interface IntelligentRoutingProps {
     currentProgram?: string;
   };
   onActionClick?: (decision: RoutingDecision) => void;
+  onDismiss?: () => void;
+  onShowAlternatives?: (alternatives: RoutingDecision[]) => void;
+}
+
+// All possible routing options for alternatives
+function getAllRoutingOptions(): RoutingDecision[] {
+  return [
+    {
+      scenario: "regulate",
+      title: "Regulation Tool",
+      description: "Quick breathing exercise to calm your nervous system.",
+      action: "Start Breathing",
+      actionLink: "/appx/human-os?tool=breathing",
+      icon: Brain,
+      duration: "3 min",
+      priority: "medium",
+    },
+    {
+      scenario: "regulate",
+      title: "Grounding Exercise",
+      description: "5-4-3-2-1 sensory awareness technique.",
+      action: "Start Grounding",
+      actionLink: "/appx/human-os?tool=grounding",
+      icon: Activity,
+      duration: "2 min",
+      priority: "medium",
+    },
+    {
+      scenario: "program",
+      title: "Continue Program",
+      description: "Resume your transformation journey.",
+      action: "View Programs",
+      actionLink: "/appx/services?category=coaching",
+      icon: Sparkles,
+      priority: "low",
+    },
+    {
+      scenario: "coach",
+      title: "Talk to AI Coach",
+      description: "Get personalized guidance and support.",
+      action: "Start Chat",
+      actionLink: "/appx/wellness-chat",
+      icon: MessageCircle,
+      priority: "medium",
+    },
+    {
+      scenario: "maintain",
+      title: "Daily Check-in",
+      description: "Log your current wellness state.",
+      action: "Check In",
+      actionLink: "/appx/wellness-checkin",
+      icon: Heart,
+      duration: "2 min",
+      priority: "low",
+    },
+  ];
 }
 
 // Decision engine logic
@@ -111,19 +167,41 @@ function determineRouting(state: IntelligentRoutingProps["userState"]): RoutingD
   };
 }
 
-export function IntelligentRouting({ userState, onActionClick }: IntelligentRoutingProps) {
+export function IntelligentRouting({ userState, onActionClick, onDismiss, onShowAlternatives }: IntelligentRoutingProps) {
   const [decision, setDecision] = useState<RoutingDecision | null>(null);
   const [isProcessing, setIsProcessing] = useState(true);
+  const [isDismissed, setIsDismissed] = useState(false);
+  const [showAlternatives, setShowAlternatives] = useState(false);
+  const [alternatives, setAlternatives] = useState<RoutingDecision[]>([]);
 
   useEffect(() => {
     // Simulate AI processing
     const timer = setTimeout(() => {
-      setDecision(determineRouting(userState));
+      const mainDecision = determineRouting(userState);
+      setDecision(mainDecision);
+      // Get alternatives excluding the main decision
+      const allOptions = getAllRoutingOptions();
+      setAlternatives(allOptions.filter(opt => opt.scenario !== mainDecision.scenario));
       setIsProcessing(false);
     }, 800);
 
     return () => clearTimeout(timer);
   }, [userState]);
+
+  const handleDismiss = () => {
+    setIsDismissed(true);
+    onDismiss?.();
+  };
+
+  const handleShowAlternatives = () => {
+    setShowAlternatives(true);
+    onShowAlternatives?.(alternatives);
+  };
+
+  const handleSelectAlternative = (alt: RoutingDecision) => {
+    setDecision(alt);
+    setShowAlternatives(false);
+  };
 
   const getPriorityStyles = (priority: string) => {
     switch (priority) {
@@ -135,6 +213,11 @@ export function IntelligentRouting({ userState, onActionClick }: IntelligentRout
         return "bg-gradient-to-br from-[#5BB5B0] to-[#4A9A96] border-teal-400/30";
     }
   };
+
+  // Don't render if dismissed
+  if (isDismissed) {
+    return null;
+  }
 
   return (
     <div className="relative">
@@ -216,20 +299,86 @@ export function IntelligentRouting({ userState, onActionClick }: IntelligentRout
 
             {/* Alternative actions */}
             <div className="flex items-center justify-center gap-4 mt-4">
-              <button className="text-white/60 text-sm hover:text-white transition-colors">
+              <button 
+                onClick={handleDismiss}
+                className="text-white/60 text-sm hover:text-white transition-colors"
+              >
                 Not now
               </button>
               <span className="text-white/30">|</span>
-              <button className="text-white/60 text-sm hover:text-white transition-colors">
+              <button 
+                onClick={handleShowAlternatives}
+                className="text-white/60 text-sm hover:text-white transition-colors"
+              >
                 Show alternatives
               </button>
             </div>
           </motion.div>
         ) : null}
+
+        {/* Alternatives Panel */}
+        {showAlternatives && (
+          <motion.div
+            key="alternatives"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="mt-4 bg-white rounded-3xl p-5 shadow-lg"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-gray-900">Alternative Paths</h4>
+              <button 
+                onClick={() => setShowAlternatives(false)}
+                className="text-sm text-gray-500 hover:text-gray-700"
+              >
+                Close
+              </button>
+            </div>
+            <div className="space-y-3">
+              {alternatives.map((alt, index) => (
+                <Link 
+                  key={index} 
+                  href={alt.actionLink}
+                  onClick={() => {
+                    handleSelectAlternative(alt);
+                    onActionClick?.(alt);
+                  }}
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+                  >
+                    <div 
+                      className="h-10 w-10 rounded-xl flex items-center justify-center"
+                      style={{ backgroundColor: alt.priority === "high" ? "#C1776720" : alt.priority === "medium" ? "#E8A87C20" : "#5BB5B020" }}
+                    >
+                      <alt.icon 
+                        className="h-5 w-5" 
+                        style={{ color: alt.priority === "high" ? "#C17767" : alt.priority === "medium" ? "#E8A87C" : "#5BB5B0" }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900 text-sm">{alt.title}</p>
+                      <p className="text-xs text-gray-500">{alt.description}</p>
+                    </div>
+                    {alt.duration && (
+                      <span className="text-xs text-gray-400 flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {alt.duration}
+                      </span>
+                    )}
+                    <ArrowRight className="h-4 w-4 text-gray-300" />
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );
 }
 
-export { determineRouting };
+export { determineRouting, getAllRoutingOptions };
 export type { RoutingDecision, RoutingScenario };
