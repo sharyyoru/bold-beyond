@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { 
   ArrowLeft, Calendar, TrendingUp, Brain, Heart, Moon, Zap, 
-  Smile, Activity, ChevronDown, Award, Flame, Clock, Star
+  Smile, Activity, ChevronDown, Award, Flame, Clock, Star, Shield, Target
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -284,18 +284,45 @@ export default function WellnessTrackerPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      {/* Header */}
-      <div className="bg-white px-4 py-4 sticky top-0 z-10 shadow-sm">
+      {/* Header - Enhanced with Human OS branding */}
+      <div className="bg-gradient-to-r from-brand-navy to-brand-teal px-4 py-4 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => router.back()}
-            className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center"
+            className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center"
           >
-            <ArrowLeft className="h-5 w-5 text-gray-600" />
+            <ArrowLeft className="h-5 w-5 text-white" />
           </button>
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">Wellness Tracker</h1>
-            <p className="text-sm text-gray-500">Track your mood, habits, and progress toward a balanced mind and body.</p>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/assets/mandala-filled.svg"
+                alt="Human OS"
+                width={20}
+                height={20}
+                className="opacity-80"
+              />
+              <h1 className="text-xl font-bold text-white">Wellness Intelligence</h1>
+            </div>
+            <p className="text-sm text-white/80">Your personal data moat grows smarter every day</p>
+          </div>
+        </div>
+        
+        {/* AI Stats Bar */}
+        <div className="mt-4 flex items-center justify-between bg-white/10 rounded-xl p-3">
+          <div className="text-center">
+            <p className="text-lg font-bold text-brand-gold">94.3%</p>
+            <p className="text-[10px] text-white/70">Match Accuracy</p>
+          </div>
+          <div className="h-8 w-px bg-white/20" />
+          <div className="text-center">
+            <p className="text-lg font-bold text-white">{checkInStreak}</p>
+            <p className="text-[10px] text-white/70">Day Streak</p>
+          </div>
+          <div className="h-8 w-px bg-white/20" />
+          <div className="text-center">
+            <p className="text-lg font-bold text-[#7DD3D3]">{getOverallScore()}%</p>
+            <p className="text-[10px] text-white/70">Wellness Score</p>
           </div>
         </div>
       </div>

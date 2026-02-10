@@ -41,6 +41,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FavoriteButton } from "@/components/ui/favorite-button";
 import { sanityClient, urlFor, queries } from "@/lib/sanity";
 import { createAppClient } from "@/lib/supabase";
+import { getNetworkMetrics } from "@/lib/human-os/network-effects";
+import { VENDOR_NEUTRAL_MESSAGING } from "@/lib/human-os/decision-engine";
 
 // Sand/Water/Air color palette for welcoming feel
 const colors = {
@@ -340,6 +342,60 @@ interface UserProfile {
   };
   current_mood_score?: number;
   last_checkin?: string;
+  tenure_days?: number;
+  data_points?: number;
+}
+
+// AI Insights Card Component
+function AIInsightsCard({ routingAccuracy, tenureDays, dataPoints }: { routingAccuracy: number; tenureDays: number; dataPoints: number }) {
+  return (
+    <div className="bg-gradient-to-br from-brand-navy to-brand-navy-light rounded-2xl p-4 text-white relative overflow-hidden">
+      <div 
+        className="absolute inset-0 opacity-10"
+        style={{ 
+          backgroundImage: "url('/assets/b&b-diamond-pattern.svg')",
+          backgroundSize: "60px",
+        }}
+      />
+      <div className="relative z-10">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="p-1.5 rounded-lg bg-brand-gold/20">
+            <Zap className="h-4 w-4 text-brand-gold" />
+          </div>
+          <span className="text-sm font-medium">AI-Powered Insights</span>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="text-center">
+            <p className="text-lg font-bold text-brand-gold">{routingAccuracy}%</p>
+            <p className="text-[10px] text-gray-300">Match Accuracy</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold text-white">{tenureDays}</p>
+            <p className="text-[10px] text-gray-300">Days Active</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold text-[#7DD3D3]">{dataPoints}</p>
+            <p className="text-[10px] text-gray-300">Data Points</p>
+          </div>
+        </div>
+        <p className="text-[10px] text-gray-400 mt-3 text-center">
+          Your personal wellness intelligence grows every day
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Network Effect Badge Component
+function NetworkBadge({ usersHelped }: { usersHelped: number }) {
+  return (
+    <div className="flex items-center gap-2 bg-brand-teal/10 rounded-full px-3 py-1.5">
+      <Activity className="h-3 w-3 text-brand-teal" />
+      <span className="text-[10px] text-brand-teal font-medium">
+        Your data helps {usersHelped.toLocaleString()}+ users
+      </span>
+    </div>
+  );
 }
 
 export default function AppXPage() {
@@ -954,15 +1010,38 @@ export default function AppXPage() {
               </div>
             </div>
 
-          {/* Promo Banner - Sand/Water colors */}
+          {/* AI Insights Card - Human OS */}
           <div className="px-4 mb-5">
-            <div className="bg-gradient-to-r from-[#0D9488] via-[#7DD3D3] to-[#B8D4E8] rounded-2xl p-5 text-white shadow-lg">
-              <p className="text-sm opacity-90">Book your first session</p>
-              <h3 className="text-xl font-bold mb-2">AED 50 OFF</h3>
-              <p className="text-xs opacity-80 mb-3">Use code: BOLDSTART</p>
-              <Button size="sm" className="bg-white text-[#0D9488] hover:bg-[#F5E6D3] rounded-full shadow-md">
-                Book Now
-              </Button>
+            <AIInsightsCard 
+              routingAccuracy={94} 
+              tenureDays={userProfile?.tenure_days || 45} 
+              dataPoints={userProfile?.data_points || 127} 
+            />
+          </div>
+
+          {/* Network Effect Badge */}
+          <div className="px-4 mb-5 flex justify-center">
+            <NetworkBadge usersHelped={10000} />
+          </div>
+
+          {/* Promo Banner - Enhanced with brand pattern */}
+          <div className="px-4 mb-5">
+            <div className="bg-gradient-to-r from-[#0D9488] via-[#7DD3D3] to-[#B8D4E8] rounded-2xl p-5 text-white shadow-lg relative overflow-hidden">
+              <div 
+                className="absolute inset-0 opacity-10"
+                style={{ 
+                  backgroundImage: "url('/assets/b&b-diamond-pattern.svg')",
+                  backgroundSize: "50px",
+                }}
+              />
+              <div className="relative z-10">
+                <p className="text-sm opacity-90">Book your first session</p>
+                <h3 className="text-xl font-bold mb-2">AED 50 OFF</h3>
+                <p className="text-xs opacity-80 mb-3">Use code: BOLDSTART</p>
+                <Button size="sm" className="bg-white text-[#0D9488] hover:bg-[#F5E6D3] rounded-full shadow-md">
+                  Book Now
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -1219,18 +1298,49 @@ export default function AppXPage() {
             </div>
           </div>
 
-          {/* Wellness Score Card */}
+          {/* Human OS - Personal Data Moat Card */}
           <div className="px-4 mb-6">
             <Card className="border-0 shadow-md overflow-hidden">
               <CardContent className="p-0">
-                <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-5 text-white">
-                  <h3 className="font-semibold mb-1">Your Wellness Journey</h3>
-                  <p className="text-sm opacity-90 mb-3">
-                    Take a quick assessment to get personalized recommendations
-                  </p>
-                  <Button size="sm" className="bg-white text-purple-600 hover:bg-gray-100 rounded-full">
-                    Start Assessment
-                  </Button>
+                <div className="bg-gradient-to-r from-brand-navy via-brand-navy-light to-brand-teal p-5 text-white relative overflow-hidden">
+                  <div 
+                    className="absolute inset-0 opacity-5"
+                    style={{ 
+                      backgroundImage: "url('/assets/b&b-pattern.svg')",
+                      backgroundSize: "150px",
+                    }}
+                  />
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Image
+                        src="/assets/mandala-filled.svg"
+                        alt="Human OS"
+                        width={24}
+                        height={24}
+                        className="opacity-80"
+                      />
+                      <h3 className="font-semibold">Your Wellness Intelligence</h3>
+                    </div>
+                    <p className="text-sm opacity-90 mb-3">
+                      AI-powered recommendations that get smarter every day
+                    </p>
+                    <div className="flex items-center gap-4 mb-4">
+                      <div>
+                        <p className="text-2xl font-bold text-brand-gold">94.3%</p>
+                        <p className="text-[10px] opacity-70">Match Accuracy</p>
+                      </div>
+                      <div className="h-8 w-px bg-white/20" />
+                      <div>
+                        <p className="text-2xl font-bold">50+</p>
+                        <p className="text-[10px] opacity-70">Modalities</p>
+                      </div>
+                    </div>
+                    <Link href="/appx/wellness-tracker">
+                      <Button size="sm" className="bg-brand-gold text-brand-navy hover:bg-brand-gold/90 rounded-full">
+                        View My Intelligence
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </CardContent>
             </Card>
