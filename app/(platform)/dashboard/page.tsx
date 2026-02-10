@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Search,
   Menu,
@@ -15,14 +16,21 @@ import {
   LayoutGrid,
   Headphones,
   Monitor,
+  Zap,
+  Activity,
+  Target,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { DecisionEngine, NetworkEffects, PersonalDataMoat } from "@/components/human-os";
 
 // Mock data
 const mockUser = {
   name: "Sarah",
-  wellnessScore: 20,
+  wellnessScore: 78,
+  tenureDays: 45,
+  dataPoints: 127,
 };
 
 const currentDate = new Date();
@@ -136,8 +144,24 @@ export default function DashboardPage() {
         </button>
       </div>
 
-      {/* Hero Banner */}
-      <div className="relative h-56 bg-gradient-to-r from-brand-teal to-brand-teal-light overflow-hidden">
+      {/* Hero Banner - Enhanced with brand assets */}
+      <div className="relative h-56 overflow-hidden">
+        {/* Background image */}
+        <Image
+          src="/assets/blue-gradient-hero-bg.png"
+          alt="Background"
+          fill
+          className="object-cover"
+        />
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{ 
+            backgroundImage: "url('/assets/b&b-diamond-pattern.svg')",
+            backgroundSize: "80px",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-teal/90 to-brand-teal-light/80" />
+        
         <div className="absolute inset-0 p-6 flex flex-col justify-center">
           <h2 className="text-2xl font-display font-bold text-white italic mb-1">
             Move Your Body
@@ -149,9 +173,14 @@ export default function DashboardPage() {
             </Link>
           </Button>
         </div>
-        <div className="absolute right-0 bottom-0 w-1/2 h-full">
-          {/* Hero image placeholder */}
-          <div className="w-full h-full bg-brand-teal-light/30" />
+        <div className="absolute right-0 bottom-0 w-1/2 h-full flex items-end justify-center">
+          <Image
+            src="/assets/female-sports-model.png"
+            alt="Wellness"
+            width={200}
+            height={200}
+            className="object-contain"
+          />
         </div>
         {/* Dots */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
@@ -219,37 +248,87 @@ export default function DashboardPage() {
           </Link>
         </div>
 
-        {/* Wellness Score & Highlights */}
+        {/* Wellness Score & AI Insights */}
         <div className="grid grid-cols-2 gap-3">
-          <Card>
-            <CardContent className="p-4">
-              <h4 className="font-semibold text-gray-900">Welness Score</h4>
-              <p className="text-xs text-green-600">+20% better than yesterday</p>
-              <div className="mt-2 flex items-center gap-3">
-                <div className="relative h-12 w-12">
-                  <svg className="h-12 w-12 -rotate-90 transform">
-                    <circle cx="24" cy="24" r="20" stroke="#E5E7EB" strokeWidth="4" fill="none" />
-                    <circle
-                      cx="24" cy="24" r="20"
-                      stroke="#8B5CF6"
-                      strokeWidth="4"
-                      fill="none"
-                      strokeDasharray={125.6}
-                      strokeDashoffset={125.6 * (1 - mockUser.wellnessScore / 100)}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold">
-                    {mockUser.wellnessScore}%
-                  </span>
+          <Card className="overflow-hidden">
+            <CardContent className="p-4 relative">
+              <div 
+                className="absolute inset-0 opacity-5"
+                style={{ 
+                  backgroundImage: "url('/assets/b&b-diamond-pattern.svg')",
+                  backgroundSize: "40px",
+                }}
+              />
+              <div className="relative z-10">
+                <h4 className="font-semibold text-gray-900">Wellness Score</h4>
+                <p className="text-xs text-green-600">+12% better than yesterday</p>
+                <div className="mt-2 flex items-center gap-3">
+                  <div className="relative h-14 w-14">
+                    <svg className="h-14 w-14 -rotate-90 transform">
+                      <circle cx="28" cy="28" r="24" stroke="#E5E7EB" strokeWidth="4" fill="none" />
+                      <circle
+                        cx="28" cy="28" r="24"
+                        stroke="#5BB5B0"
+                        strokeWidth="4"
+                        fill="none"
+                        strokeDasharray={150.8}
+                        strokeDashoffset={150.8 * (1 - mockUser.wellnessScore / 100)}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-brand-teal">
+                      {mockUser.wellnessScore}%
+                    </span>
+                  </div>
+                  <Image
+                    src="/assets/excellent-emoticon.svg"
+                    alt="Mood"
+                    width={32}
+                    height={32}
+                  />
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="overflow-hidden">
             <CardContent className="p-4">
-              <h4 className="font-semibold text-gray-900">Highlights</h4>
-              <p className="text-xs text-gray-500">Curated Products & Activities for {mockUser.name}</p>
+              <div className="flex items-center gap-2 mb-2">
+                <Zap className="h-4 w-4 text-brand-gold" />
+                <h4 className="font-semibold text-gray-900">AI Insights</h4>
+              </div>
+              <p className="text-xs text-gray-500 mb-2">Personalized for {mockUser.name}</p>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-brand-gold rounded-full" style={{ width: '94%' }} />
+                </div>
+                <span className="text-xs font-medium text-brand-gold">94.3%</span>
+              </div>
+              <p className="text-[10px] text-muted-foreground mt-1">Match confidence</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Human OS Quick Stats */}
+        <div className="grid grid-cols-3 gap-2">
+          <Card className="bg-brand-navy text-white">
+            <CardContent className="p-3 text-center">
+              <Target className="h-5 w-5 mx-auto mb-1 text-brand-gold" />
+              <p className="text-lg font-bold">{mockUser.tenureDays}</p>
+              <p className="text-[10px] text-gray-400">Days Active</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-brand-teal text-white">
+            <CardContent className="p-3 text-center">
+              <Activity className="h-5 w-5 mx-auto mb-1" />
+              <p className="text-lg font-bold">{mockUser.dataPoints}</p>
+              <p className="text-[10px] text-white/70">Data Points</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-brand-gold text-white">
+            <CardContent className="p-3 text-center">
+              <TrendingUp className="h-5 w-5 mx-auto mb-1" />
+              <p className="text-lg font-bold">+3%</p>
+              <p className="text-[10px] text-white/80">Growth</p>
             </CardContent>
           </Card>
         </div>

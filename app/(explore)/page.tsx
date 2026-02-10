@@ -10,11 +10,15 @@ import {
   Star,
   CheckCircle2,
   Gift,
-  LucideIcon
+  LucideIcon,
+  Zap,
+  Target,
+  Activity
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchSanity, queries, urlFor } from "@/lib/sanity";
+import { StateOfHuman, DecisionEngine, NetworkEffects } from "@/components/human-os";
 
 // Icon mapping for dynamic icons from Sanity
 const iconMap: Record<string, LucideIcon> = {
@@ -107,32 +111,121 @@ export default async function HomePage() {
   const content = { ...defaultContent, ...data };
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-brand-cream via-white to-brand-cream py-20 md:py-32">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
-        <div className="container relative">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center rounded-full bg-brand-gold/10 px-4 py-1.5 text-sm font-medium text-brand-gold mb-6">
-              <Sparkles className="mr-2 h-4 w-4" />
-              {content.heroTagline}
-            </span>
-            <h1 className="font-display text-4xl font-bold tracking-tight text-brand-navy sm:text-5xl md:text-6xl">
-              {content.heroHeadline}{" "}
-              <span className="text-brand-gold">{content.heroHighlightedText}</span>
-            </h1>
-            <p className="mt-6 text-lg text-muted-foreground md:text-xl">
-              {content.heroDescription}
-            </p>
-            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Button variant="gold" size="xl" asChild>
-                <Link href="/signup">
-                  {content.heroPrimaryCta}
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button variant="outline" size="xl" asChild>
-                <Link href="/experts">{content.heroSecondaryCta}</Link>
-              </Button>
+      {/* Hero Section - Enhanced with brand assets */}
+      <section className="relative overflow-hidden py-20 md:py-32">
+        {/* Background with brand pattern */}
+        <div className="absolute inset-0">
+          <Image
+            src="/assets/blue-gradient-hero-bg.png"
+            alt="Background"
+            fill
+            className="object-cover opacity-30"
+            priority
+          />
+          <div 
+            className="absolute inset-0 opacity-5"
+            style={{ 
+              backgroundImage: "url('/assets/b&b-pattern.svg')",
+              backgroundSize: "400px",
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-cream/90 via-white/80 to-brand-cream/90" />
+        </div>
+        
+        <div className="container relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <span className="inline-flex items-center rounded-full bg-brand-gold/10 px-4 py-1.5 text-sm font-medium text-brand-gold mb-6">
+                <Sparkles className="mr-2 h-4 w-4" />
+                {content.heroTagline}
+              </span>
+              <h1 className="font-display text-4xl font-bold tracking-tight text-brand-navy sm:text-5xl md:text-6xl">
+                {content.heroHeadline}{" "}
+                <span className="text-brand-gold">{content.heroHighlightedText}</span>
+              </h1>
+              <p className="mt-6 text-lg text-muted-foreground md:text-xl max-w-xl mx-auto lg:mx-0">
+                {content.heroDescription}
+              </p>
+              <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
+                <Button variant="gold" size="xl" asChild>
+                  <Link href="/signup">
+                    {content.heroPrimaryCta}
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button variant="outline" size="xl" asChild>
+                  <Link href="/experts">{content.heroSecondaryCta}</Link>
+                </Button>
+              </div>
+              
+              {/* Human OS differentiators */}
+              <div className="mt-12 grid grid-cols-3 gap-6">
+                <div className="text-center lg:text-left">
+                  <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
+                    <Target className="h-4 w-4 text-brand-teal" />
+                    <span className="font-semibold text-brand-navy">94.3%</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Routing Accuracy</p>
+                </div>
+                <div className="text-center lg:text-left">
+                  <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
+                    <Zap className="h-4 w-4 text-brand-gold" />
+                    <span className="font-semibold text-brand-navy">50+</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Wellness Modalities</p>
+                </div>
+                <div className="text-center lg:text-left">
+                  <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
+                    <Activity className="h-4 w-4 text-green-500" />
+                    <span className="font-semibold text-brand-navy">AI-Powered</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Smart Matching</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Hero Image with branded elements */}
+            <div className="hidden lg:flex justify-center relative">
+              <div className="relative w-full max-w-md aspect-square">
+                <Image
+                  src="/assets/female-sports-model.png"
+                  alt="Wellness"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+                
+                {/* Floating branded cards */}
+                <div className="absolute -left-8 top-1/4 bg-white rounded-xl shadow-xl p-4 animate-fade-in">
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src="/assets/excellent-emoticon.svg"
+                      alt="Excellent"
+                      width={40}
+                      height={40}
+                    />
+                    <div>
+                      <p className="font-semibold text-brand-navy text-sm">Feeling Great!</p>
+                      <p className="text-xs text-muted-foreground">Wellness Score: 87%</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="absolute -right-4 bottom-1/3 bg-white rounded-xl shadow-xl p-4 animate-fade-in">
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src="/assets/mandala-filled.svg"
+                      alt="AI Match"
+                      width={32}
+                      height={32}
+                    />
+                    <div>
+                      <p className="font-semibold text-brand-navy text-sm">AI Match Found</p>
+                      <p className="text-xs text-brand-teal">94.3% confidence</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -261,9 +354,27 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Human OS - State of the Human (Compact) */}
+      <StateOfHuman variant="hero" showCTA={false} />
+
+      {/* Human OS - Decision Engine (Compact) */}
+      <DecisionEngine variant="feature" showModalities />
+
+      {/* Human OS - Network Effects (Compact) */}
+      <NetworkEffects variant="full" showPrivacy={false} />
+
       {/* CTA Section */}
-      <section className="bg-brand-cream py-20 md:py-28">
-        <div className="container">
+      <section className="bg-brand-cream py-20 md:py-28 relative overflow-hidden">
+        {/* Background pattern */}
+        <div 
+          className="absolute inset-0 opacity-5"
+          style={{ 
+            backgroundImage: "url('/assets/b&b-diamond-pattern.svg')",
+            backgroundSize: "100px",
+          }}
+        />
+        
+        <div className="container relative z-10">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="font-display text-3xl font-bold text-brand-navy md:text-4xl">
               {content.ctaTitle}
@@ -281,6 +392,21 @@ export default async function HomePage() {
               <Button variant="outline" size="xl" asChild>
                 <Link href="/contact">{content.ctaSecondaryButton}</Link>
               </Button>
+            </div>
+            
+            {/* Additional CTAs for Human OS */}
+            <div className="mt-8 pt-8 border-t border-brand-navy/10">
+              <p className="text-sm text-muted-foreground mb-4">
+                For enterprise solutions and corporate wellness programs:
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Button variant="outline" size="lg" asChild>
+                  <Link href="/partners">Corporate Partnerships</Link>
+                </Button>
+                <Button variant="outline" size="lg" asChild>
+                  <Link href="/human-os">Learn About Human OS</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
