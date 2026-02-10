@@ -71,16 +71,16 @@ const colors = {
   },
 };
 
-// Service categories with welcoming colors
+// Service categories - Standardized to Sea (teal) color palette
 const serviceCategories = [
-  { id: "therapy", label: "Therapy", icon: Brain, color: "bg-[#6B9BC3]", gradient: "from-[#6B9BC3] to-[#5A8AB2]" },
-  { id: "coaching", label: "Coaching", icon: Sparkles, color: "bg-[#D4AF37]", gradient: "from-[#D4AF37] to-[#C9A42E]" },
-  { id: "wellness", label: "Wellness", icon: Leaf, color: "bg-[#7DD3D3]", gradient: "from-[#7DD3D3] to-[#0D9488]", badge: "New" },
-  { id: "groups", label: "Groups", icon: Users, color: "bg-[#B8A4C9]", gradient: "from-[#B8A4C9] to-[#9B8BB5]" },
-  { id: "clinics", label: "Clinics", icon: Stethoscope, color: "bg-[#0D9488]", gradient: "from-[#0D9488] to-[#0B7B71]" },
-  { id: "fitness", label: "Fitness", icon: Dumbbell, color: "bg-[#F4A261]", gradient: "from-[#F4A261] to-[#E8914F]" },
-  { id: "perks", label: "Perks", icon: Gift, color: "bg-[#E9967A]", gradient: "from-[#E9967A] to-[#D88568]" },
-  { id: "support", label: "Support", icon: MessageCircle, color: "bg-[#7DD3D3]", gradient: "from-[#7DD3D3] to-[#6BC4C4]" },
+  { id: "therapy", label: "Therapy", icon: Brain, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
+  { id: "coaching", label: "Coaching", icon: Sparkles, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
+  { id: "wellness", label: "Wellness", icon: Leaf, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]", badge: "New" },
+  { id: "groups", label: "Groups", icon: Users, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
+  { id: "clinics", label: "Clinics", icon: Stethoscope, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
+  { id: "fitness", label: "Fitness", icon: Dumbbell, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
+  { id: "perks", label: "Perks", icon: Gift, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
+  { id: "support", label: "Support", icon: MessageCircle, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
 ];
 
 // Promo items for header carousel (center big, left/right smaller)
@@ -98,16 +98,16 @@ const navMenuItems = [
   { id: "profile", label: "Profile", icon: User, href: "/appx/profile" },
 ];
 
-// Wellness metrics config (values will be dynamic from user profile)
+// Wellness metrics config - Standardized to 3-color palette (Sky, Sand, Sea)
 const wellnessMetricsConfig = [
-  { id: "mind", label: "Mind", defaultValue: 60, color: "#0D9488", icon: Brain },
-  { id: "body", label: "Body", defaultValue: 60, color: "#D4AF37", icon: Activity },
-  { id: "sleep", label: "Sleep", defaultValue: 60, color: "#6B9BC3", icon: Moon },
-  { id: "energy", label: "Energy", defaultValue: 60, color: "#F4A261", icon: Zap },
-  { id: "mood", label: "Mood", defaultValue: 60, color: "#E9967A", icon: Smile },
-  { id: "focus", label: "Focus", defaultValue: 60, color: "#7DD3D3", icon: Sun },
-  { id: "stress", label: "Stress", defaultValue: 60, color: "#B8A4C9", icon: TrendingUp },
-  { id: "hydration", label: "Hydration", defaultValue: 60, color: "#6B9BC3", icon: Coffee },
+  { id: "mind", label: "Mind", defaultValue: 60, color: "#5BB5B0", icon: Brain },       // Sea
+  { id: "body", label: "Body", defaultValue: 60, color: "#6B9BC3", icon: Activity },     // Sky
+  { id: "sleep", label: "Sleep", defaultValue: 60, color: "#5BB5B0", icon: Moon },       // Sea
+  { id: "energy", label: "Energy", defaultValue: 60, color: "#6B9BC3", icon: Zap },      // Sky
+  { id: "mood", label: "Mood", defaultValue: 60, color: "#5BB5B0", icon: Smile },        // Sea
+  { id: "focus", label: "Focus", defaultValue: 60, color: "#6B9BC3", icon: Sun },        // Sky
+  { id: "stress", label: "Stress", defaultValue: 60, color: "#5BB5B0", icon: TrendingUp }, // Sea
+  { id: "hydration", label: "Hydration", defaultValue: 60, color: "#6B9BC3", icon: Coffee }, // Sky
 ];
 
 // Slide type interface

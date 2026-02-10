@@ -65,6 +65,18 @@ const config: Config = {
           blue: "#3B82C4",
           purple: "#8B5CF6",
         },
+        // 3-Color Palette: Sky, Sand, Sea
+        palette: {
+          sky: "#6B9BC3",      // Calm blue - sky
+          "sky-light": "#8BB5D5",
+          "sky-dark": "#5A8AB2",
+          sand: "#E8D5C4",     // Warm beige - sand
+          "sand-light": "#F5E6D3",
+          "sand-dark": "#D4C4B3",
+          sea: "#5BB5B0",      // Teal - sea
+          "sea-light": "#7DD3D3",
+          "sea-dark": "#4A9A96",
+        },
         wellness: {
           excellent: "#22C55E",
           good: "#84CC16",

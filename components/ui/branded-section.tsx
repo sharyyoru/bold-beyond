@@ -25,7 +25,7 @@ export function BrandedSection({
   pattern = "pattern",
   opacity = 0.4,
   className = "",
-  patternSize = 200,
+  patternSize = 400,  // 2x bigger to reduce repetition
   patternPosition = "full",
 }: BrandedSectionProps) {
   const getPositionStyles = () => {
