@@ -1,0 +1,36 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer circle -->
+  <circle cx="100" cy="100" r="95" fill="#F26522"/>
+  <circle cx="100" cy="100" r="88" fill="none" stroke="white" stroke-width="3"/>
+  <circle cx="100" cy="100" r="82" fill="none" stroke="white" stroke-width="2"/>
+  
+  <!-- Inner mandala pattern -->
+  <g transform="translate(100, 100)">
+    <!-- Vertical petal -->
+    <path d="M0,-70 C20,-45 20,-25 0,0 C-20,-25 -20,-45 0,-70" fill="none" stroke="white" stroke-width="2.5"/>
+    <path d="M0,70 C20,45 20,25 0,0 C-20,25 -20,45 0,70" fill="none" stroke="white" stroke-width="2.5"/>
+    
+    <!-- Horizontal petal -->
+    <path d="M-70,0 C-45,20 -25,20 0,0 C-25,-20 -45,-20 -70,0" fill="none" stroke="white" stroke-width="2.5"/>
+    <path d="M70,0 C45,20 25,20 0,0 C25,-20 45,-20 70,0" fill="none" stroke="white" stroke-width="2.5"/>
+    
+    <!-- Center diamond -->
+    <path d="M0,-25 L15,0 L0,25 L-15,0 Z" fill="none" stroke="white" stroke-width="2"/>
+    
+    <!-- Inner cross details -->
+    <line x1="0" y1="-35" x2="0" y2="-55" stroke="white" stroke-width="2"/>
+    <line x1="0" y1="35" x2="0" y2="55" stroke="white" stroke-width="2"/>
+    <line x1="-35" y1="0" x2="-55" y2="0" stroke="white" stroke-width="2"/>
+    <line x1="35" y1="0" x2="55" y2="0" stroke="white" stroke-width="2"/>
+    
+    <!-- Decorative dots -->
+    <circle cx="0" cy="-60" r="3" fill="white"/>
+    <circle cx="0" cy="60" r="3" fill="white"/>
+    <circle cx="-60" cy="0" r="3" fill="white"/>
+    <circle cx="60" cy="0" r="3" fill="white"/>
+    
+    <!-- Center ornament -->
+    <ellipse cx="0" cy="0" rx="8" ry="12" fill="none" stroke="white" stroke-width="1.5"/>
+    <ellipse cx="0" cy="0" rx="12" ry="8" fill="none" stroke="white" stroke-width="1.5"/>
+  </g>
+</svg>

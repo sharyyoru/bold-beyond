@@ -39,10 +39,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FavoriteButton } from "@/components/ui/favorite-button";
+import { BrandedSection, BrandedCard } from "@/components/ui/branded-section";
 import { sanityClient, urlFor, queries } from "@/lib/sanity";
 import { createAppClient } from "@/lib/supabase";
 import { getNetworkMetrics } from "@/lib/human-os/network-effects";
 import { VENDOR_NEUTRAL_MESSAGING } from "@/lib/human-os/decision-engine";
+
+const SITE_LOGO = "/assets/mandala-orange.svg";
 
 // Sand/Water/Air color palette for welcoming feel
 const colors = {
@@ -1045,8 +1048,8 @@ export default function AppXPage() {
             </div>
           </div>
 
-          {/* Featured Services from Sanity */}
-          <div className="mb-6">
+          {/* Featured Services from Sanity - with branded background */}
+          <BrandedSection pattern="diamond" opacity={0.4} className="mb-6 py-4 bg-gradient-to-r from-brand-cream/50 to-white">
             <div className="flex items-center justify-between px-4 mb-3">
               <h3 className="font-semibold text-gray-900">Popular Services</h3>
               <Link href="/appx/services" className="text-sm text-brand-teal font-medium">
@@ -1124,10 +1127,10 @@ export default function AppXPage() {
                 <p className="text-gray-500 text-sm px-2">No services available</p>
               )}
             </div>
-          </div>
+          </BrandedSection>
 
-          {/* Featured Products from Sanity */}
-          <div className="mb-6">
+          {/* Featured Products from Sanity - with branded background */}
+          <BrandedSection pattern="pattern" opacity={0.4} className="mb-6 py-4 bg-gradient-to-r from-white to-brand-cream/30">
             <div className="flex items-center justify-between px-4 mb-3">
               <h3 className="font-semibold text-gray-900">Wellness Products</h3>
               <Link href="/appx/products" className="text-sm text-brand-teal font-medium">
@@ -1213,10 +1216,10 @@ export default function AppXPage() {
                 <p className="text-gray-500 text-sm px-2">No products available</p>
               )}
             </div>
-          </div>
+          </BrandedSection>
 
-          {/* Featured Providers from Sanity */}
-          <div className="mb-6">
+          {/* Featured Providers from Sanity - with branded background */}
+          <BrandedSection pattern="mandala" opacity={0.4} patternPosition="top-right" patternSize={150} className="mb-6 py-4 bg-gradient-to-l from-brand-cream/40 to-white">
             <div className="flex items-center justify-between px-4 mb-3">
               <h3 className="font-semibold text-gray-900">Top Providers</h3>
               <Link href="/appx/providers" className="text-sm text-brand-teal font-medium">
@@ -1296,7 +1299,7 @@ export default function AppXPage() {
                 <p className="text-gray-500 text-sm px-2">No providers available</p>
               )}
             </div>
-          </div>
+          </BrandedSection>
 
           {/* Human OS - Personal Data Moat Card */}
           <div className="px-4 mb-6">
@@ -1313,11 +1316,10 @@ export default function AppXPage() {
                   <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-2">
                       <Image
-                        src="/assets/mandala-filled.svg"
-                        alt="Human OS"
-                        width={24}
-                        height={24}
-                        className="opacity-80"
+                        src={SITE_LOGO}
+                        alt="Bold & Beyond"
+                        width={28}
+                        height={28}
                       />
                       <h3 className="font-semibold">Your Wellness Intelligence</h3>
                     </div>
