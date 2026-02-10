@@ -71,6 +71,39 @@ export default function HumanOSPage() {
   ]);
   const [loading, setLoading] = useState(true);
 
+  // Calculate nervous system status based on scores
+  const calculateNervousSystemStatus = (scores: Record<string, number>): "regulated" | "elevated" | "dysregulated" => {
+    const stressScore = scores.stress || 50;
+    const moodScore = scores.mood || 50;
+    const avgScore = (stressScore + moodScore) / 2;
+    
+    if (avgScore < 40) return "dysregulated";
+    if (avgScore < 60) return "elevated";
+    return "regulated";
+  };
+
+  // Calculate burnout risk based on scores
+  const calculateBurnoutRisk = (scores: Record<string, number>): "low" | "moderate" | "high" => {
+    const energyScore = scores.energy || 50;
+    const stressScore = scores.stress || 50;
+    const sleepScore = scores.sleep || 50;
+    const avgScore = (energyScore + stressScore + sleepScore) / 3;
+    
+    if (avgScore < 40) return "high";
+    if (avgScore < 60) return "moderate";
+    return "low";
+  };
+
+  // Update alignment dimensions from wellness scores
+  const updateAlignmentFromScores = (scores: Record<string, number>) => {
+    setAlignmentDimensions([
+      { id: "mind", label: "Mind", value: scores.mind || 60, description: "Mental clarity" },
+      { id: "emotion", label: "Emotion", value: scores.mood || 60, description: "Emotional regulation" },
+      { id: "behavior", label: "Behavior", value: Math.round(((scores.body || 60) + (scores.energy || 60)) / 2), description: "Aligned actions" },
+      { id: "energy", label: "Energy", value: scores.energy || 60, description: "Vitality" },
+    ]);
+  };
+
   useEffect(() => {
     const loadUserData = async () => {
       try {
@@ -78,9 +111,10 @@ export default function HumanOSPage() {
         const { data: { user } } = await supabase.auth.getUser();
         
         if (user) {
+          // Fetch user profile with wellness scores
           const { data: profile } = await supabase
             .from("profiles")
-            .select("full_name, wellness_scores")
+            .select("full_name, wellness_scores, alignment_score")
             .eq("id", user.id)
             .single();
           
@@ -88,7 +122,57 @@ export default function HumanOSPage() {
             setUserName(profile.full_name?.split(" ")[0] || "there");
             if (profile.wellness_scores) {
               setWellnessScores(profile.wellness_scores);
+              setNervousSystemStatus(calculateNervousSystemStatus(profile.wellness_scores));
+              setBurnoutRisk(calculateBurnoutRisk(profile.wellness_scores));
+              updateAlignmentFromScores(profile.wellness_scores);
             }
+          }
+
+          // Fetch recent check-ins for mood history
+          const { data: checkins } = await supabase
+            .from("wellness_checkins")
+            .select("created_at, scores, answers")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(7);
+
+          if (checkins && checkins.length > 0) {
+            const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            const moodEntries = checkins.map((checkin: any) => {
+              const date = new Date(checkin.created_at);
+              const score = checkin.scores?.mood || checkin.scores?.overall || 60;
+              let moodType: "great" | "happy" | "neutral" | "low" | "sad" = "neutral";
+              if (score >= 80) moodType = "great";
+              else if (score >= 65) moodType = "happy";
+              else if (score >= 50) moodType = "neutral";
+              else if (score >= 35) moodType = "low";
+              else moodType = "sad";
+              
+              return {
+                date: date.toISOString().split('T')[0],
+                dayName: days[date.getDay()],
+                mood: moodType,
+                score: score,
+              };
+            });
+            setMoodHistory(moodEntries.reverse());
+          }
+
+          // Fetch last week's score for trend comparison
+          const oneWeekAgo = new Date();
+          oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+          
+          const { data: lastWeekCheckin } = await supabase
+            .from("wellness_checkins")
+            .select("scores")
+            .eq("user_id", user.id)
+            .lte("created_at", oneWeekAgo.toISOString())
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .single();
+
+          if (lastWeekCheckin?.scores?.overall) {
+            setPreviousScore(lastWeekCheckin.scores.overall);
           }
         }
       } catch (error) {
@@ -103,12 +187,18 @@ export default function HumanOSPage() {
 
   const handleMoodComplete = async (mood: any) => {
     setShowMoodCheckin(false);
-    // Update mood score
-    setWellnessScores(prev => ({
-      ...prev,
+    
+    // Update mood score and recalculate everything
+    const newScores = {
+      ...wellnessScores,
       mood: mood.score,
-      overall: Math.round((prev.mind + prev.body + prev.sleep + prev.energy + mood.score + prev.stress) / 6),
-    }));
+      overall: Math.round((wellnessScores.mind + wellnessScores.body + wellnessScores.sleep + wellnessScores.energy + mood.score + wellnessScores.stress) / 6),
+    };
+    
+    setWellnessScores(newScores);
+    setNervousSystemStatus(calculateNervousSystemStatus(newScores));
+    setBurnoutRisk(calculateBurnoutRisk(newScores));
+    updateAlignmentFromScores(newScores);
     
     // Save to database
     try {
@@ -116,12 +206,19 @@ export default function HumanOSPage() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
+        // Save check-in
         await supabase.from("wellness_checkins").insert({
           user_id: user.id,
           answers: { quick_mood: mood },
-          scores: { mood: mood.score },
+          scores: { mood: mood.score, overall: newScores.overall },
           created_at: new Date().toISOString(),
         });
+        
+        // Update profile with new scores
+        await supabase.from("profiles").update({
+          wellness_scores: newScores,
+          last_checkin: new Date().toISOString(),
+        }).eq("id", user.id);
       }
     } catch (error) {
       console.error("Error saving mood:", error);
