@@ -799,12 +799,21 @@ export default function AppXPage() {
         </div>
       </div>
 
-      {/* Fixed Header Section */}
+      {/* Fixed Header Section - with subtle pattern */}
       <div
         ref={headerRef}
-        className={`relative transition-all duration-300 ease-out bg-gradient-to-br from-[#1B365D] to-[#0D9488]`}
+        className={`relative transition-all duration-300 ease-out bg-gradient-to-br from-[#1B365D] to-[#0D9488] overflow-hidden`}
         style={{ height: headerHeight, minHeight: headerHeight }}
       >
+        {/* Subtle background pattern */}
+        <div 
+          className="absolute inset-0 opacity-[0.08] pointer-events-none"
+          style={{ 
+            backgroundImage: "url('/assets/b&b-diamond-pattern.svg')",
+            backgroundSize: "120px",
+            backgroundPosition: "center",
+          }}
+        />
         {/* Search Bar - Always visible */}
         <div className={`absolute top-0 left-0 right-0 z-20 px-4 transition-all duration-300 ${isCollapsed ? 'py-3' : 'py-4'}`}>
           <div className="flex items-center gap-3">
@@ -1048,8 +1057,8 @@ export default function AppXPage() {
             </div>
           </div>
 
-          {/* Featured Services from Sanity - with branded background */}
-          <BrandedSection pattern="diamond" opacity={0.4} className="mb-6 py-4 bg-gradient-to-r from-brand-cream/50 to-white">
+          {/* Featured Services from Sanity - with subtle branded background */}
+          <BrandedSection pattern="diamond" opacity={0.15} patternSize={100} className="mb-6 py-4 bg-gradient-to-r from-palette-sand-light/30 to-white">
             <div className="flex items-center justify-between px-4 mb-3">
               <h3 className="font-semibold text-gray-900">Popular Services</h3>
               <Link href="/appx/services" className="text-sm text-brand-teal font-medium">
@@ -1129,8 +1138,8 @@ export default function AppXPage() {
             </div>
           </BrandedSection>
 
-          {/* Featured Products from Sanity - with branded background */}
-          <BrandedSection pattern="pattern" opacity={0.4} className="mb-6 py-4 bg-gradient-to-r from-white to-brand-cream/30">
+          {/* Featured Products from Sanity - with subtle branded background */}
+          <BrandedSection pattern="diamond" opacity={0.12} patternSize={80} className="mb-6 py-4 bg-gradient-to-r from-white to-palette-sand-light/20">
             <div className="flex items-center justify-between px-4 mb-3">
               <h3 className="font-semibold text-gray-900">Wellness Products</h3>
               <Link href="/appx/products" className="text-sm text-brand-teal font-medium">
@@ -1218,8 +1227,8 @@ export default function AppXPage() {
             </div>
           </BrandedSection>
 
-          {/* Featured Providers from Sanity - with branded background */}
-          <BrandedSection pattern="mandala" opacity={0.4} patternPosition="top-right" patternSize={150} className="mb-6 py-4 bg-gradient-to-l from-brand-cream/40 to-white">
+          {/* Featured Providers from Sanity - with subtle branded background */}
+          <BrandedSection pattern="diamond" opacity={0.1} patternSize={90} className="mb-6 py-4 bg-gradient-to-l from-palette-sand-light/25 to-white">
             <div className="flex items-center justify-between px-4 mb-3">
               <h3 className="font-semibold text-gray-900">Top Providers</h3>
               <Link href="/appx/providers" className="text-sm text-brand-teal font-medium">
@@ -1306,13 +1315,21 @@ export default function AppXPage() {
             <Card className="border-0 shadow-md overflow-hidden">
               <CardContent className="p-0">
                 <div className="bg-gradient-to-r from-brand-navy via-brand-navy-light to-brand-teal p-5 text-white relative overflow-hidden">
+                  {/* Single centered mandala pattern */}
                   <div 
-                    className="absolute inset-0 opacity-5"
+                    className="absolute -right-8 -bottom-8 opacity-[0.12] pointer-events-none"
                     style={{ 
-                      backgroundImage: "url('/assets/b&b-pattern.svg')",
-                      backgroundSize: "150px",
+                      width: "180px",
+                      height: "180px",
                     }}
-                  />
+                  >
+                    <Image
+                      src="/assets/mandala-logo-outline.svg"
+                      alt=""
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
                   <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-2">
                       <Image
