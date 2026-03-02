@@ -98,10 +98,13 @@ export function AlignmentScore({
   const gridLevels = [25, 50, 75, 100];
 
   return (
-    <div className={`relative bg-gradient-to-br ${getBackgroundGradient()} rounded-3xl overflow-hidden`}>
+    <div className={`relative bg-gradient-to-br ${getBackgroundGradient()} rounded-3xl overflow-hidden backdrop-blur-xl shadow-glass border border-white/20`}>
+      {/* Glass overlay */}
+      <div className="absolute inset-0 bg-white/5 backdrop-blur-sm" />
+      
       {/* Subtle pattern */}
       <div
-        className="absolute inset-0 opacity-[0.08]"
+        className="absolute inset-0 opacity-[0.05]"
         style={{
           backgroundImage: "url('/assets/b&b-pattern.svg')",
           backgroundSize: "80px",
@@ -115,13 +118,13 @@ export function AlignmentScore({
           <p className="text-white/60 text-xs">Your internal state</p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-white/70 text-xs bg-white/20 px-2 py-0.5 rounded-full">
+          <span className="text-white/70 text-xs bg-white/15 backdrop-blur-md border border-white/20 px-2 py-0.5 rounded-full">
             {getStatusLabel()}
           </span>
           {onHelpClick && (
             <button
               onClick={onHelpClick}
-              className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center"
+              className="h-8 w-8 rounded-full bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/25 transition-all"
             >
               <HelpCircle className="h-4 w-4 text-white" />
             </button>

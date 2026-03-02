@@ -40,11 +40,11 @@ export function MoodHistory({ entries, onViewAll }: MoodHistoryProps) {
   const negativeCount = entries.filter(e => e.score < 60).length;
 
   return (
-    <div className="bg-white rounded-3xl p-5 shadow-sm">
+    <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-5 shadow-glass border border-white/30">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-gray-900">Mood History</h3>
-        <button className="h-8 w-8 rounded-full hover:bg-gray-100 flex items-center justify-center">
+        <button className="h-8 w-8 rounded-full hover:bg-white/50 backdrop-blur-sm flex items-center justify-center transition-all">
           <MoreHorizontal className="h-5 w-5 text-gray-400" />
         </button>
       </div>

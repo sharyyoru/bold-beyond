@@ -67,8 +67,8 @@ export function MindfulnessTimer({
   };
 
   const containerClass = isFullScreen
-    ? "fixed inset-0 z-50 bg-gradient-to-b from-[#5BB5B0] to-[#4A9A96]"
-    : "bg-white rounded-3xl p-5 shadow-sm";
+    ? "fixed inset-0 z-50 bg-gradient-to-b from-[#5BB5B0]/95 to-[#4A9A96]/95 backdrop-blur-xl"
+    : "bg-white/70 backdrop-blur-xl rounded-3xl p-5 shadow-glass border border-white/30";
 
   return (
     <div className={containerClass}>

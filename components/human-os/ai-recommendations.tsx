@@ -36,10 +36,10 @@ export function AIRecommendations({
   onViewAll 
 }: AIRecommendationsProps) {
   return (
-    <div className="bg-white rounded-3xl p-5 shadow-sm">
+    <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-5 shadow-glass border border-white/30">
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
-        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#5BB5B0] to-[#6B9BC3] flex items-center justify-center">
+        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#5BB5B0] to-[#6B9BC3] backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-glow-sea">
           <Sparkles className="h-4 w-4 text-white" />
         </div>
         <div>

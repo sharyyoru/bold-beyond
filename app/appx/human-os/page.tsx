@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { GlassCard, GlassContainer } from "@/components/ui/glass-card";
 import { createAppClient } from "@/lib/supabase";
 import {
   MoodCheckin,
@@ -159,7 +160,12 @@ export default function HumanOSPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-palette-sky/20 via-palette-sea/10 to-palette-sand/20 pb-24 relative overflow-hidden">
+      {/* Decorative glass orbs */}
+      <div className="absolute top-40 -left-20 w-72 h-72 bg-palette-sea/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 -right-32 w-96 h-96 bg-palette-sky/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-40 left-1/4 w-64 h-64 bg-palette-sand/25 rounded-full blur-3xl pointer-events-none" />
+      
       {/* Mood Check-in Modal */}
       <AnimatePresence>
         {showMoodCheckin && (
@@ -185,11 +191,14 @@ export default function HumanOSPage() {
         )}
       </AnimatePresence>
 
-      {/* Header */}
-      <div className="bg-gradient-to-br from-[#1B365D] to-[#0D9488] px-4 pt-4 pb-6 relative overflow-hidden">
+      {/* Header - Glassmorphism */}
+      <div className="relative z-10 bg-gradient-to-br from-[#1B365D]/90 to-[#0D9488]/90 backdrop-blur-xl px-4 pt-4 pb-6 overflow-hidden">
+        {/* Glass overlay */}
+        <div className="absolute inset-0 bg-white/5 backdrop-blur-sm" />
+        
         {/* Subtle pattern */}
         <div 
-          className="absolute inset-0 opacity-[0.06]"
+          className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage: "url('/assets/b&b-diamond-pattern.svg')",
             backgroundSize: "80px",
@@ -201,20 +210,20 @@ export default function HumanOSPage() {
           <div className="flex items-center justify-between mb-6">
             <button
               onClick={() => router.back()}
-              className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center"
+              className="h-10 w-10 rounded-full bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/25 transition-all"
             >
               <ArrowLeft className="h-5 w-5 text-white" />
             </button>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
               <Image
                 src="/assets/mandala-orange.svg"
                 alt="Human OS"
-                width={28}
-                height={28}
+                width={24}
+                height={24}
               />
-              <span className="text-white font-semibold">Human OS</span>
+              <span className="text-white font-semibold text-sm">Human OS</span>
             </div>
-            <button className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
+            <button className="h-10 w-10 rounded-full bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/25 transition-all">
               <Settings className="h-5 w-5 text-white" />
             </button>
           </div>
@@ -225,13 +234,13 @@ export default function HumanOSPage() {
             <h1 className="text-2xl font-bold text-white">How are you feeling today?</h1>
           </div>
 
-          {/* Quick mood button */}
+          {/* Quick mood button - Glass effect */}
           <button
             onClick={() => setShowMoodCheckin(true)}
-            className="w-full bg-white/20 backdrop-blur rounded-2xl p-4 flex items-center justify-between hover:bg-white/30 transition-colors"
+            className="w-full bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl p-4 flex items-center justify-between hover:bg-white/25 hover:shadow-glass transition-all duration-300"
           >
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-[#E8D5C4] flex items-center justify-center">
+              <div className="h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
                 <span className="text-2xl">😊</span>
               </div>
               <div className="text-left">
@@ -278,11 +287,11 @@ export default function HumanOSPage() {
           />
         </div>
 
-        {/* Mental Score History */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm mb-6">
+        {/* Mental Score History - Glassmorphism */}
+        <GlassCard className="p-5 mb-6" variant="light" blur="xl">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-gray-900">Mental Score History</h3>
-            <Link href="/appx/wellness-tracker" className="text-sm text-[#5BB5B0]">
+            <Link href="/appx/wellness-tracker" className="text-sm text-palette-sea font-medium">
               See All
             </Link>
           </div>
@@ -294,21 +303,21 @@ export default function HumanOSPage() {
               { date: "Yesterday", mood: "Happy, Energetic", score: 82, recommendation: null },
               { date: "2 days ago", mood: "Calm, Focused", score: 78, recommendation: null },
             ].map((entry, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+              <div key={i} className="flex items-center gap-3 p-3 bg-white/50 backdrop-blur-sm border border-white/40 rounded-xl hover:bg-white/70 transition-all">
                 <div className="flex-1">
                   <p className="text-xs text-gray-400">{entry.date}</p>
                   <p className="font-medium text-gray-700">{entry.mood}</p>
                   {entry.recommendation && (
-                    <p className="text-xs text-[#5BB5B0]">{entry.recommendation}</p>
+                    <p className="text-xs text-palette-sea">{entry.recommendation}</p>
                   )}
                 </div>
-                <div className="h-10 w-10 rounded-full bg-[#5BB5B0]/10 flex items-center justify-center">
-                  <span className="font-bold text-[#5BB5B0]">{entry.score}</span>
+                <div className="h-10 w-10 rounded-full bg-palette-sea/15 backdrop-blur-sm border border-palette-sea/20 flex items-center justify-center">
+                  <span className="font-bold text-palette-sea">{entry.score}</span>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </GlassCard>
 
         {/* Mood History */}
         <div className="mb-6">
@@ -334,11 +343,11 @@ export default function HumanOSPage() {
           />
         </div>
 
-        {/* Wellness Dimensions */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm mb-6">
+        {/* Wellness Dimensions - Glassmorphism */}
+        <GlassCard className="p-5 mb-6" variant="light" blur="xl">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-gray-900">Wellness Breakdown</h3>
-            <Link href="/appx/wellness-tracker" className="text-sm text-[#5BB5B0]">
+            <Link href="/appx/wellness-tracker" className="text-sm text-palette-sea font-medium">
               Details
             </Link>
           </div>
@@ -379,42 +388,50 @@ export default function HumanOSPage() {
               );
             })}
           </div>
-        </div>
+        </GlassCard>
 
-        {/* Quick Actions */}
+        {/* Quick Actions - Glassmorphism */}
         <div className="grid grid-cols-2 gap-3 mb-6">
           <button
             onClick={() => setShowMindfulness(true)}
-            className="bg-[#5BB5B0] rounded-2xl p-4 text-left text-white"
+            className="bg-gradient-to-br from-palette-sea/80 to-palette-sea backdrop-blur-lg border border-white/20 rounded-2xl p-4 text-left text-white shadow-glass-sm hover:shadow-glass hover:scale-[1.02] transition-all duration-300"
           >
-            <Brain className="h-6 w-6 mb-2" />
+            <div className="h-10 w-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-2">
+              <Brain className="h-5 w-5" />
+            </div>
             <p className="font-semibold">Start Meditation</p>
             <p className="text-sm opacity-80">5-30 minutes</p>
           </button>
           
           <Link
             href="/appx/wellness-chat"
-            className="bg-[#6B9BC3] rounded-2xl p-4 text-left text-white"
+            className="bg-gradient-to-br from-palette-sky/80 to-palette-sky backdrop-blur-lg border border-white/20 rounded-2xl p-4 text-left text-white shadow-glass-sm hover:shadow-glass hover:scale-[1.02] transition-all duration-300"
           >
-            <Sparkles className="h-6 w-6 mb-2" />
+            <div className="h-10 w-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-2">
+              <Sparkles className="h-5 w-5" />
+            </div>
             <p className="font-semibold">Talk to AI</p>
             <p className="text-sm opacity-80">Get support</p>
           </Link>
           
           <Link
             href="/appx/wellness-checkin"
-            className="bg-[#8B7355] rounded-2xl p-4 text-left text-white"
+            className="bg-gradient-to-br from-amber-600/80 to-amber-700 backdrop-blur-lg border border-white/20 rounded-2xl p-4 text-left text-white shadow-glass-sm hover:shadow-glass hover:scale-[1.02] transition-all duration-300"
           >
-            <Target className="h-6 w-6 mb-2" />
+            <div className="h-10 w-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-2">
+              <Target className="h-5 w-5" />
+            </div>
             <p className="font-semibold">Full Check-in</p>
             <p className="text-sm opacity-80">6 questions</p>
           </Link>
           
           <Link
             href="/appx/wellness-tracker"
-            className="bg-[#E8D5C4] rounded-2xl p-4 text-left text-gray-800"
+            className="bg-gradient-to-br from-palette-sand/90 to-palette-sand backdrop-blur-lg border border-white/30 rounded-2xl p-4 text-left text-gray-800 shadow-glass-sm hover:shadow-glass hover:scale-[1.02] transition-all duration-300"
           >
-            <Calendar className="h-6 w-6 mb-2" />
+            <div className="h-10 w-10 rounded-xl bg-white/40 backdrop-blur-sm flex items-center justify-center mb-2">
+              <Calendar className="h-5 w-5" />
+            </div>
             <p className="font-semibold">View History</p>
             <p className="text-sm opacity-80">Track progress</p>
           </Link>

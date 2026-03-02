@@ -528,8 +528,8 @@ export function RegulationTools({ onToolSelect, activeTool }: RegulationToolsPro
 
   return (
     <>
-      {/* Tool selector */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm">
+      {/* Tool selector - Glassmorphism */}
+      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-5 shadow-glass border border-white/30">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="font-semibold text-gray-900">Regulation Tools</h3>
@@ -544,12 +544,12 @@ export function RegulationTools({ onToolSelect, activeTool }: RegulationToolsPro
               onClick={() => handleToolClick(tool)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="p-4 rounded-2xl text-left transition-all"
-              style={{ backgroundColor: `${tool.color}15` }}
+              className="p-4 rounded-2xl text-left transition-all backdrop-blur-md border border-white/40 hover:shadow-glass"
+              style={{ backgroundColor: `${tool.color}20` }}
             >
               <div
-                className="h-10 w-10 rounded-xl flex items-center justify-center mb-2"
-                style={{ backgroundColor: `${tool.color}25` }}
+                className="h-10 w-10 rounded-xl flex items-center justify-center mb-2 backdrop-blur-sm border border-white/30"
+                style={{ backgroundColor: `${tool.color}30` }}
               >
                 <tool.icon className="h-5 w-5" style={{ color: tool.color }} />
               </div>

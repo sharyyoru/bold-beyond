@@ -316,14 +316,14 @@ export function IntelligentRouting({ userState, onActionClick, onDismiss, onShow
           </motion.div>
         ) : null}
 
-        {/* Alternatives Panel */}
+        {/* Alternatives Panel - Glassmorphism */}
         {showAlternatives && (
           <motion.div
             key="alternatives"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="mt-4 bg-white rounded-3xl p-5 shadow-lg"
+            className="mt-4 bg-white/80 backdrop-blur-xl rounded-3xl p-5 shadow-glass border border-white/30"
           >
             <div className="flex items-center justify-between mb-4">
               <h4 className="font-semibold text-gray-900">Alternative Paths</h4>
