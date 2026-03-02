@@ -155,11 +155,16 @@ export default function ProgramsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] pb-24">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#1B365D] to-[#0D9488] px-4 pt-4 pb-6 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-palette-sky/15 via-palette-sea/10 to-palette-sand/15 pb-24 relative overflow-hidden">
+      {/* Decorative glass orbs */}
+      <div className="absolute top-40 -left-20 w-72 h-72 bg-palette-sea/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-40 -right-20 w-80 h-80 bg-palette-sky/10 rounded-full blur-3xl pointer-events-none" />
+      
+      {/* Header - Glassmorphism */}
+      <div className="bg-gradient-to-r from-[#1B365D]/90 to-[#0D9488]/90 backdrop-blur-xl px-4 pt-4 pb-6 relative overflow-hidden shadow-glass border-b border-white/10">
+        <div className="absolute inset-0 bg-white/5 backdrop-blur-sm" />
         <div
-          className="absolute inset-0 opacity-[0.06]"
+          className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage: "url('/assets/b&b-diamond-pattern.svg')",
             backgroundSize: "80px",
@@ -170,7 +175,7 @@ export default function ProgramsPage() {
           <div className="flex items-center gap-4 mb-6">
             <button
               onClick={() => router.back()}
-              className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center"
+              className="h-10 w-10 rounded-full bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/25 transition-all"
             >
               <ArrowLeft className="h-5 w-5 text-white" />
             </button>

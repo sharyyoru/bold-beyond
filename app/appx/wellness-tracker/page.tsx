@@ -283,9 +283,13 @@ export default function WellnessTrackerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
-      {/* Header - Enhanced with Human OS branding */}
-      <div className="bg-gradient-to-r from-brand-navy to-brand-teal px-4 py-4 sticky top-0 z-10 shadow-sm">
+    <div className="min-h-screen bg-gradient-to-br from-palette-sky/15 via-palette-sea/10 to-palette-sand/15 pb-24 relative overflow-hidden">
+      {/* Decorative glass orbs */}
+      <div className="absolute top-40 -left-20 w-72 h-72 bg-palette-sea/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 -right-32 w-80 h-80 bg-palette-sky/10 rounded-full blur-3xl pointer-events-none" />
+      
+      {/* Header - Glassmorphism */}
+      <div className="bg-gradient-to-r from-brand-navy/90 to-brand-teal/90 backdrop-blur-xl px-4 py-4 sticky top-0 z-10 shadow-glass border-b border-white/10">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => router.back()}

@@ -254,18 +254,22 @@ export default function WellnessChatPage() {
     : null;
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] flex flex-col">
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-100 px-4 py-3">
+    <div className="min-h-screen bg-gradient-to-br from-palette-sky/15 via-palette-sea/10 to-palette-sand/15 flex flex-col relative overflow-hidden">
+      {/* Decorative glass orbs */}
+      <div className="absolute top-20 -left-20 w-64 h-64 bg-palette-sea/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-40 -right-20 w-72 h-72 bg-palette-sky/15 rounded-full blur-3xl pointer-events-none" />
+      
+      {/* Header - Glassmorphism */}
+      <div className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-white/30 px-4 py-3 shadow-glass-sm">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.back()}
-            className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center"
+            className="h-10 w-10 rounded-full bg-white/50 backdrop-blur-sm border border-white/40 flex items-center justify-center hover:bg-white/70 transition-all"
           >
             <ArrowLeft className="h-5 w-5 text-gray-700" />
           </button>
           <div className="flex-1 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#0D9488] to-[#7DD3D3] flex items-center justify-center">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#0D9488]/90 to-[#7DD3D3]/90 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-glow-sea">
               <Sparkles className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -277,7 +281,7 @@ export default function WellnessChatPage() {
             </div>
           </div>
           {averageEmotionScore !== null && (
-            <div className="text-right">
+            <div className="text-right px-3 py-1.5 bg-white/40 backdrop-blur-sm rounded-xl border border-white/30">
               <p className="text-xs text-gray-400">Mood</p>
               <p className={`font-bold ${
                 averageEmotionScore >= 60 ? "text-green-500" : 

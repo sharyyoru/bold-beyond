@@ -181,12 +181,12 @@ function WellnessChart({ value, label, color, delay, icon: Icon }: { value: numb
   }, [value, delay]);
 
   return (
-    <div className="flex flex-col items-center flex-shrink-0 p-2 rounded-2xl bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+    <div className="flex flex-col items-center flex-shrink-0 p-2 rounded-2xl bg-white/60 backdrop-blur-xl shadow-glass-sm hover:shadow-glass border border-white/40 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
       style={{ minWidth: 80 }}
     >
       <div className="relative h-16 w-16">
         <svg className="h-16 w-16 -rotate-90 transform">
-          <circle cx="32" cy="32" r="28" stroke="#F5E6D3" strokeWidth="5" fill="none" />
+          <circle cx="32" cy="32" r="28" stroke="rgba(255,255,255,0.5)" strokeWidth="5" fill="none" />
           <circle
             cx="32" cy="32" r="28"
             stroke={color}
@@ -999,7 +999,7 @@ export default function AppXPage() {
               </div>
             </div>
 
-            {/* Quick Actions - Horizontal Scroll, Taller */}
+            {/* Quick Actions - Glassmorphism */}
             <div className="mb-5">
               <div 
                 className="flex gap-3 overflow-x-auto pb-2 px-4 cursor-grab active:cursor-grabbing"
@@ -1008,9 +1008,9 @@ export default function AppXPage() {
                 {quickActions.map((action, i) => (
                   <button
                     key={i}
-                    className="flex-shrink-0 flex items-center gap-3 bg-white rounded-2xl px-5 py-4 shadow-sm hover:shadow-md border border-[#E8D5C4] active:scale-95 transition-all duration-300"
+                    className="flex-shrink-0 flex items-center gap-3 bg-white/70 backdrop-blur-lg rounded-2xl px-5 py-4 shadow-glass-sm hover:shadow-glass border border-white/40 active:scale-95 transition-all duration-300"
                   >
-                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#F5E6D3] to-[#E8D5C4] flex items-center justify-center">
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#F5E6D3]/80 to-[#E8D5C4] backdrop-blur-sm flex items-center justify-center border border-white/30">
                       <action.icon className="h-6 w-6 text-[#D4AF37]" />
                     </div>
                     <div className="text-left">
@@ -1036,21 +1036,22 @@ export default function AppXPage() {
             <NetworkBadge usersHelped={10000} />
           </div>
 
-          {/* Promo Banner - Enhanced with brand pattern */}
+          {/* Promo Banner - Glassmorphism */}
           <div className="px-4 mb-5">
-            <div className="bg-gradient-to-r from-[#0D9488] via-[#7DD3D3] to-[#B8D4E8] rounded-2xl p-5 text-white shadow-lg relative overflow-hidden">
+            <div className="bg-gradient-to-r from-[#0D9488]/90 via-[#7DD3D3]/90 to-[#B8D4E8]/90 backdrop-blur-xl rounded-2xl p-5 text-white shadow-glass border border-white/20 relative overflow-hidden">
               <div 
-                className="absolute inset-0 opacity-10"
+                className="absolute inset-0 opacity-[0.08]"
                 style={{ 
                   backgroundImage: "url('/assets/b&b-diamond-pattern.svg')",
                   backgroundSize: "50px",
                 }}
               />
+              <div className="absolute inset-0 bg-white/5 backdrop-blur-sm" />
               <div className="relative z-10">
                 <p className="text-sm opacity-90">Book your first session</p>
                 <h3 className="text-xl font-bold mb-2">AED 50 OFF</h3>
                 <p className="text-xs opacity-80 mb-3">Use code: BOLDSTART</p>
-                <Button size="sm" className="bg-white text-[#0D9488] hover:bg-[#F5E6D3] rounded-full shadow-md">
+                <Button size="sm" className="bg-white/90 backdrop-blur-sm text-[#0D9488] hover:bg-white rounded-full shadow-glass-sm border border-white/30">
                   Book Now
                 </Button>
               </div>
