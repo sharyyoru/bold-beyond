@@ -96,6 +96,7 @@ const humanOSStats = [
 // Navigation menu items
 const navMenuItems = [
   { id: "home", label: "Home", icon: Home, href: "/appx" },
+  { id: "human-os", label: "Human OS", icon: Brain, href: "/appx/human-os", highlighted: true },
   { id: "help", label: "Help", icon: HelpCircle, href: "/appx/wellness-chat", badge: true },
   { id: "activities", label: "Activities", icon: ClipboardList, href: "/appx/activities" },
   { id: "profile", label: "Profile", icon: User, href: "/appx/profile" },
@@ -714,23 +715,27 @@ export default function AppXPage() {
             )}
 
             {/* Navigation Items - Circular buttons */}
-            <div className="grid grid-cols-4 gap-3 mb-6">
-              {navMenuItems.map((item, index) => (
+            <div className="grid grid-cols-5 gap-2 mb-6">
+              {navMenuItems.map((item) => (
                 <Link
                   key={item.id}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
                   className="flex flex-col items-center gap-2"
                 >
-                  <div className={`relative h-16 w-16 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 ${
-                    index === 1 ? 'bg-[#25D366] shadow-lg' : 'bg-white shadow-md border border-gray-100'
+                  <div className={`relative h-14 w-14 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 ${
+                    item.highlighted 
+                      ? 'bg-gradient-to-br from-orange-400 to-orange-600 shadow-lg shadow-orange-200' 
+                      : item.id === 'help' 
+                        ? 'bg-[#25D366] shadow-lg' 
+                        : 'bg-white shadow-md border border-gray-100'
                   }`}>
-                    <item.icon className={`h-6 w-6 ${index === 1 ? 'text-white' : 'text-gray-700'}`} />
+                    <item.icon className={`h-5 w-5 ${item.highlighted || item.id === 'help' ? 'text-white' : 'text-gray-700'}`} />
                     {item.badge && (
                       <span className="absolute -top-0.5 -right-0.5 h-3 w-3 bg-red-500 rounded-full border-2 border-white" />
                     )}
                   </div>
-                  <span className="text-xs font-medium text-gray-700">{item.label}</span>
+                  <span className={`text-[10px] font-medium ${item.highlighted ? 'text-orange-600' : 'text-gray-700'}`}>{item.label}</span>
                 </Link>
               ))}
             </div>
