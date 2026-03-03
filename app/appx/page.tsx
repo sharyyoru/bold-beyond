@@ -1317,26 +1317,27 @@ export default function AppXPage() {
                 <div className="bg-gradient-to-r from-brand-navy via-brand-navy-light to-brand-teal p-5 text-white relative overflow-hidden">
                   {/* Single centered mandala pattern */}
                   <div 
-                    className="absolute -right-8 -bottom-8 opacity-[0.12] pointer-events-none"
+                    className="absolute -right-4 -bottom-4 opacity-[0.25] pointer-events-none"
                     style={{ 
-                      width: "180px",
-                      height: "180px",
+                      width: "140px",
+                      height: "140px",
                     }}
                   >
                     <Image
-                      src="/new-assets/bnb-orang.png"
+                      src="/new-assets/bnb-white.png"
                       alt=""
                       fill
-                      className="object-contain p-2"
+                      className="object-contain"
                     />
                   </div>
                   <div className="relative z-10">
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-3 mb-2">
                       <Image
-                        src={SITE_LOGO}
+                        src="/new-assets/bnb-orang.png"
                         alt="Bold & Beyond"
-                        width={28}
-                        height={28}
+                        width={48}
+                        height={48}
+                        className="h-12 w-12 object-contain"
                       />
                       <h3 className="font-semibold">Your Wellness Intelligence</h3>
                     </div>
