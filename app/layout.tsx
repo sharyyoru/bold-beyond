@@ -32,12 +32,11 @@ export const metadata: Metadata = {
   authors: [{ name: "Bold & Beyond" }],
   icons: {
     icon: [
-      { url: "/images/favicon.ico" },
-      { url: "/images/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/images/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/new-assets/B&B_Favicon.png" },
+      { url: "/new-assets/B&B_Favicon.png", sizes: "32x32", type: "image/png" },
     ],
     apple: [
-      { url: "/images/apple-touch-icon.png" },
+      { url: "/new-assets/B&B_Favicon.png" },
     ],
     other: [
       { rel: "android-chrome-192x192", url: "/images/android-chrome-192x192.png" },

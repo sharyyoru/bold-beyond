@@ -313,7 +313,7 @@ export default function IntakePage() {
                 className="mb-8"
               >
                 <Image
-                  src="/assets/mandala-orange.svg"
+                  src="/new-assets/bnb-orang.png"
                   alt="Human OS"
                   width={80}
                   height={80}
@@ -396,7 +396,7 @@ export default function IntakePage() {
           className="mb-8"
         >
           <Image
-            src="/assets/mandala-orange.svg"
+            src="/new-assets/bnb-orang.png"
             alt="Human OS"
             width={48}
             height={48}

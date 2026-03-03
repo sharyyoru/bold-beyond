@@ -216,10 +216,10 @@ export default function HumanOSPage() {
             </button>
             <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
               <Image
-                src="/assets/mandala-orange.svg"
+                src="/new-assets/bnb-orang.png"
                 alt="Human OS"
-                width={24}
-                height={24}
+                width={28}
+                height={28}
               />
               <span className="text-white font-semibold text-sm">Human OS</span>
             </div>

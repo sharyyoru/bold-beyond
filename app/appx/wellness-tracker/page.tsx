@@ -300,10 +300,10 @@ export default function WellnessTrackerPage() {
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <Image
-                src="/assets/mandala-orange.svg"
+                src="/new-assets/bnb-orang.png"
                 alt="Bold & Beyond"
-                width={24}
-                height={24}
+                width={28}
+                height={28}
               />
               <h1 className="text-xl font-bold text-white">Wellness Intelligence</h1>
             </div>

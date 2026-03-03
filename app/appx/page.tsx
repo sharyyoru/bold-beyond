@@ -46,7 +46,7 @@ import { createAppClient } from "@/lib/supabase";
 import { getNetworkMetrics } from "@/lib/human-os/network-effects";
 import { VENDOR_NEUTRAL_MESSAGING } from "@/lib/human-os/decision-engine";
 
-const SITE_LOGO = "/assets/mandala-orange.svg";
+const SITE_LOGO = "/new-assets/bnb-orang.png";
 
 // Sand/Water/Air color palette for welcoming feel
 const colors = {
@@ -640,11 +640,11 @@ export default function AppXPage() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
                 <Image 
-                  src="/images/bold-beyond-logo.png" 
+                  src="/new-assets/bnb-orang.png" 
                   alt="Bold & Beyond" 
-                  width={40} 
-                  height={40}
-                  className="h-10 w-10 object-contain"
+                  width={44} 
+                  height={44}
+                  className="h-11 w-11 object-contain"
                 />
                 <div className="flex flex-col">
                   <span className="text-lg font-bold text-[#0D4F4F] leading-tight">BOLD&</span>
@@ -1323,10 +1323,10 @@ export default function AppXPage() {
                     }}
                   >
                     <Image
-                      src="/assets/mandala-logo-outline.svg"
+                      src="/new-assets/bnb-orang.png"
                       alt=""
                       fill
-                      className="object-contain"
+                      className="object-contain p-2"
                     />
                   </div>
                   <div className="relative z-10">

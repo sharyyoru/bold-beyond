@@ -70,7 +70,7 @@ export default function CalibratingPage() {
         {/* Logo */}
         <div className="relative w-24 h-24 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center animate-pulse">
           <Image
-            src="/images/bold-beyond-logo.png"
+            src="/new-assets/bnb-orang.png"
             alt="Bold & Beyond"
             width={64}
             height={64}

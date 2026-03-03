@@ -164,10 +164,10 @@ export default function CoachDashboardPage() {
             </button>
             <div className="flex items-center gap-2">
               <Image
-                src="/assets/mandala-orange.svg"
+                src="/new-assets/bnb-orang.png"
                 alt="Human OS"
-                width={28}
-                height={28}
+                width={32}
+                height={32}
               />
               <span className="text-white font-semibold">Coach Portal</span>
             </div>
