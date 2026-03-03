@@ -35,6 +35,7 @@ import {
   ShoppingBag,
   MapPin,
   Bell,
+  Target,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -83,11 +84,13 @@ const serviceCategories = [
   { id: "support", label: "Support", icon: MessageCircle, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
 ];
 
-// Promo items for header carousel (center big, left/right smaller)
-const promoItems = [
-  { id: 1, title: "Rides", subtitle: "Book now", bgColor: "bg-[#E0F4F4]", icon: Activity },
-  { id: 2, title: "Food", subtitle: "Order fresh", bgColor: "bg-[#F5E6D3]", icon: Coffee },
-  { id: 3, title: "Wellness", subtitle: "Feel good", bgColor: "bg-[#F0F7FF]", icon: Leaf },
+// Human OS Stats for header carousel
+const humanOSStats = [
+  { id: 1, label: "Alignment", value: 87, unit: "%", icon: Target, color: "#5BB5B0" },
+  { id: 2, label: "Resilience", value: 72, unit: "%", icon: Heart, color: "#E8A87C" },
+  { id: 3, label: "Energy", value: 65, unit: "%", icon: Zap, color: "#6B9BC3" },
+  { id: 4, label: "Focus", value: 78, unit: "%", icon: Brain, color: "#8B7355" },
+  { id: 5, label: "Recovery", value: 54, unit: "%", icon: Moon, color: "#7DD3D3" },
 ];
 
 // Navigation menu items
@@ -210,15 +213,18 @@ function WellnessChart({ value, label, color, delay, icon: Icon }: { value: numb
   );
 }
 
-// Promo Card Component for carousel
-function PromoCard({ item }: { item: typeof promoItems[0] }) {
+// Human OS Stat Card Component for carousel
+function HumanOSStatCard({ stat, isActive }: { stat: typeof humanOSStats[0]; isActive: boolean }) {
+  const Icon = stat.icon;
   return (
-    <div className={`${item.bgColor} rounded-2xl p-3 h-24 w-24 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer`}>
-      <div className="w-12 h-12 rounded-xl bg-white/60 flex items-center justify-center mb-1">
-        <Sparkles className="h-6 w-6 text-gray-600" />
+    <div className={`bg-white/15 backdrop-blur-md rounded-2xl p-3 flex flex-col items-center justify-center text-center border border-white/20 transition-all duration-500 ${isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-60'}`}
+      style={{ minWidth: 90, height: 90 }}
+    >
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-1" style={{ backgroundColor: `${stat.color}30` }}>
+        <Icon className="h-5 w-5" style={{ color: stat.color }} />
       </div>
-      <p className="text-[10px] font-semibold text-gray-700 truncate w-full">{item.title}</p>
-      <p className="text-[8px] text-gray-500 truncate w-full">{item.subtitle}</p>
+      <p className="text-lg font-bold text-white">{stat.value}{stat.unit}</p>
+      <p className="text-[10px] text-white/70">{stat.label}</p>
     </div>
   );
 }
@@ -569,10 +575,10 @@ export default function AppXPage() {
     (e.target as HTMLElement).releasePointerCapture(e.pointerId);
   }, []);
 
-  // Auto-rotate the 3 stacked promo cards (like Careem) - 3 seconds
+  // Auto-rotate Human OS stats carousel - 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentPromoCard((prev) => (prev + 1) % promoItems.length);
+      setCurrentPromoCard((prev) => (prev + 1) % humanOSStats.length);
     }, 3000); // Rotate every 3 seconds
     return () => clearInterval(interval);
   }, []);
@@ -843,78 +849,70 @@ export default function AppXPage() {
           </div>
         </div>
 
-        {/* Carousel Content - Text LEFT, 3 Stacked Cards RIGHT */}
+        {/* Human OS Hero Content */}
         <div
           className={`absolute inset-0 pt-20 transition-opacity duration-300 ${
             isCollapsed ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
         >
-          <div className="h-full flex items-center px-5 pb-8">
-            {/* Text Content - Left Side */}
-            <div className="flex-1 pr-4">
-              <h1 className="text-3xl font-display font-bold text-white mb-2">
-                {currentSlideData.title}
-              </h1>
-              <p className="text-white/90 text-base mb-4">
-                {currentSlideData.subtitle}
+          <div className="h-full flex flex-col px-5 pb-6">
+            {/* Human OS Badge */}
+            <div className="flex justify-center mb-3">
+              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md rounded-full px-4 py-2 border border-white/20">
+                <div className="h-6 w-6 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                  <Sparkles className="h-3 w-3 text-white" />
+                </div>
+                <span className="text-sm font-semibold text-white">Human OS</span>
+              </div>
+            </div>
+            
+            {/* Greeting */}
+            <div className="text-center mb-2">
+              <p className="text-white/80 text-sm">
+                👋 Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}, {userName.split(" ")[0]}!
               </p>
+              <h1 className="text-2xl font-bold text-white mt-1">
+                How are you feeling today?
+              </h1>
+            </div>
+            
+            {/* Log Mood Button */}
+            <Link 
+              href="/appx/wellness-checkin"
+              className="mx-auto mb-4 flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20 hover:bg-white/25 transition-all"
+            >
+              <span className="text-2xl">😊</span>
+              <div>
+                <p className="text-white font-medium text-sm">Log your mood</p>
+                <p className="text-white/60 text-xs">Quick 5-second check-in</p>
+              </div>
+              <ChevronRight className="h-5 w-5 text-white/60" />
+            </Link>
+            
+            {/* Stats Carousel */}
+            <div className="flex-1 flex items-center justify-center">
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                {humanOSStats.map((stat, index) => (
+                  <HumanOSStatCard 
+                    key={stat.id} 
+                    stat={stat} 
+                    isActive={index === currentPromoCard} 
+                  />
+                ))}
+              </div>
+            </div>
+            
+            {/* Go to Human OS Button */}
+            <div className="flex justify-center">
               <Link 
-                href={currentSlideData.ctaLink || "#"}
-                className="inline-flex items-center gap-2 text-white font-medium hover:underline"
+                href="/appx/human-os"
+                className="flex items-center gap-2 bg-white/90 backdrop-blur-sm text-[#1B365D] font-semibold px-6 py-3 rounded-full shadow-glass hover:bg-white transition-all"
               >
-                {currentSlideData.ctaText}
+                <Brain className="h-5 w-5" />
+                Open Human OS
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-            
-            {/* Rotating Carousel - Center big, Left/Right smaller behind */}
-            <div className="relative w-44 h-28 flex-shrink-0 flex items-center justify-center">
-              {promoItems.map((item, index) => {
-                const offset = (index - currentPromoCard + promoItems.length) % promoItems.length;
-                const isCenter = offset === 0;
-                const isRight = offset === 1;
-                const isLeft = offset === 2;
-                
-                return (
-                  <div
-                    key={item.id}
-                    className={`absolute rounded-2xl shadow-lg transition-all duration-500 ease-out cursor-pointer overflow-hidden ${item.bgColor}`}
-                    style={{
-                      width: isCenter ? 100 : 70,
-                      height: isCenter ? 90 : 65,
-                      left: isCenter ? '50%' : isLeft ? '0%' : 'auto',
-                      right: isRight ? '0%' : 'auto',
-                      transform: isCenter ? 'translateX(-50%) scale(1)' : isLeft ? 'translateX(0) scale(0.85)' : 'translateX(0) scale(0.85)',
-                      zIndex: isCenter ? 3 : 1,
-                      opacity: isCenter ? 1 : 0.7,
-                    }}
-                  >
-                    <div className="h-full p-2 flex flex-col justify-between">
-                      <div className="flex items-start justify-between">
-                        <span className="text-[10px] font-semibold text-gray-700">{item.title}</span>
-                        <div className="w-6 h-6 rounded-lg bg-white/70 flex items-center justify-center">
-                          <item.icon className="h-3 w-3 text-gray-600" />
-                        </div>
-                      </div>
-                      <p className="text-[8px] text-gray-500">{item.subtitle}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Slide Progress Indicators - Positioned higher */}
-          <div className="absolute bottom-12 left-5 flex items-center gap-2">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentSlide(i)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  i === currentSlide ? "w-6 bg-white" : "w-2 bg-white/40"
-                }`}
-              />
-            ))}
           </div>
         </div>
       </div>

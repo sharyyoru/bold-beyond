@@ -254,7 +254,7 @@ export default function HumanOSPage() {
       </div>
 
       {/* Main Content */}
-      <div className="px-4 -mt-2">
+      <div className="px-4 pt-6">
         {/* Intelligent Routing - Single Action */}
         <div className="mb-6">
           <IntelligentRouting
