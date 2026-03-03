@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -96,7 +96,7 @@ const timeOptions = [
   "Evening (5-8pm)", "Night (8-11pm)"
 ];
 
-export default function ProfilePage() {
+function ProfilePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -109,7 +109,7 @@ export default function ProfilePage() {
 
   // Read tab from URL query parameter
   useEffect(() => {
-    const tab = searchParams.get('tab');
+    const tab = searchParams?.get('tab');
     if (tab && ['personal', 'wellness', 'preferences', 'settings'].includes(tab)) {
       setActiveTab(tab as typeof activeTab);
     }
@@ -856,5 +856,18 @@ export default function ProfilePage() {
         )}
       </div>
     </div>
+  );
+}
+
+// Wrap in Suspense for useSearchParams
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+        <div className="h-12 w-12 rounded-full border-4 border-[#0D9488] border-t-transparent animate-spin" />
+      </div>
+    }>
+      <ProfilePageContent />
+    </Suspense>
   );
 }
