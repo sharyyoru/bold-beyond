@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -98,6 +98,7 @@ const timeOptions = [
 
 export default function ProfilePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -105,6 +106,14 @@ export default function ProfilePage() {
   const [editMode, setEditMode] = useState(false);
   const [activeTab, setActiveTab] = useState<"personal" | "wellness" | "preferences" | "settings">("personal");
   const [editedProfile, setEditedProfile] = useState<Partial<UserProfile>>({});
+
+  // Read tab from URL query parameter
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab && ['personal', 'wellness', 'preferences', 'settings'].includes(tab)) {
+      setActiveTab(tab as typeof activeTab);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     fetchProfile();

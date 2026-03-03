@@ -266,9 +266,9 @@ function SlideProgressBar({ duration, isActive, onComplete }: { duration: number
 
 // Quick action cards
 const quickActions = [
-  { label: "Add birthdate", sublabel: "Enjoy surprises", icon: Calendar },
-  { label: "Personalise", sublabel: "Add preferences", icon: Sparkles },
-  { label: "Verify", sublabel: "Get perks", icon: Star },
+  { label: "Add birthdate", sublabel: "Enjoy surprises", icon: Calendar, href: "/appx/profile?tab=personal" },
+  { label: "Personalise", sublabel: "Add preferences", icon: Sparkles, href: "/appx/profile?tab=preferences" },
+  { label: "Verify", sublabel: "Get perks", icon: Star, href: "/appx/profile?tab=settings" },
 ];
 
 // Service type for Sanity data
@@ -1007,8 +1007,9 @@ export default function AppXPage() {
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 {quickActions.map((action, i) => (
-                  <button
+                  <Link
                     key={i}
+                    href={action.href}
                     className="flex-shrink-0 flex items-center gap-3 bg-white/70 backdrop-blur-lg rounded-2xl px-5 py-4 shadow-glass-sm hover:shadow-glass border border-white/40 active:scale-95 transition-all duration-300"
                   >
                     <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#F5E6D3]/80 to-[#E8D5C4] backdrop-blur-sm flex items-center justify-center border border-white/30">
@@ -1018,7 +1019,7 @@ export default function AppXPage() {
                       <p className="text-sm font-semibold text-gray-800">{action.label}</p>
                       <p className="text-xs text-gray-500">{action.sublabel}</p>
                     </div>
-                  </button>
+                  </Link>
                 ))}
               </div>
             </div>
