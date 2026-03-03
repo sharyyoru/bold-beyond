@@ -298,12 +298,14 @@ export default function WellnessTrackerPage() {
             <ArrowLeft className="h-5 w-5 text-white" />
           </button>
           <div className="flex-1">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Image
-                src="/new-assets/bnb-orang.png"
+                src="/new-assets/bnb-white.png"
                 alt="Bold & Beyond"
-                width={28}
-                height={28}
+                width={56}
+                height={56}
+                className="object-contain"
+                style={{ width: 56, height: 56 }}
               />
               <h1 className="text-xl font-bold text-white">Wellness Intelligence</h1>
             </div>

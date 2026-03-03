@@ -396,10 +396,12 @@ export default function IntakePage() {
           className="mb-8"
         >
           <Image
-            src="/new-assets/bnb-orang.png"
-            alt="Human OS"
-            width={48}
-            height={48}
+            src="/new-assets/bnb-white.png"
+            alt="Bold & Beyond"
+            width={96}
+            height={96}
+            className="object-contain"
+            style={{ width: 96, height: 96 }}
           />
         </motion.div>
 

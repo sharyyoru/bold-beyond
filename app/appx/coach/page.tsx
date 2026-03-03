@@ -162,12 +162,14 @@ export default function CoachDashboardPage() {
             >
               <ArrowLeft className="h-5 w-5 text-white" />
             </button>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Image
-                src="/new-assets/bnb-orang.png"
-                alt="Human OS"
-                width={32}
-                height={32}
+                src="/new-assets/bnb-white.png"
+                alt="Bold & Beyond"
+                width={56}
+                height={56}
+                className="object-contain"
+                style={{ width: 56, height: 56 }}
               />
               <span className="text-white font-semibold">Coach Portal</span>
             </div>
