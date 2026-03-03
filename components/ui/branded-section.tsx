@@ -15,7 +15,7 @@ interface BrandedSectionProps {
 
 const patternPaths: Record<BackgroundPattern, string> = {
   mandala: "/assets/mandala-logo.svg",
-  diamond: "/assets/b&b-diamond-pattern.svg",
+  diamond: "/assets/seamless-diamond.svg",
   pattern: "/assets/b&b-pattern.svg",
   outline: "/assets/mandala-logo-outline.svg",
 };
@@ -64,8 +64,9 @@ export function BrandedSection({
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage: `url('${patternPaths[pattern]}')`,
-          opacity,
+          opacity: opacity * 0.9, // Reduced by 10%
           ...getPositionStyles(),
+          imageRendering: 'auto',
         }}
       />
       <div className="relative z-10">{children}</div>

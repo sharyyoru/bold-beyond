@@ -1057,7 +1057,7 @@ export default function AppXPage() {
           </div>
 
           {/* Featured Services from Sanity - with subtle branded background */}
-          <BrandedSection pattern="diamond" opacity={0.15} patternSize={100} className="mb-6 py-4 bg-gradient-to-r from-palette-sand-light/30 to-white">
+          <BrandedSection pattern="diamond" opacity={0.12} patternSize={60} className="mb-6 py-4 bg-gradient-to-r from-palette-sand-light/30 to-white">
             <div className="flex items-center justify-between px-4 mb-3">
               <h3 className="font-semibold text-gray-900">Popular Services</h3>
               <Link href="/appx/services" className="text-sm text-brand-teal font-medium">
@@ -1138,7 +1138,7 @@ export default function AppXPage() {
           </BrandedSection>
 
           {/* Featured Products from Sanity - with subtle branded background */}
-          <BrandedSection pattern="diamond" opacity={0.12} patternSize={80} className="mb-6 py-4 bg-gradient-to-r from-white to-palette-sand-light/20">
+          <BrandedSection pattern="diamond" opacity={0.10} patternSize={60} className="mb-6 py-4 bg-gradient-to-r from-white to-palette-sand-light/20">
             <div className="flex items-center justify-between px-4 mb-3">
               <h3 className="font-semibold text-gray-900">Wellness Products</h3>
               <Link href="/appx/products" className="text-sm text-brand-teal font-medium">
@@ -1227,7 +1227,7 @@ export default function AppXPage() {
           </BrandedSection>
 
           {/* Featured Providers from Sanity - with subtle branded background */}
-          <BrandedSection pattern="diamond" opacity={0.1} patternSize={90} className="mb-6 py-4 bg-gradient-to-l from-palette-sand-light/25 to-white">
+          <BrandedSection pattern="diamond" opacity={0.08} patternSize={60} className="mb-6 py-4 bg-gradient-to-l from-palette-sand-light/25 to-white">
             <div className="flex items-center justify-between px-4 mb-3">
               <h3 className="font-semibold text-gray-900">Top Providers</h3>
               <Link href="/appx/providers" className="text-sm text-brand-teal font-medium">

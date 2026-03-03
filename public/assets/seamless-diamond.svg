@@ -1,0 +1,17 @@
+<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="diamondGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5BB5B0" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#7DD3D3" stop-opacity="1"/>
+    </linearGradient>
+  </defs>
+  <!-- Center diamond -->
+  <path d="M30 5 L55 30 L30 55 L5 30 Z" fill="url(#diamondGrad)" fill-opacity="0.4"/>
+  <!-- Corner diamonds (will tile seamlessly) -->
+  <path d="M0 0 L15 0 L0 15 Z" fill="url(#diamondGrad)" fill-opacity="0.25"/>
+  <path d="M60 0 L60 15 L45 0 Z" fill="url(#diamondGrad)" fill-opacity="0.25"/>
+  <path d="M0 60 L0 45 L15 60 Z" fill="url(#diamondGrad)" fill-opacity="0.25"/>
+  <path d="M60 60 L45 60 L60 45 Z" fill="url(#diamondGrad)" fill-opacity="0.25"/>
+  <!-- Small accent dots -->
+  <circle cx="30" cy="30" r="2" fill="#5BB5B0" fill-opacity="0.3"/>
+</svg>
