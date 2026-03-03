@@ -522,7 +522,7 @@ export default function AppXPage() {
   })();
   
   // Header heights
-  const HEADER_EXPANDED = 350;
+  const HEADER_EXPANDED = 440;
   const HEADER_COLLAPSED = 72;
 
   // Handle content scroll - collapse on scroll down, expand only at top
@@ -855,7 +855,7 @@ export default function AppXPage() {
             isCollapsed ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
         >
-          <div className="h-full flex flex-col px-5 pb-6">
+          <div className="h-full flex flex-col px-5 pb-12">
             {/* Human OS Badge */}
             <div className="flex justify-center mb-3">
               <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md rounded-full px-4 py-2 border border-white/20">
