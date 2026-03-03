@@ -209,22 +209,78 @@ export async function fetchUserWellnessData(userId?: string): Promise<UserWellne
   }
   
   try {
-    // Fetch profile with wellness scores
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("wellness_scores, alignment_score, last_checkin")
-      .eq("id", currentUserId)
-      .single();
+    // Calculate date for previous week query
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    
+    // Run ALL queries in parallel for maximum speed
+    const [
+      profileResult,
+      checkinsResult,
+      lastWeekResult,
+      chatResult,
+      bookingsResult,
+      ordersResult,
+    ] = await Promise.all([
+      // Profile with wellness scores
+      supabase
+        .from("profiles")
+        .select("wellness_scores, alignment_score, last_checkin")
+        .eq("id", currentUserId)
+        .single(),
+      
+      // Recent check-ins for mood history
+      supabase
+        .from("wellness_checkins")
+        .select("*")
+        .eq("user_id", currentUserId)
+        .order("created_at", { ascending: false })
+        .limit(30),
+      
+      // Previous week's scores
+      supabase
+        .from("wellness_checkins")
+        .select("scores")
+        .eq("user_id", currentUserId)
+        .lte("created_at", oneWeekAgo.toISOString())
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single(),
+      
+      // Chat history (limit to 20 for speed)
+      supabase
+        .from("chat_messages")
+        .select("id, role, content, created_at, sentiment")
+        .eq("user_id", currentUserId)
+        .order("created_at", { ascending: false })
+        .limit(20),
+      
+      // Service bookings (limit to 10 for speed)
+      supabase
+        .from("bookings")
+        .select("id, service_id, provider_id, scheduled_at, created_at, status, rating")
+        .eq("user_id", currentUserId)
+        .order("created_at", { ascending: false })
+        .limit(10),
+      
+      // Purchases (limit to 10 for speed)
+      supabase
+        .from("orders")
+        .select("id, created_at, total")
+        .eq("user_id", currentUserId)
+        .order("created_at", { ascending: false })
+        .limit(10),
+    ]);
+    
+    // Extract data from results
+    const profile = profileResult.data;
+    const checkins = checkinsResult.data;
+    const lastWeekCheckin = lastWeekResult.data;
+    const chatMessages = chatResult.data;
+    const bookingsData = bookingsResult.data;
+    const ordersData = ordersResult.data;
     
     const scores: WellnessScores = profile?.wellness_scores || defaultScores;
-    
-    // Fetch recent check-ins for mood history
-    const { data: checkins } = await supabase
-      .from("wellness_checkins")
-      .select("*")
-      .eq("user_id", currentUserId)
-      .order("created_at", { ascending: false })
-      .limit(30);
     
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const moodHistory: MoodEntry[] = (checkins || []).slice(0, 7).map((checkin: any) => {
@@ -258,28 +314,7 @@ export async function fetchUserWellnessData(userId?: string): Promise<UserWellne
       }
     }
     
-    // Fetch previous week's scores
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    
-    const { data: lastWeekCheckin } = await supabase
-      .from("wellness_checkins")
-      .select("scores")
-      .eq("user_id", currentUserId)
-      .lte("created_at", oneWeekAgo.toISOString())
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .single();
-    
     const previousScores: WellnessScores | null = lastWeekCheckin?.scores || null;
-    
-    // Fetch chat history
-    const { data: chatMessages } = await supabase
-      .from("chat_messages")
-      .select("*")
-      .eq("user_id", currentUserId)
-      .order("created_at", { ascending: false })
-      .limit(50);
     
     const chatHistory: ChatMessage[] = (chatMessages || []).map((msg: any) => ({
       id: msg.id,
@@ -287,51 +322,30 @@ export async function fetchUserWellnessData(userId?: string): Promise<UserWellne
       content: msg.content,
       timestamp: msg.created_at,
       sentiment: msg.sentiment,
-      topics: msg.topics,
+      topics: [],
     }));
-    
-    // Fetch service bookings
-    const { data: bookingsData } = await supabase
-      .from("bookings")
-      .select("*, services(name, category), providers(name)")
-      .eq("user_id", currentUserId)
-      .order("created_at", { ascending: false })
-      .limit(20);
     
     const bookings: ServiceBooking[] = (bookingsData || []).map((booking: any) => ({
       id: booking.id,
       serviceId: booking.service_id,
-      serviceName: booking.services?.name || "Unknown Service",
-      category: booking.services?.category || "general",
+      serviceName: "Service",
+      category: "general",
       providerId: booking.provider_id,
-      providerName: booking.providers?.name || "Unknown Provider",
+      providerName: "Provider",
       date: booking.scheduled_at || booking.created_at,
       status: booking.status,
       rating: booking.rating,
-      feedback: booking.feedback,
+      feedback: undefined,
     }));
     
-    // Fetch purchases
-    const { data: ordersData } = await supabase
-      .from("orders")
-      .select("*, order_items(*, products(name, category))")
-      .eq("user_id", currentUserId)
-      .order("created_at", { ascending: false })
-      .limit(20);
-    
-    const purchases: Purchase[] = [];
-    (ordersData || []).forEach((order: any) => {
-      (order.order_items || []).forEach((item: any) => {
-        purchases.push({
-          id: item.id,
-          productId: item.product_id,
-          productName: item.products?.name || "Unknown Product",
-          category: item.products?.category || "general",
-          amount: item.price * item.quantity,
-          date: order.created_at,
-        });
-      });
-    });
+    const purchases: Purchase[] = (ordersData || []).map((order: any) => ({
+      id: order.id,
+      productId: order.id,
+      productName: "Purchase",
+      category: "general",
+      amount: order.total || 0,
+      date: order.created_at,
+    }));
     
     // Build complete data object
     const data: UserWellnessData = {
