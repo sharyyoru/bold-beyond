@@ -636,21 +636,15 @@ export default function AppXPage() {
           style={{ maxHeight: '85vh' }}
         >
           <div className="p-5 pt-10 overflow-y-auto" style={{ maxHeight: 'calc(85vh - 40px)' }}>
-            {/* Header: Logo + Brand + Close */}
+            {/* Header: Logo + Close */}
             <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                <Image 
-                  src="/new-assets/bnb-orang.png" 
-                  alt="Bold & Beyond" 
-                  width={44} 
-                  height={44}
-                  className="h-11 w-11 object-contain"
-                />
-                <div className="flex flex-col">
-                  <span className="text-lg font-bold text-[#0D4F4F] leading-tight">BOLD&</span>
-                  <span className="text-lg font-bold text-[#0D4F4F] leading-tight">BEYOND</span>
-                </div>
-              </div>
+              <Image 
+                src="/new-assets/bnb-orang.png" 
+                alt="Bold & Beyond" 
+                width={64} 
+                height={64}
+                className="h-16 w-16 object-contain"
+              />
               <button 
                 onClick={() => setIsMenuOpen(false)}
                 className="h-10 w-10 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-gray-50"
@@ -856,8 +850,15 @@ export default function AppXPage() {
           }`}
         >
           <div className="h-full flex flex-col px-5 pb-12">
-            {/* Human OS Badge */}
-            <div className="flex justify-center mb-3">
+            {/* B&B Logo + Human OS Badge */}
+            <div className="flex justify-center items-center gap-3 mb-3">
+              <Image
+                src="/new-assets/bnb-white.png"
+                alt="Bold & Beyond"
+                width={36}
+                height={36}
+                className="h-9 w-9 object-contain"
+              />
               <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md rounded-full px-4 py-2 border border-white/20">
                 <div className="h-6 w-6 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
                   <Sparkles className="h-3 w-3 text-white" />
