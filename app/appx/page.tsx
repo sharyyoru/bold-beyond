@@ -341,6 +341,8 @@ interface UserProfile {
   avatar_url: string | null;
   role: string;
   onboarding_complete: boolean;
+  membership_tier?: string;
+  membership_expires_at?: string;
   wellness_scores?: {
     mind?: number;
     body?: number;
@@ -680,10 +682,10 @@ export default function AppXPage() {
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-gray-900 mb-1">Hi, {userName.split(" ")[0]}!</h2>
                 <div className="flex items-center gap-2 flex-wrap">
-                  {/* Pro Member Badge */}
+                  {/* Plus Member Badge */}
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#D4AF37] text-white text-xs font-bold rounded-full">
                     <Star className="h-3 w-3 fill-white" />
-                    {userProfile?.role === 'admin' ? 'Admin' : 'Pro Member'}
+                    {userProfile?.role === 'admin' ? 'Admin' : userProfile?.membership_tier === 'plus' ? 'Plus Member' : 'Free'}
                   </span>
                   {/* Wellness Score & Mood */}
                   <span className="inline-flex items-center gap-1 text-sm text-gray-600">
@@ -861,10 +863,10 @@ export default function AppXPage() {
               <Image
                 src="/new-assets/bnb-white.png"
                 alt="Bold & Beyond"
-                width={56}
-                height={56}
+                width={112}
+                height={112}
                 className="object-contain"
-                style={{ width: 56, height: 56 }}
+                style={{ width: 112, height: 112 }}
               />
               <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md rounded-full px-4 py-2.5 border border-white/20">
                 <div className="h-7 w-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">

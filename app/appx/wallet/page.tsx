@@ -17,6 +17,7 @@ import {
   ChevronRight,
   TrendingUp,
   Clock,
+  Star,
 } from "lucide-react";
 import { createAppClient } from "@/lib/supabase";
 
@@ -189,22 +190,60 @@ export default function WalletPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white/10 rounded-xl p-3">
-              <div className="flex items-center gap-2 mb-1">
-                <ArrowDownLeft className="h-4 w-4 text-green-300" />
-                <span className="text-xs text-white/70">Total Credits</span>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-white/10 rounded-xl p-3 min-w-0">
+              <div className="flex items-center gap-1.5 mb-1">
+                <ArrowDownLeft className="h-3.5 w-3.5 text-green-300 flex-shrink-0" />
+                <span className="text-[11px] text-white/70 truncate">Total Credits</span>
               </div>
-              <p className="font-semibold">{totalCredits.toFixed(2)} AED</p>
+              <p className="font-semibold text-sm truncate">{totalCredits.toFixed(2)} AED</p>
             </div>
-            <div className="bg-white/10 rounded-xl p-3">
-              <div className="flex items-center gap-2 mb-1">
-                <ArrowUpRight className="h-4 w-4 text-red-300" />
-                <span className="text-xs text-white/70">Total Spent</span>
+            <div className="bg-white/10 rounded-xl p-3 min-w-0">
+              <div className="flex items-center gap-1.5 mb-1">
+                <ArrowUpRight className="h-3.5 w-3.5 text-red-300 flex-shrink-0" />
+                <span className="text-[11px] text-white/70 truncate">Total Spent</span>
               </div>
-              <p className="font-semibold">{totalDebits.toFixed(2)} AED</p>
+              <p className="font-semibold text-sm truncate">{totalDebits.toFixed(2)} AED</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Plus Membership Upgrade Card */}
+      <div className="px-4 mb-4">
+        <div className="bg-gradient-to-r from-[#D4AF37] to-[#B8962E] rounded-2xl p-4 text-white shadow-lg">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
+                <Star className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold">Plus Membership</h3>
+                <p className="text-xs text-white/80">Unlock premium features</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-xl font-bold">249</p>
+              <p className="text-xs text-white/80">AED/month</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
+            <div className="flex items-center gap-1.5">
+              <div className="h-4 w-4 rounded-full bg-white/20 flex items-center justify-center">
+                <Clock className="h-2.5 w-2.5" />
+              </div>
+              <span>Unlimited programs</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="h-4 w-4 rounded-full bg-white/20 flex items-center justify-center">
+                <TrendingUp className="h-2.5 w-2.5" />
+              </div>
+              <span>Priority matching</span>
+            </div>
+          </div>
+          <button className="w-full bg-white text-[#D4AF37] font-semibold py-2.5 rounded-xl text-sm hover:bg-white/90 transition-all">
+            Upgrade to Plus
+          </button>
         </div>
       </div>
 
@@ -212,8 +251,8 @@ export default function WalletPage() {
       <div className="px-4 mb-4">
         <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
           <div className="flex items-start gap-3">
-            <TrendingUp className="h-5 w-5 text-blue-500 mt-0.5" />
-            <div>
+            <TrendingUp className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+            <div className="min-w-0">
               <p className="text-sm font-medium text-blue-900">Use Your Balance</p>
               <p className="text-xs text-blue-700 mt-1">
                 Your wallet balance can be used for booking appointments or purchasing products during checkout.

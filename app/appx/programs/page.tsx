@@ -111,6 +111,8 @@ export default function ProgramsPage() {
   const [programs, setPrograms] = useState<Program[]>(availablePrograms);
   const [activeProgram, setActiveProgram] = useState<Program | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isPlusMember, setIsPlusMember] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   useEffect(() => {
     const loadUserPrograms = async () => {
@@ -119,11 +121,26 @@ export default function ProgramsPage() {
         const { data: { user } } = await supabase.auth.getUser();
         
         if (user) {
-          // In production, fetch user's enrolled programs from database
-          // For now, use default programs
-          const active = programs.find(p => p.isActive);
-          if (active) {
-            setActiveProgram(active);
+          // Check membership status
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('membership_tier, membership_expires_at')
+            .eq('id', user.id)
+            .single();
+          
+          const isPlus = profile?.membership_tier === 'plus' && 
+            (!profile?.membership_expires_at || new Date(profile.membership_expires_at) > new Date());
+          setIsPlusMember(isPlus);
+          
+          // If not Plus member, lock all programs
+          if (!isPlus) {
+            setPrograms(availablePrograms.map(p => ({ ...p, isLocked: true })));
+          } else {
+            // Unlock programs based on user's progress
+            const active = programs.find(p => p.isActive);
+            if (active) {
+              setActiveProgram(active);
+            }
           }
         }
       } catch (error) {
@@ -137,9 +154,9 @@ export default function ProgramsPage() {
   }, []);
 
   const handleStartProgram = (program: Program) => {
-    if (program.isLocked) {
-      // Show upgrade modal or redirect to subscription
-      router.push("/appx/wallet");
+    if (program.isLocked || !isPlusMember) {
+      // Show upgrade modal
+      setShowUpgradeModal(true);
       return;
     }
     // Navigate to program detail/start
@@ -302,22 +319,77 @@ export default function ProgramsPage() {
       </div>
 
       {/* Upgrade CTA */}
-      <div className="px-4 mt-4">
-        <div className="bg-gradient-to-r from-[#8B7355] to-[#6B5344] rounded-2xl p-5 text-white">
-          <div className="flex items-center gap-2 mb-2">
-            <Star className="h-5 w-5 text-brand-gold" />
-            <h4 className="font-semibold">Unlock All Programs</h4>
+      {!isPlusMember && (
+        <div className="px-4 mt-4">
+          <div className="bg-gradient-to-r from-[#D4AF37] to-[#B8962E] rounded-2xl p-5 text-white shadow-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Star className="h-5 w-5 text-white" />
+              <h4 className="font-semibold">Unlock All Programs</h4>
+            </div>
+            <p className="text-sm text-white/90 mb-2">
+              Get unlimited access to all transformation programs with Plus membership.
+            </p>
+            <p className="text-lg font-bold mb-4">249 AED/month</p>
+            <Link href="/appx/wallet?upgrade=plus">
+              <Button className="w-full bg-white text-[#D4AF37] hover:bg-white/90 rounded-full font-semibold">
+                Upgrade to Plus →
+              </Button>
+            </Link>
           </div>
-          <p className="text-sm text-white/80 mb-4">
-            Get unlimited access to all transformation programs with Bold+ membership.
-          </p>
-          <Link href="/appx/wallet">
-            <Button className="w-full bg-white text-[#8B7355] hover:bg-white/90 rounded-full">
-              Upgrade to Bold+ →
-            </Button>
-          </Link>
         </div>
-      </div>
+      )}
+
+      {/* Upgrade Modal */}
+      {showUpgradeModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl"
+          >
+            <div className="text-center mb-4">
+              <div className="h-16 w-16 bg-gradient-to-br from-[#D4AF37] to-[#B8962E] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Plus Membership Required</h3>
+              <p className="text-gray-600 text-sm">
+                Unlock all transformation programs and exclusive content with Plus membership.
+              </p>
+            </div>
+            <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#B8962E]/10 rounded-xl p-4 mb-4">
+              <p className="text-center text-2xl font-bold text-[#D4AF37]">249 AED<span className="text-sm font-normal text-gray-600">/month</span></p>
+            </div>
+            <div className="space-y-2 mb-6">
+              <div className="flex items-center gap-2 text-sm text-gray-700">
+                <Check className="h-4 w-4 text-[#5BB5B0]" />
+                <span>Unlimited program access</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-700">
+                <Check className="h-4 w-4 text-[#5BB5B0]" />
+                <span>Priority coach matching</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-700">
+                <Check className="h-4 w-4 text-[#5BB5B0]" />
+                <span>Advanced AI insights</span>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                className="flex-1 rounded-full"
+                onClick={() => setShowUpgradeModal(false)}
+              >
+                Not Now
+              </Button>
+              <Link href="/appx/wallet?upgrade=plus" className="flex-1">
+                <Button className="w-full bg-[#D4AF37] hover:bg-[#B8962E] text-white rounded-full">
+                  Upgrade
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

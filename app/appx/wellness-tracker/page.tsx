@@ -201,7 +201,7 @@ export default function WellnessTrackerPage() {
         title: "SELF-CARE TIME",
         type: "service",
         description: "Reset & relax with expert self-care",
-        discount: "30% off on Pro Members",
+        discount: "30% off for Plus Members",
         category: "spa",
         link: "/appx/services",
       });
