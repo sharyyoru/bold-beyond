@@ -522,7 +522,7 @@ export default function AppXPage() {
   })();
   
   // Header heights
-  const HEADER_EXPANDED = 440;
+  const HEADER_EXPANDED = 500;
   const HEADER_COLLAPSED = 72;
 
   // Handle content scroll - collapse on scroll down, expand only at top
