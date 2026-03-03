@@ -857,16 +857,16 @@ export default function AppXPage() {
             isCollapsed ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
         >
-          <div className="h-full flex flex-col px-5 pb-12">
+          <div className="h-full flex flex-col px-5 pb-6">
             {/* B&B Logo + Human OS Badge */}
-            <div className="flex justify-center items-center gap-4 mb-3">
+            <div className="flex justify-center items-center gap-3 mb-1">
               <Image
                 src="/new-assets/bnb-white.png"
                 alt="Bold & Beyond"
-                width={112}
-                height={112}
+                width={72}
+                height={72}
                 className="object-contain"
-                style={{ width: 112, height: 112 }}
+                style={{ width: 72, height: 72 }}
               />
               <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md rounded-full px-4 py-2.5 border border-white/20">
                 <div className="h-7 w-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
@@ -877,7 +877,7 @@ export default function AppXPage() {
             </div>
             
             {/* Greeting */}
-            <div className="text-center mb-2">
+            <div className="text-center mb-1">
               <p className="text-white/80 text-sm">
                 👋 Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}, {userName.split(" ")[0]}!
               </p>
@@ -889,7 +889,7 @@ export default function AppXPage() {
             {/* Log Mood Button */}
             <Link 
               href="/appx/wellness-checkin"
-              className="mx-auto mb-4 flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20 hover:bg-white/25 transition-all"
+              className="mx-auto mb-2 flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-2xl px-4 py-2.5 border border-white/20 hover:bg-white/25 transition-all"
             >
               <span className="text-2xl">😊</span>
               <div>
@@ -913,10 +913,10 @@ export default function AppXPage() {
             </div>
             
             {/* Go to Human OS Button */}
-            <div className="flex justify-center">
+            <div className="flex justify-center pb-4">
               <Link 
                 href="/appx/human-os"
-                className="flex items-center gap-2 bg-white/90 backdrop-blur-sm text-[#1B365D] font-semibold px-6 py-3 rounded-full shadow-glass hover:bg-white transition-all"
+                className="flex items-center gap-2 bg-white/90 backdrop-blur-sm text-[#1B365D] font-semibold px-5 py-2.5 rounded-full shadow-glass hover:bg-white transition-all"
               >
                 <Brain className="h-5 w-5" />
                 Open Human OS
