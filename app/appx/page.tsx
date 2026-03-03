@@ -641,9 +641,10 @@ export default function AppXPage() {
               <Image 
                 src="/new-assets/bnb-orang.png" 
                 alt="Bold & Beyond" 
-                width={64} 
-                height={64}
-                className="h-16 w-16 object-contain"
+                width={120} 
+                height={120}
+                className="object-contain"
+                style={{ width: 120, height: 120 }}
               />
               <button 
                 onClick={() => setIsMenuOpen(false)}
@@ -851,19 +852,20 @@ export default function AppXPage() {
         >
           <div className="h-full flex flex-col px-5 pb-12">
             {/* B&B Logo + Human OS Badge */}
-            <div className="flex justify-center items-center gap-3 mb-3">
+            <div className="flex justify-center items-center gap-4 mb-3">
               <Image
                 src="/new-assets/bnb-white.png"
                 alt="Bold & Beyond"
-                width={36}
-                height={36}
-                className="h-9 w-9 object-contain"
+                width={56}
+                height={56}
+                className="object-contain"
+                style={{ width: 56, height: 56 }}
               />
-              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md rounded-full px-4 py-2 border border-white/20">
-                <div className="h-6 w-6 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                  <Sparkles className="h-3 w-3 text-white" />
+              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md rounded-full px-4 py-2.5 border border-white/20">
+                <div className="h-7 w-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                  <Sparkles className="h-4 w-4 text-white" />
                 </div>
-                <span className="text-sm font-semibold text-white">Human OS</span>
+                <span className="text-base font-semibold text-white">Human OS</span>
               </div>
             </div>
             
@@ -1335,11 +1337,12 @@ export default function AppXPage() {
                       <Image
                         src="/new-assets/bnb-orang.png"
                         alt="Bold & Beyond"
-                        width={48}
-                        height={48}
-                        className="h-12 w-12 object-contain"
+                        width={72}
+                        height={72}
+                        className="object-contain"
+                        style={{ width: 72, height: 72 }}
                       />
-                      <h3 className="font-semibold">Your Wellness Intelligence</h3>
+                      <h3 className="font-semibold text-lg">Your Wellness Intelligence</h3>
                     </div>
                     <p className="text-sm opacity-90 mb-3">
                       AI-powered recommendations that get smarter every day

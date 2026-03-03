@@ -214,24 +214,16 @@ export default function HumanOSPage() {
             >
               <ArrowLeft className="h-5 w-5 text-white" />
             </button>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col items-center gap-1">
               <Image
                 src="/new-assets/bnb-white.png"
-                alt="Bold & Beyond"
-                width={36}
-                height={36}
-                className="h-9 w-9 object-contain"
+                alt="Human OS"
+                width={80}
+                height={80}
+                className="object-contain"
+                style={{ width: 80, height: 80 }}
               />
-              <div className="flex flex-col items-center gap-1">
-                <Image
-                  src="/new-assets/bnb-white.png"
-                  alt="Human OS"
-                  width={48}
-                  height={48}
-                  className="h-12 w-12 object-contain"
-                />
-                <span className="text-white font-semibold text-xs">Human OS</span>
-              </div>
+              <span className="text-white font-semibold text-sm">Human OS</span>
             </div>
             <button className="h-10 w-10 rounded-full bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/25 transition-all">
               <Settings className="h-5 w-5 text-white" />
