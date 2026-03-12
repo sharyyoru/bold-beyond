@@ -76,7 +76,7 @@ const colors = {
 const serviceCategories = [
   { id: "therapy", label: "Therapy", icon: Brain, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
   { id: "coaching", label: "Coaching", icon: Sparkles, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
-  { id: "wellness", label: "Wellness", icon: Leaf, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]", badge: "New" },
+  { id: "wellness", label: "Wellbeing", icon: Leaf, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]", badge: "New" },
   { id: "groups", label: "Groups", icon: Users, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
   { id: "clinics", label: "Clinics", icon: Stethoscope, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
   { id: "fitness", label: "Fitness", icon: Dumbbell, color: "bg-palette-sea", gradient: "from-[#5BB5B0] to-[#4A9A96]" },
@@ -102,7 +102,7 @@ const navMenuItems = [
   { id: "profile", label: "Profile", icon: User, href: "/appx/profile" },
 ];
 
-// Wellness metrics config - Standardized to 3-color palette (Sky, Sand, Sea)
+// Wellbeing metrics config - Standardized to 3-color palette (Sky, Sand, Sea)
 const wellnessMetricsConfig = [
   { id: "mind", label: "Mind", defaultValue: 60, color: "#5BB5B0", icon: Brain },       // Sea
   { id: "body", label: "Body", defaultValue: 60, color: "#6B9BC3", icon: Activity },     // Sky
@@ -141,7 +141,7 @@ const defaultSlides: CarouselSlide[] = [
     backgroundImage: null,
   },
   {
-    title: "Wellness Week",
+    title: "Wellbeing Week",
     subtitle: "Free consultations with top experts.",
     ctaText: "Explore",
     ctaLink: "/appx/wellness",
@@ -164,8 +164,8 @@ const defaultSlides: CarouselSlide[] = [
   },
 ];
 
-// Animated Wellness Chart Component - Bigger size
-function WellnessChart({ value, label, color, delay, icon: Icon }: { value: number; label: string; color: string; delay: number; icon?: any }) {
+// Animated Wellbeing Chart Component - Bigger size
+function WellbeingChart({ value, label, color, delay, icon: Icon }: { value: number; label: string; color: string; delay: number; icon?: any }) {
   const [animatedValue, setAnimatedValue] = useState(0);
   
   useEffect(() => {
@@ -500,7 +500,7 @@ export default function AppXPage() {
   const userInitials = userName.split(" ").map(n => n?.[0] || "").join("").toUpperCase().slice(0, 2) || "U";
   
   // Calculate wellness score from stored data
-  const userWellnessScore = (() => {
+  const userWellbeingScore = (() => {
     const scores = userProfile?.wellness_scores;
     if (!scores || typeof scores !== 'object') return null;
     const values = [scores.mind, scores.body, scores.sleep, scores.energy, scores.mood]
@@ -681,9 +681,9 @@ export default function AppXPage() {
                     <Star className="h-3 w-3 fill-white" />
                     {userProfile?.role === 'admin' ? 'Admin' : userProfile?.membership_tier === 'plus' ? 'Plus Member' : 'Free'}
                   </span>
-                  {/* Wellness Score & Mood */}
+                  {/* Wellbeing Score & Mood */}
                   <span className="inline-flex items-center gap-1 text-sm text-gray-600">
-                    <span className="text-[#D4AF37]">👤</span> {userWellnessScore !== null ? `${userWellnessScore}%` : '—%'}
+                    <span className="text-[#D4AF37]">👤</span> {userWellbeingScore !== null ? `${userWellbeingScore}%` : '—%'}
                   </span>
                   <span className="inline-flex items-center gap-1 text-sm text-gray-600">
                     {userMoodLabel ? `${userMoodLabel.emoji} ${userMoodLabel.text}` : '😊 —'}
@@ -945,9 +945,9 @@ export default function AppXPage() {
           }}
         >
           <div className={`pb-32 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #F5E6D3 0%, #E8D5C4 100%)' }}>
-            {/* Wellness Dashboard Container - Glassmorphism */}
+            {/* Wellbeing Dashboard Container - Glassmorphism */}
             <div className="mx-4 mb-5 bg-white/70 backdrop-blur-xl rounded-3xl p-4 shadow-glass border border-white/40">
-              {/* Row 1: 8 Wellness Charts - Horizontal Scroll + Daily Check-in */}
+              {/* Row 1: 8 Wellbeing Charts - Horizontal Scroll + Daily Check-in */}
               <div className="mb-4">
                 <div 
                   className="flex gap-3 overflow-x-auto pb-2"
@@ -968,7 +968,7 @@ export default function AppXPage() {
                     const score = userProfile?.wellness_scores?.[metric.id as keyof typeof userProfile.wellness_scores] ?? metric.defaultValue;
                     return (
                       <Link key={metric.id} href="/appx/wellness-tracker" className="flex-shrink-0">
-                        <WellnessChart value={score} label={metric.label} color={metric.color} delay={i * 100} icon={metric.icon} />
+                        <WellbeingChart value={score} label={metric.label} color={metric.color} delay={i * 100} icon={metric.icon} />
                       </Link>
                     );
                   })}
@@ -1118,7 +1118,7 @@ export default function AppXPage() {
           {/* Featured Products from Sanity - with subtle branded background */}
           <BrandedSection pattern="diamond" opacity={0.10} patternSize={60} className="mb-6 py-4 bg-gradient-to-r from-white to-palette-sand-light/20">
             <div className="flex items-center justify-between px-4 mb-3">
-              <h3 className="font-semibold text-[#0D9488]">Wellness Products</h3>
+              <h3 className="font-semibold text-[#0D9488]">Wellbeing Products</h3>
               <Link href="/appx/products" className="text-sm text-[#0D9488] font-medium">
                 See All
               </Link>
@@ -1317,7 +1317,7 @@ export default function AppXPage() {
                         className="object-contain"
                         style={{ width: 72, height: 72 }}
                       />
-                      <h3 className="font-semibold text-lg">Your Wellness Intelligence</h3>
+                      <h3 className="font-semibold text-lg">Your Wellbeing Intelligence</h3>
                     </div>
                     <p className="text-sm opacity-90 mb-3">
                       AI-powered recommendations that get smarter every day

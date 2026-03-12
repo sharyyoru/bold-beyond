@@ -1,14 +1,14 @@
 // Human OS Decision Engine - Vendor-Neutral Routing Layer
 import { 
-  WellnessProvider, 
+  WellbeingProvider, 
   RoutingDecision, 
   MatchingFactor,
-  UserWellnessProfile,
-  WellnessModality 
+  UserWellbeingProfile,
+  WellbeingModality 
 } from './types';
 
 // Vendor-neutral wellness modalities supported by the routing layer
-export const WELLNESS_MODALITIES: { id: WellnessModality; name: string; description: string }[] = [
+export const WELLNESS_MODALITIES: { id: WellbeingModality; name: string; description: string }[] = [
   { id: 'psychotherapy', name: 'Psychotherapy', description: 'Professional mental health support' },
   { id: 'life-coaching', name: 'Life Coaching', description: 'Goal-oriented personal development' },
   { id: 'meditation', name: 'Meditation & Mindfulness', description: 'Mental clarity and stress relief' },
@@ -18,13 +18,13 @@ export const WELLNESS_MODALITIES: { id: WellnessModality; name: string; descript
   { id: 'stress-management', name: 'Stress Management', description: 'Coping strategies and resilience' },
   { id: 'couples-therapy', name: 'Couples Therapy', description: 'Relationship enhancement' },
   { id: 'group-sessions', name: 'Group Sessions', description: 'Community-based healing' },
-  { id: 'holistic-wellness', name: 'Holistic Wellness', description: 'Integrative mind-body approaches' },
+  { id: 'holistic-wellness', name: 'Holistic Wellbeing', description: 'Integrative mind-body approaches' },
 ];
 
 // AI-powered routing algorithm
 export function calculateProviderMatch(
-  userProfile: UserWellnessProfile,
-  provider: WellnessProvider,
+  userProfile: UserWellbeingProfile,
+  provider: WellbeingProvider,
   userNeeds: string[]
 ): { score: number; factors: MatchingFactor[] } {
   const factors: MatchingFactor[] = [];
@@ -95,9 +95,9 @@ export function calculateProviderMatch(
 
 // Main routing function - vendor-neutral recommendation
 export async function routeToProviders(
-  userProfile: UserWellnessProfile,
+  userProfile: UserWellbeingProfile,
   userNeeds: string[],
-  availableProviders: WellnessProvider[]
+  availableProviders: WellbeingProvider[]
 ): Promise<RoutingDecision> {
   const scoredProviders = availableProviders
     .filter(p => p.availability)
@@ -127,7 +127,7 @@ export async function routeToProviders(
 
 // Calculate how much this routing decision contributes to network learning
 function calculateNetworkContribution(
-  userProfile: UserWellnessProfile,
+  userProfile: UserWellbeingProfile,
   userNeeds: string[]
 ): number {
   // Base contribution
@@ -167,7 +167,7 @@ export function getRoutingStats(): {
 
 // Explain why we're vendor-neutral
 export const VENDOR_NEUTRAL_MESSAGING = {
-  headline: "The Routing Layer for Wellness",
+  headline: "The Routing Layer for Wellbeing",
   subheadline: "We are not a coaching company. We are the operating system.",
   points: [
     "Vendor-neutral recommendations based on your unique needs",

@@ -36,7 +36,7 @@ export default function DownloadPage() {
             Download Bold & Beyond
           </h1>
           <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
-            Your personal wellness companion. Track your mental health, connect with experts, and unlock your full potential.
+            Your personal wellbeing companion. Track your mental health, connect with experts, and unlock your full potential.
           </p>
 
           {/* Download cards */}
@@ -105,8 +105,8 @@ export default function DownloadPage() {
             <h3 className="text-2xl font-bold text-white mb-8">What&apos;s Inside</h3>
             <div className="grid md:grid-cols-3 gap-6">
               {[
-                { title: "Human OS", description: "AI-powered wellness intelligence that learns and adapts to you" },
-                { title: "Expert Network", description: "Connect with verified therapists, coaches, and wellness professionals" },
+                { title: "Human OS", description: "AI-powered wellbeing intelligence that learns and adapts to you" },
+                { title: "Expert Network", description: "Connect with verified therapists, coaches, and wellbeing professionals" },
                 { title: "Regulation Tools", description: "Science-backed tools for nervous system regulation and emotional balance" },
               ].map((feature, i) => (
                 <div key={i} className="text-center">

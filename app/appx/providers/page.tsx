@@ -34,7 +34,7 @@ interface Provider {
 
 const categories = [
   { id: "all", label: "All" },
-  { id: "holistic-wellness", label: "Holistic Wellness" },
+  { id: "holistic-wellness", label: "Holistic Wellbeing" },
   { id: "meditation", label: "Meditation" },
   { id: "spa-beauty", label: "Spa & Beauty" },
   { id: "fitness-yoga", label: "Fitness & Yoga" },
@@ -88,7 +88,7 @@ export default function ProvidersPage() {
           </Link>
           <div className="flex-1">
             <h1 className="text-lg font-semibold text-gray-900">
-              Wellness Providers
+              Wellbeing Providers
             </h1>
             <p className="text-xs text-gray-500">
               {filteredProviders.length} providers available

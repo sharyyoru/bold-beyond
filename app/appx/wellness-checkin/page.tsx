@@ -33,7 +33,7 @@ const moodOptions = [
   { id: "struggling", label: "Struggling", emoji: "😢", score: 20, color: "#EF4444" },
 ];
 
-// Wellness dimensions
+// Wellbeing dimensions
 const wellnessDimensions = [
   { id: "mind", label: "Mind", icon: Brain, color: "#0D9488" },
   { id: "body", label: "Body", icon: Activity, color: "#D4AF37" },
@@ -131,14 +131,14 @@ const dailyQuestions = [
   },
 ];
 
-export default function WellnessCheckinPage() {
+export default function WellbeingCheckinPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const [wellnessScores, setWellnessScores] = useState<Record<string, number>>({});
+  const [wellnessScores, setWellbeingScores] = useState<Record<string, number>>({});
   const [todayCheckin, setTodayCheckin] = useState<any>(null);
   const [showReEvaluate, setShowReEvaluate] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -162,7 +162,7 @@ export default function WellnessCheckinPage() {
         
         if (data) {
           setTodayCheckin(data);
-          setWellnessScores(data.scores || {});
+          setWellbeingScores(data.scores || {});
           setShowReEvaluate(true);
         }
       }
@@ -242,7 +242,7 @@ export default function WellnessCheckinPage() {
     );
     scores.overall = overallScore;
 
-    setWellnessScores(scores);
+    setWellbeingScores(scores);
 
     // Save to Supabase
     try {
@@ -348,7 +348,7 @@ export default function WellnessCheckinPage() {
 
           {/* Today's Score Summary */}
           <div className="bg-white rounded-3xl p-6 mb-6 text-center">
-            <p className="text-gray-500 text-sm mb-2">Today's Wellness Score</p>
+            <p className="text-gray-500 text-sm mb-2">Today's Wellbeing Score</p>
             <div className="relative h-24 w-24 mx-auto mb-4">
               <svg className="h-24 w-24 -rotate-90 transform">
                 <circle cx="48" cy="48" r="40" stroke="#E5E7EB" strokeWidth="8" fill="none" />
@@ -391,7 +391,7 @@ export default function WellnessCheckinPage() {
               variant="outline"
               className="w-full py-6 bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-2xl font-semibold"
             >
-              View Wellness Tracker
+              View Wellbeing Tracker
             </Button>
             <Button
               onClick={() => router.push("/appx")}
@@ -423,7 +423,7 @@ export default function WellnessCheckinPage() {
 
           {/* Overall Score */}
           <div className="bg-white rounded-3xl p-6 mb-6 text-center">
-            <p className="text-gray-500 text-sm mb-2">Overall Wellness Score</p>
+            <p className="text-gray-500 text-sm mb-2">Overall Wellbeing Score</p>
             <div className="relative h-32 w-32 mx-auto mb-4">
               <svg className="h-32 w-32 -rotate-90 transform">
                 <circle cx="64" cy="64" r="56" stroke="#E5E7EB" strokeWidth="12" fill="none" />
@@ -450,7 +450,7 @@ export default function WellnessCheckinPage() {
 
           {/* Individual Scores */}
           <div className="bg-white rounded-3xl p-6 mb-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Your Wellness Breakdown</h3>
+            <h3 className="font-semibold text-gray-900 mb-4">Your Wellbeing Breakdown</h3>
             <div className="grid grid-cols-2 gap-4">
               {wellnessDimensions.map((dim) => (
                 <div key={dim.id} className="flex items-center gap-3">

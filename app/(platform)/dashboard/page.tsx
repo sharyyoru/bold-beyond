@@ -176,7 +176,7 @@ export default function DashboardPage() {
         <div className="absolute right-0 bottom-0 w-1/2 h-full flex items-end justify-center">
           <Image
             src="/assets/female-sports-model.png"
-            alt="Wellness"
+            alt="Wellbeing"
             width={200}
             height={200}
             className="object-contain"
@@ -248,7 +248,7 @@ export default function DashboardPage() {
           </Link>
         </div>
 
-        {/* Wellness Score & AI Insights */}
+        {/* Wellbeing Score & AI Insights */}
         <div className="grid grid-cols-2 gap-3">
           <Card className="overflow-hidden">
             <CardContent className="p-4 relative">
@@ -260,7 +260,7 @@ export default function DashboardPage() {
                 }}
               />
               <div className="relative z-10">
-                <h4 className="font-semibold text-gray-900">Wellness Score</h4>
+                <h4 className="font-semibold text-gray-900">Wellbeing Score</h4>
                 <p className="text-xs text-green-600">+12% better than yesterday</p>
                 <div className="mt-2 flex items-center gap-3">
                   <div className="relative h-14 w-14">

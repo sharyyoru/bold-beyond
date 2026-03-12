@@ -56,7 +56,7 @@ interface Purchase {
   created_at: string;
 }
 
-interface WellnessCheckin {
+interface WellbeingCheckin {
   id: string;
   scores: Record<string, number>;
   created_at: string;
@@ -246,12 +246,12 @@ export default function ActivitiesPage() {
       });
 
       // Process check-ins
-      (checkinsRes.data || []).forEach((checkin: WellnessCheckin) => {
+      (checkinsRes.data || []).forEach((checkin: WellbeingCheckin) => {
         const overallScore = checkin.scores?.overall || 60;
         allActivities.push({
           id: checkin.id,
           type: "checkin",
-          title: "Wellness Check-in",
+          title: "Wellbeing Check-in",
           subtitle: `Overall score: ${overallScore}%`,
           date: checkin.created_at,
           wellness_contribution: Math.round(overallScore / 5),
@@ -275,7 +275,7 @@ export default function ActivitiesPage() {
         allActivities.push({
           id: `chat-${day}`,
           type: "chat",
-          title: "AI Wellness Chat",
+          title: "AI Wellbeing Chat",
           subtitle: `${chats.length} messages • Mood: ${avgScore}%`,
           date: chats[0].created_at,
           wellness_contribution: Math.round(avgScore / 10),
@@ -313,7 +313,7 @@ export default function ActivitiesPage() {
     });
 
   // Calculate stats
-  const totalWellnessPoints = activities.reduce((sum, a) => sum + a.wellness_contribution, 0);
+  const totalWellbeingPoints = activities.reduce((sum, a) => sum + a.wellness_contribution, 0);
   const activityCounts = {
     bookings: activities.filter(a => a.type === "booking").length,
     purchases: activities.filter(a => a.type === "purchase").length,
@@ -398,7 +398,7 @@ export default function ActivitiesPage() {
                     sortBy === "wellness" ? "bg-[#0D9488] text-white" : "bg-gray-100 text-gray-600"
                   }`}
                 >
-                  Wellness Impact
+                  Wellbeing Impact
                 </button>
               </div>
             </div>
@@ -439,7 +439,7 @@ export default function ActivitiesPage() {
             <h3 className="font-semibold">Activity Summary</h3>
             <div className="flex items-center gap-1 bg-white/20 px-3 py-1 rounded-full">
               <BarChart3 className="h-4 w-4" />
-              <span className="text-sm font-medium">+{totalWellnessPoints} pts</span>
+              <span className="text-sm font-medium">+{totalWellbeingPoints} pts</span>
             </div>
           </div>
           <div className="grid grid-cols-4 gap-2">
@@ -556,7 +556,7 @@ export default function ActivitiesPage() {
                           )}
                         </div>
 
-                        {/* Wellness Contribution */}
+                        {/* Wellbeing Contribution */}
                         <div className="mt-3 flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             {activity.wellness_dimensions.slice(0, 3).map((dim) => {

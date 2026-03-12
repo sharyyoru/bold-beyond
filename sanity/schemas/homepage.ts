@@ -11,7 +11,7 @@ export default defineType({
       title: "Hero Tagline",
       type: "string",
       description: "Small text above the main headline",
-      initialValue: "Your Wellness Journey Starts Here",
+      initialValue: "Your Wellbeing Journey Starts Here",
     }),
     defineField({
       name: "heroTaglineAr",
@@ -87,7 +87,7 @@ export default defineType({
       name: "servicesTitle",
       title: "Services Section Title",
       type: "string",
-      initialValue: "Comprehensive Wellness Services",
+      initialValue: "Comprehensive Wellbeing Services",
     }),
     defineField({
       name: "servicesTitleAr",
@@ -157,7 +157,7 @@ export default defineType({
       name: "featuresTitle",
       title: "Features Section Title",
       type: "string",
-      initialValue: "Everything You Need for Your Wellness Journey",
+      initialValue: "Everything You Need for Your Wellbeing Journey",
     }),
     defineField({
       name: "featuresTitleAr",
@@ -267,7 +267,7 @@ export default defineType({
       name: "ctaTitle",
       title: "CTA Section Title",
       type: "string",
-      initialValue: "Ready to Start Your Wellness Journey?",
+      initialValue: "Ready to Start Your Wellbeing Journey?",
     }),
     defineField({
       name: "ctaTitleAr",

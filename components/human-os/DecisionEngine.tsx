@@ -45,7 +45,7 @@ export function DecisionEngine({
     },
     {
       icon: Network,
-      title: "50+ Wellness Modalities",
+      title: "50+ Wellbeing Modalities",
       description: "From psychotherapy to fitness, we cover the full spectrum of wellness.",
     },
   ];
@@ -216,7 +216,7 @@ export function DecisionEngine({
             <span className="text-sm font-medium">Decision Engine</span>
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-brand-navy mb-4">
-            The Routing Layer for Wellness
+            The Routing Layer for Wellbeing
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             We are not a coaching company. We are the operating system that routes you 
@@ -250,7 +250,7 @@ export function DecisionEngine({
           <Card className="bg-brand-navy text-white overflow-hidden">
             <CardContent className="p-8">
               <h3 className="font-semibold text-xl mb-6 text-center">
-                50+ Wellness Modalities, One Intelligent Layer
+                50+ Wellbeing Modalities, One Intelligent Layer
               </h3>
               <div className="flex flex-wrap justify-center gap-2">
                 {WELLNESS_MODALITIES.map((modality) => (

@@ -17,7 +17,7 @@ interface Product {
 }
 
 const categoryLabels: Record<string, string> = {
-  wellness: "Wellness",
+  wellness: "Wellbeing",
   "self-care": "Self-Care",
   books: "Books",
   supplements: "Supplements",
@@ -34,7 +34,7 @@ export default async function ProductsPage() {
       <section className="bg-gradient-to-b from-brand-navy to-brand-navy/90 text-white py-16">
         <div className="container text-center">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
-            Wellness Products
+            Wellbeing Products
           </h1>
           <p className="text-lg text-white/80 max-w-2xl mx-auto">
             Curated products to support your mental wellness journey, from

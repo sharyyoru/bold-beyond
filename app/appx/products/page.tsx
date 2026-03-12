@@ -31,7 +31,7 @@ const categories = [
   { id: "supplements", label: "Supplements" },
   { id: "self-care", label: "Self-care tools" },
   { id: "aromatherapy", label: "Aromatherapy" },
-  { id: "wellness", label: "Wellness" },
+  { id: "wellness", label: "Wellbeing" },
 ];
 
 export default function ProductsPage() {
@@ -75,7 +75,7 @@ export default function ProductsPage() {
               <ArrowLeft className="h-5 w-5 text-white" />
             </Link>
             <h1 className="text-lg font-bold text-white flex-1">
-              Wellness Products
+              Wellbeing Products
             </h1>
             <button className="h-10 w-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0">
               <ShoppingBag className="h-5 w-5 text-white" />
@@ -104,7 +104,7 @@ export default function ProductsPage() {
           {/* Title */}
           <div className="mb-4">
             <h2 className="text-lg font-bold text-gray-900">
-              Discover Wellness Products You'll Love
+              Discover Wellbeing Products You'll Love
             </h2>
             <p className="text-sm text-gray-500">
               Shop smarter with exclusive Bold & Beyond coupons for skincare,

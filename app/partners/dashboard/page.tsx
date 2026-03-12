@@ -1815,7 +1815,7 @@ export default function PartnerDashboard() {
                       <option value="fitness">Fitness</option>
                       <option value="therapy">Therapy</option>
                       <option value="coaching">Coaching</option>
-                      <option value="wellness">Wellness</option>
+                      <option value="wellness">Wellbeing</option>
                     </select>
                   </div>
                   {/* Image Upload - Only for editing existing items */}
@@ -1919,7 +1919,7 @@ export default function PartnerDashboard() {
                         className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       >
                         <option value="">Select category</option>
-                        <option value="wellness">Wellness</option>
+                        <option value="wellness">Wellbeing</option>
                         <option value="self-care">Self-Care</option>
                         <option value="supplements">Supplements</option>
                         <option value="equipment">Equipment</option>

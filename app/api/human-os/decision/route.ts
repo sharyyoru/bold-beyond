@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routeToProviders, getRoutingStats } from '@/lib/human-os/decision-engine';
-import { UserWellnessProfile, WellnessProvider } from '@/lib/human-os/types';
+import { UserWellbeingProfile, WellbeingProvider } from '@/lib/human-os/types';
 
 // Sample providers for demo
-const sampleProviders: WellnessProvider[] = [
+const sampleProviders: WellbeingProvider[] = [
   { id: '1', name: 'Dr. Sarah Ahmed', modality: 'psychotherapy', specializations: ['anxiety', 'depression', 'stress'], rating: 4.9, availability: true },
   { id: '2', name: 'Coach Michael', modality: 'life-coaching', specializations: ['career', 'leadership', 'motivation'], rating: 4.8, availability: true },
-  { id: '3', name: 'Wellness Center Dubai', modality: 'meditation', specializations: ['mindfulness', 'stress', 'sleep'], rating: 4.7, availability: true },
+  { id: '3', name: 'Wellbeing Center Dubai', modality: 'meditation', specializations: ['mindfulness', 'stress', 'sleep'], rating: 4.7, availability: true },
   { id: '4', name: 'FitLife Studio', modality: 'fitness', specializations: ['weight-loss', 'strength', 'wellness'], rating: 4.6, availability: true },
   { id: '5', name: 'Nutrition Plus', modality: 'nutrition', specializations: ['diet', 'weight-management', 'wellness'], rating: 4.8, availability: true },
   { id: '6', name: 'Dr. Fatima Hassan', modality: 'couples-therapy', specializations: ['relationships', 'communication', 'conflict'], rating: 4.9, availability: true },
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create a sample user profile (in production, fetch from database)
-    const userProfile: UserWellnessProfile = {
+    const userProfile: UserWellbeingProfile = {
       userId: userId || 'anonymous',
       tenureDays: 45,
       totalInteractions: 127,

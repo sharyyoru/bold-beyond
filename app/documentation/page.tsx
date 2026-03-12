@@ -62,7 +62,7 @@ const docSections = [
   },
   {
     id: "wellness-scoring",
-    title: "Wellness Scoring System",
+    title: "Wellbeing Scoring System",
     icon: Activity,
     color: "#E9967A",
     description: "How we calculate and track wellness metrics",
@@ -90,7 +90,7 @@ const docSections = [
   },
   {
     id: "wellness-tracker",
-    title: "Wellness Tracker",
+    title: "Wellbeing Tracker",
     icon: TrendingUp,
     color: "#14B8A6",
     description: "Visual tracking of wellness progress and AI recommendations",
@@ -242,7 +242,7 @@ function analyzeEmotion(text: string): { score: number; emotion: string } {
 
   return { score: Math.max(0, Math.min(100, score)), emotion };
 }`,
-  wellnessScoring: `// Wellness Score Calculation
+  wellnessScoring: `// Wellbeing Score Calculation
 const calculateScores = async (answers) => {
   // Calculate wellness scores from user check-in answers
   const scores = {
@@ -561,7 +561,7 @@ const sectionContent: Record<string, React.ReactNode> = {
             { dim: "Low Sleep Score", rec: "Sleep Consultation", color: "blue" },
             { dim: "Low Energy Score", rec: "Yoga, Fitness", color: "amber" },
             { dim: "Low Mind Score", rec: "Mindfulness", color: "purple" },
-            { dim: "Low Body Score", rec: "Massage, Wellness", color: "green" },
+            { dim: "Low Body Score", rec: "Massage, Wellbeing", color: "green" },
             { dim: "Low Mood Score", rec: "Counseling", color: "pink" },
           ].map((item, i) => (
             <div key={i} className={`bg-${item.color}-50 rounded-lg p-3`}>
@@ -581,13 +581,13 @@ const sectionContent: Record<string, React.ReactNode> = {
       <div className="bg-gradient-to-r from-[#E9967A] to-[#F4A261] rounded-2xl p-6 text-white">
         <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
           <Activity className="h-6 w-6" />
-          Wellness Scoring System
+          Wellbeing Scoring System
         </h3>
         <p className="opacity-90">Track and visualize wellness across multiple dimensions with our comprehensive scoring system.</p>
       </div>
 
       <div className="bg-white rounded-xl p-5 border border-gray-100">
-        <h4 className="font-semibold text-gray-900 mb-4">📈 6 Wellness Dimensions</h4>
+        <h4 className="font-semibold text-gray-900 mb-4">📈 6 Wellbeing Dimensions</h4>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {[
             { id: "mind", label: "Mind", desc: "Mental clarity & focus", color: "#0D9488", icon: "🧠" },
@@ -637,7 +637,7 @@ const sectionContent: Record<string, React.ReactNode> = {
       <div className="bg-teal-50 border border-teal-200 rounded-xl p-5">
         <h4 className="font-semibold text-teal-800 mb-2">💾 Data Storage</h4>
         <p className="text-sm text-teal-700">
-          Wellness scores are stored in the <code className="bg-teal-100 px-1 rounded">wellness_checkins</code> table and synced to the user's <code className="bg-teal-100 px-1 rounded">profiles.wellness_scores</code> column for quick access on the homepage charts.
+          Wellbeing scores are stored in the <code className="bg-teal-100 px-1 rounded">wellness_checkins</code> table and synced to the user's <code className="bg-teal-100 px-1 rounded">profiles.wellness_scores</code> column for quick access on the homepage charts.
         </p>
       </div>
     </div>
@@ -685,7 +685,7 @@ const sectionContent: Record<string, React.ReactNode> = {
             <li>• Calendar date picker</li>
             <li>• Time slot selection</li>
             <li>• Booking confirmation email</li>
-            <li>• Wellness score contribution</li>
+            <li>• Wellbeing score contribution</li>
           </ul>
         </div>
       </div>
@@ -726,7 +726,7 @@ const sectionContent: Record<string, React.ReactNode> = {
       <div className="bg-white rounded-xl p-5 border border-gray-100">
         <h4 className="font-semibold text-gray-900 mb-4">👤 Profile Tabs</h4>
         <div className="grid grid-cols-4 gap-2">
-          {["Personal", "Wellness", "Preferences", "Settings"].map((tab) => (
+          {["Personal", "Wellbeing", "Preferences", "Settings"].map((tab) => (
             <div key={tab} className="p-3 bg-gray-50 rounded-xl text-center">
               <p className="text-sm font-medium text-gray-700">{tab}</p>
             </div>
@@ -746,9 +746,9 @@ const sectionContent: Record<string, React.ReactNode> = {
           </ul>
         </div>
         <div className="bg-white rounded-xl p-5 border border-gray-100">
-          <h4 className="font-semibold text-gray-900 mb-3">🎯 Wellness Data</h4>
+          <h4 className="font-semibold text-gray-900 mb-3">🎯 Wellbeing Data</h4>
           <ul className="space-y-2 text-sm text-gray-600">
-            <li>• Wellness goals (multi-select)</li>
+            <li>• Wellbeing goals (multi-select)</li>
             <li>• Interests & activities</li>
             <li>• Dietary preferences</li>
             <li>• Health conditions</li>
@@ -803,7 +803,7 @@ const sectionContent: Record<string, React.ReactNode> = {
             <li>• Search activities</li>
           </ul>
           <ul className="space-y-2 text-sm text-gray-600">
-            <li>• Wellness contribution scores</li>
+            <li>• Wellbeing contribution scores</li>
             <li>• Dimension tags (mind, body, etc.)</li>
             <li>• Status badges</li>
             <li>• Grouped by date</li>
@@ -812,7 +812,7 @@ const sectionContent: Record<string, React.ReactNode> = {
       </div>
 
       <div className="bg-purple-50 border border-purple-200 rounded-xl p-5">
-        <h4 className="font-semibold text-purple-800 mb-2">📈 Wellness Points</h4>
+        <h4 className="font-semibold text-purple-800 mb-2">📈 Wellbeing Points</h4>
         <p className="text-sm text-purple-700">
           Each activity contributes wellness points based on its type and the user's engagement. Points are calculated and displayed to motivate continued wellness journey participation.
         </p>
@@ -825,7 +825,7 @@ const sectionContent: Record<string, React.ReactNode> = {
       <div className="bg-gradient-to-r from-[#14B8A6] to-[#0D9488] rounded-2xl p-6 text-white">
         <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
           <TrendingUp className="h-6 w-6" />
-          Wellness Tracker
+          Wellbeing Tracker
         </h3>
         <p className="opacity-90">Visual dashboard for tracking wellness progress with AI-powered recommendations.</p>
       </div>
@@ -877,7 +877,7 @@ const sectionContent: Record<string, React.ReactNode> = {
       <div className="bg-teal-50 border border-teal-200 rounded-xl p-5">
         <h4 className="font-semibold text-teal-800 mb-2">🔗 Navigation</h4>
         <p className="text-sm text-teal-700">
-          Access the Wellness Tracker by clicking any wellness dimension chart on the homepage, or through Profile → Settings → Wellness Tracker.
+          Access the Wellbeing Tracker by clicking any wellness dimension chart on the homepage, or through Profile → Settings → Wellbeing Tracker.
         </p>
       </div>
     </div>
@@ -894,7 +894,7 @@ const sectionContent: Record<string, React.ReactNode> = {
       </div>
 
       <div className="bg-white rounded-xl p-5 border border-gray-100">
-        <h4 className="font-semibold text-gray-900 mb-4">🧠 The 6 Wellness Dimensions</h4>
+        <h4 className="font-semibold text-gray-900 mb-4">🧠 The 6 Wellbeing Dimensions</h4>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {[
             { name: "Mind", color: "#0D9488", desc: "Mental clarity, focus, cognitive function" },
@@ -1150,7 +1150,7 @@ const sectionContent: Record<string, React.ReactNode> = {
           <Heart className="h-6 w-6" />
           Services Module
         </h3>
-        <p className="opacity-90">Wellness services with booking, provider info, and category filtering.</p>
+        <p className="opacity-90">Wellbeing services with booking, provider info, and category filtering.</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
@@ -1266,7 +1266,7 @@ const sectionContent: Record<string, React.ReactNode> = {
           <Users className="h-6 w-6" />
           Providers Module
         </h3>
-        <p className="opacity-90">Wellness provider profiles with their services and products.</p>
+        <p className="opacity-90">Wellbeing provider profiles with their services and products.</p>
       </div>
 
       <div className="bg-white rounded-xl p-5 border border-gray-100">

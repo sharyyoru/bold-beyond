@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createAppClient } from "@/lib/supabase";
-import { saveChatMessage, updateWellnessScores } from "@/lib/human-os/wellness-data";
+import { saveChatMessage, updateWellbeingScores } from "@/lib/human-os/wellness-data";
 
 interface Message {
   id: string;
@@ -29,7 +29,7 @@ interface Message {
   suggestions?: string[];
 }
 
-// Wellness-focused conversation starters
+// Wellbeing-focused conversation starters
 const conversationStarters = [
   "I've been feeling stressed lately",
   "Help me improve my sleep",
@@ -71,7 +71,7 @@ function analyzeEmotion(text: string): { score: number; emotion: string } {
 }
 
 // AI response generator (rule-based for free, can be replaced with API)
-function generateWellnessResponse(userMessage: string, emotionAnalysis: { score: number; emotion: string }): {
+function generateWellbeingResponse(userMessage: string, emotionAnalysis: { score: number; emotion: string }): {
   response: string;
   suggestions: string[];
 } {
@@ -121,7 +121,7 @@ function generateWellnessResponse(userMessage: string, emotionAnalysis: { score:
   if (lowerMessage.includes("sad") || lowerMessage.includes("depress") || lowerMessage.includes("down") || lowerMessage.includes("lonely")) {
     return {
       response: "I'm sorry you're feeling this way. Your feelings are valid, and it's okay to not be okay sometimes. 💜\n\nSome things that might help:\n• Reach out to someone you trust\n• Get some sunlight if possible\n• Be gentle with yourself today\n\nWould you like to talk more about what's going on?",
-      suggestions: ["Talk to a therapist", "Support group session", "Wellness consultation"],
+      suggestions: ["Talk to a therapist", "Support group session", "Wellbeing consultation"],
     };
   }
 
@@ -140,7 +140,7 @@ function generateWellnessResponse(userMessage: string, emotionAnalysis: { score:
   };
 }
 
-export default function WellnessChatPage() {
+export default function WellbeingChatPage() {
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -191,7 +191,7 @@ export default function WellnessChatPage() {
     await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
 
     // Generate response
-    const { response, suggestions } = generateWellnessResponse(userMessage, emotionAnalysis);
+    const { response, suggestions } = generateWellbeingResponse(userMessage, emotionAnalysis);
 
     const assistantMsg: Message = {
       id: (Date.now() + 1).toString(),
@@ -237,7 +237,7 @@ export default function WellnessChatPage() {
         );
 
         // Update wellness scores with mood from chat
-        await updateWellnessScores(user.id, { mood: avgScore });
+        await updateWellbeingScores(user.id, { mood: avgScore });
       }
     } catch (error) {
       console.error("Error saving chat:", error);
@@ -273,7 +273,7 @@ export default function WellnessChatPage() {
               <Sparkles className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="font-semibold text-gray-900">Wellness Coach</h1>
+              <h1 className="font-semibold text-gray-900">Wellbeing Coach</h1>
               <p className="text-xs text-green-500 flex items-center gap-1">
                 <span className="h-2 w-2 rounded-full bg-green-500" />
                 Online

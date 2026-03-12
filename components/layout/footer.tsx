@@ -14,8 +14,8 @@ const footerLinks = {
   services: [
     { name: "Psychotherapy", href: "/services/psychotherapy" },
     { name: "Life Coaching", href: "/services/life-coaching" },
-    { name: "Wellness Programs", href: "/services/wellness-programs" },
-    { name: "Corporate Wellness", href: "/services/corporate-wellness" },
+    { name: "Wellbeing Programs", href: "/services/wellness-programs" },
+    { name: "Corporate Wellbeing", href: "/services/corporate-wellness" },
   ],
   company: [
     { name: "About Us", href: "/about" },

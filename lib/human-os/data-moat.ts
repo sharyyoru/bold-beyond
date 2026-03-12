@@ -1,8 +1,8 @@
 // Human OS Personal Data Moat - Switching Cost System
-import { DataMoatAnalysis, DataExportWarning, UserWellnessProfile } from './types';
+import { DataMoatAnalysis, DataExportWarning, UserWellbeingProfile } from './types';
 
 // Calculate the personal data moat value for a user
-export function calculateDataMoatValue(profile: UserWellnessProfile): DataMoatAnalysis {
+export function calculateDataMoatValue(profile: UserWellbeingProfile): DataMoatAnalysis {
   const tenureDays = profile.tenureDays;
   const dataPointsCollected = profile.emotionalHistory.length + 
     profile.cognitivePatterns.length * 10 +
@@ -126,7 +126,7 @@ export function calculateRetentionIncentives(analysis: DataMoatAnalysis): {
   let benefits: string[] = ['Basic recommendations'];
 
   if (analysis.tenureDays >= 365) {
-    loyaltyTier = 'Wellness Champion';
+    loyaltyTier = 'Wellbeing Champion';
     benefits = [
       'Priority provider matching',
       'Advanced predictive insights',
@@ -135,7 +135,7 @@ export function calculateRetentionIncentives(analysis: DataMoatAnalysis): {
       'Annual wellness report',
     ];
   } else if (analysis.tenureDays >= 180) {
-    loyaltyTier = 'Wellness Advocate';
+    loyaltyTier = 'Wellbeing Advocate';
     benefits = [
       'Enhanced recommendations',
       'Predictive wellness alerts',
@@ -143,14 +143,14 @@ export function calculateRetentionIncentives(analysis: DataMoatAnalysis): {
       'Quarterly wellness reviews',
     ];
   } else if (analysis.tenureDays >= 90) {
-    loyaltyTier = 'Wellness Seeker';
+    loyaltyTier = 'Wellbeing Seeker';
     benefits = [
       'Personalized recommendations',
       'Pattern recognition active',
       'Monthly wellness summaries',
     ];
   } else if (analysis.tenureDays >= 30) {
-    loyaltyTier = 'Wellness Starter';
+    loyaltyTier = 'Wellbeing Starter';
     benefits = [
       'Basic personalization',
       'Initial patterns tracked',
@@ -162,11 +162,11 @@ export function calculateRetentionIncentives(analysis: DataMoatAnalysis): {
   const milestones = [30, 90, 180, 365];
   const nextMilestoneDay = milestones.find(m => m > analysis.tenureDays) || 730;
   const milestoneNames: Record<number, string> = {
-    30: 'Wellness Starter',
-    90: 'Wellness Seeker',
-    180: 'Wellness Advocate',
-    365: 'Wellness Champion',
-    730: 'Wellness Legend',
+    30: 'Wellbeing Starter',
+    90: 'Wellbeing Seeker',
+    180: 'Wellbeing Advocate',
+    365: 'Wellbeing Champion',
+    730: 'Wellbeing Legend',
   };
 
   return {

@@ -78,7 +78,7 @@ interface UserProfile {
 const wellnessGoalOptions = [
   "Reduce Stress", "Better Sleep", "Increase Energy", "Mental Clarity",
   "Physical Fitness", "Weight Management", "Mindfulness", "Work-Life Balance",
-  "Self-Care", "Emotional Wellness", "Pain Management", "Flexibility"
+  "Self-Care", "Emotional Wellbeing", "Pain Management", "Flexibility"
 ];
 
 const interestOptions = [
@@ -352,7 +352,7 @@ function ProfilePageContent() {
           <div className="grid grid-cols-4 gap-2 mt-4">
             <div className="bg-white/10 rounded-xl p-3 text-center">
               <p className="text-2xl font-bold">{wellnessScore}</p>
-              <p className="text-xs text-white/80">Wellness</p>
+              <p className="text-xs text-white/80">Wellbeing</p>
             </div>
             <div className="bg-white/10 rounded-xl p-3 text-center">
               <p className="text-2xl font-bold">{profile.total_bookings || 0}</p>
@@ -375,7 +375,7 @@ function ProfilePageContent() {
         <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
           {[
             { id: "personal", label: "Personal", icon: User },
-            { id: "wellness", label: "Wellness", icon: Heart },
+            { id: "wellness", label: "Wellbeing", icon: Heart },
             { id: "preferences", label: "Preferences", icon: Target },
             { id: "settings", label: "Settings", icon: Settings },
           ].map((tab) => (
@@ -587,9 +587,9 @@ function ProfilePageContent() {
 
         {activeTab === "wellness" && (
           <div className="space-y-4">
-            {/* Wellness Scores */}
+            {/* Wellbeing Scores */}
             <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-4">Current Wellness Scores</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">Current Wellbeing Scores</h3>
               <div className="grid grid-cols-3 gap-3">
                 {[
                   { id: "mind", label: "Mind", icon: Brain, color: "#0D9488" },
@@ -626,14 +626,14 @@ function ProfilePageContent() {
                 href="/appx/wellness-checkin"
                 className="mt-4 w-full flex items-center justify-center gap-2 py-3 bg-[#0D9488] text-white rounded-xl font-medium"
               >
-                Update My Wellness
+                Update My Wellbeing
                 <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
 
-            {/* Wellness Goals */}
+            {/* Wellbeing Goals */}
             <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-4">Wellness Goals</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">Wellbeing Goals</h3>
               <div className="flex flex-wrap gap-2">
                 {wellnessGoalOptions.map((goal) => {
                   const isSelected = (editMode ? editedProfile.wellness_goals : profile.wellness_goals)?.includes(goal);
@@ -817,7 +817,7 @@ function ProfilePageContent() {
                 >
                   <div className="flex items-center gap-3">
                     <TrendingUp className="h-5 w-5 text-gray-500" />
-                    <span className="text-sm text-gray-700">Wellness Tracker</span>
+                    <span className="text-sm text-gray-700">Wellbeing Tracker</span>
                   </div>
                   <ChevronRight className="h-4 w-4 text-gray-400" />
                 </Link>

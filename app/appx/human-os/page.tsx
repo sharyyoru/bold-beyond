@@ -35,10 +35,10 @@ import {
   RegulationTools,
 } from "@/components/human-os";
 import {
-  fetchUserWellnessData,
+  fetchUserWellbeingData,
   generateSmartRecommendations,
-  updateWellnessScores,
-  type UserWellnessData,
+  updateWellbeingScores,
+  type UserWellbeingData,
   type AIRecommendation,
 } from "@/lib/human-os/wellness-data";
 
@@ -55,7 +55,7 @@ export default function HumanOSPage() {
   const router = useRouter();
   const [showMoodCheckin, setShowMoodCheckin] = useState(false);
   const [showMindfulness, setShowMindfulness] = useState(false);
-  const [wellnessData, setWellnessData] = useState<UserWellnessData | null>(null);
+  const [wellnessData, setWellbeingData] = useState<UserWellbeingData | null>(null);
   const [recommendations, setRecommendations] = useState<AIRecommendation[]>([]);
   const [userName, setUserName] = useState("there");
   const [loading, setLoading] = useState(true);
@@ -94,8 +94,8 @@ export default function HumanOSPage() {
         }
         
         // Fetch comprehensive wellness data
-        const data = await fetchUserWellnessData();
-        setWellnessData(data);
+        const data = await fetchUserWellbeingData();
+        setWellbeingData(data);
         
         // Generate smart recommendations based on all data
         const recs = generateSmartRecommendations(data);
@@ -119,7 +119,7 @@ export default function HumanOSPage() {
       
       if (user) {
         // Update wellness scores via utility
-        const newScores = await updateWellnessScores(user.id, { mood: mood.score });
+        const newScores = await updateWellbeingScores(user.id, { mood: mood.score });
         
         // Save check-in
         await supabase.from("wellness_checkins").insert({
@@ -130,8 +130,8 @@ export default function HumanOSPage() {
         });
         
         // Refresh all data
-        const data = await fetchUserWellnessData();
-        setWellnessData(data);
+        const data = await fetchUserWellbeingData();
+        setWellbeingData(data);
         setRecommendations(generateSmartRecommendations(data));
       }
     } catch (error) {
@@ -345,10 +345,10 @@ export default function HumanOSPage() {
           />
         </div>
 
-        {/* Wellness Dimensions - Glassmorphism */}
+        {/* Wellbeing Dimensions - Glassmorphism */}
         <GlassCard className="p-5 mb-6" variant="light" blur="xl">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900">Wellness Breakdown</h3>
+            <h3 className="font-semibold text-gray-900">Wellbeing Breakdown</h3>
             <Link href="/appx/wellness-tracker" className="text-sm text-palette-sea font-medium">
               Details
             </Link>

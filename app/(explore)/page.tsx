@@ -40,13 +40,13 @@ const iconMap: Record<string, LucideIcon> = {
 
 // Default content (fallback when Sanity has no data)
 const defaultContent = {
-  heroTagline: "Your Wellness Journey Starts Here",
+  heroTagline: "Your Wellbeing Journey Starts Here",
   heroHeadline: "Bold Steps to a",
   heroHighlightedText: "Better You",
   heroDescription: "Connect with expert therapists, track your wellness, and unlock exclusive partner benefits. Your comprehensive mental health and wellness platform.",
   heroPrimaryCta: "Get Started Free",
   heroSecondaryCta: "Browse Experts",
-  servicesTitle: "Comprehensive Wellness Services",
+  servicesTitle: "Comprehensive Wellbeing Services",
   servicesDescription: "From therapy to coaching, find the support you need for every aspect of your wellbeing.",
   featuredServices: [
     { title: "Psychotherapy", description: "Professional mental health support with licensed therapists", icon: "brain", href: "/services/psychotherapy" },
@@ -55,7 +55,7 @@ const defaultContent = {
     { title: "Group Sessions", description: "Connect and grow with supportive community workshops", icon: "users", href: "/services/group-sessions" },
   ],
   featuresTagline: "Why Choose Us",
-  featuresTitle: "Everything You Need for Your Wellness Journey",
+  featuresTitle: "Everything You Need for Your Wellbeing Journey",
   featuresDescription: "Bold & Beyond combines expert care with smart technology to deliver a personalized wellness experience.",
   featuresList: [
     { feature: "Personalized wellness assessments" },
@@ -78,7 +78,7 @@ const defaultContent = {
     { _id: "default-2", clientName: "Ahmed K.", content: "The wellness tracking feature keeps me accountable. I've never felt better!", rating: 5 },
     { _id: "default-3", clientName: "Maria L.", content: "Partner perks are amazing. I save so much on gym memberships and healthy restaurants.", rating: 5 },
   ],
-  ctaTitle: "Ready to Start Your Wellness Journey?",
+  ctaTitle: "Ready to Start Your Wellbeing Journey?",
   ctaDescription: "Join Bold & Beyond today and take the first step towards a healthier, happier you.",
   ctaPrimaryButton: "Create Free Account",
   ctaSecondaryButton: "Contact Sales",
@@ -168,7 +168,7 @@ export default async function HomePage() {
                     <Zap className="h-4 w-4 text-palette-sand" />
                     <span className="font-semibold text-white">50+</span>
                   </div>
-                  <p className="text-xs text-white/60">Wellness Modalities</p>
+                  <p className="text-xs text-white/60">Wellbeing Modalities</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20 text-center lg:text-left">
                   <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
@@ -185,7 +185,7 @@ export default async function HomePage() {
               <div className="relative w-full max-w-md aspect-square">
                 <Image
                   src="/assets/female-sports-model.png"
-                  alt="Wellness"
+                  alt="Wellbeing"
                   fill
                   className="object-contain"
                   priority
@@ -202,7 +202,7 @@ export default async function HomePage() {
                     />
                     <div>
                       <p className="font-semibold text-palette-sky text-sm">Feeling Great!</p>
-                      <p className="text-xs text-gray-500">Wellness Score: 87%</p>
+                      <p className="text-xs text-gray-500">Wellbeing Score: 87%</p>
                     </div>
                   </div>
                 </div>

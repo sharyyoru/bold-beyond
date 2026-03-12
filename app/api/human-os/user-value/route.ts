@@ -5,7 +5,7 @@ import {
   getValueVisualizationData,
   generateExportWarning
 } from '@/lib/human-os/data-moat';
-import { UserWellnessProfile } from '@/lib/human-os/types';
+import { UserWellbeingProfile } from '@/lib/human-os/types';
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const tenureDays = parseInt(searchParams.get('tenureDays') || '45');
 
     // Create sample user profile (in production, fetch from database)
-    const userProfile: UserWellnessProfile = {
+    const userProfile: UserWellbeingProfile = {
       userId,
       tenureDays,
       totalInteractions: tenureDays * 3,
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       ],
       preferredModalities: ['meditation', 'psychotherapy', 'fitness'],
       successfulInterventions: [
-        { id: '1', type: 'meditation', provider: 'Wellness Center', effectivenessScore: 0.85, timestamp: new Date() },
+        { id: '1', type: 'meditation', provider: 'Wellbeing Center', effectivenessScore: 0.85, timestamp: new Date() },
         { id: '2', type: 'life-coaching', provider: 'Coach Michael', effectivenessScore: 0.78, timestamp: new Date() },
       ],
       dataMoatValue: 250,
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     const { action, userId, tenureDays } = body;
 
     if (action === 'export-warning') {
-      const userProfile: UserWellnessProfile = {
+      const userProfile: UserWellbeingProfile = {
         userId: userId || 'demo-user',
         tenureDays: tenureDays || 45,
         totalInteractions: (tenureDays || 45) * 3,

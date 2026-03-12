@@ -1,6 +1,6 @@
 // Human OS Core Types
 
-export interface UserWellnessProfile {
+export interface UserWellbeingProfile {
   userId: string;
   tenureDays: number;
   totalInteractions: number;
@@ -34,17 +34,17 @@ export interface Intervention {
 }
 
 // Decision Engine Types
-export interface WellnessProvider {
+export interface WellbeingProvider {
   id: string;
   name: string;
-  modality: WellnessModality;
+  modality: WellbeingModality;
   specializations: string[];
   rating: number;
   availability: boolean;
   matchScore?: number;
 }
 
-export type WellnessModality = 
+export type WellbeingModality = 
   | 'psychotherapy'
   | 'life-coaching'
   | 'meditation'
@@ -57,7 +57,7 @@ export type WellnessModality =
   | 'holistic-wellness';
 
 export interface RoutingDecision {
-  recommendedProviders: WellnessProvider[];
+  recommendedProviders: WellbeingProvider[];
   matchingFactors: MatchingFactor[];
   confidenceScore: number;
   networkLearningContribution: number;

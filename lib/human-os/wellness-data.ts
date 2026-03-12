@@ -1,7 +1,7 @@
 import { createAppClient } from "@/lib/supabase";
 
 // Types for wellness data
-export interface WellnessScores {
+export interface WellbeingScores {
   mind: number;
   body: number;
   sleep: number;
@@ -52,9 +52,9 @@ export interface Purchase {
   date: string;
 }
 
-export interface UserWellnessData {
-  scores: WellnessScores;
-  previousScores: WellnessScores | null;
+export interface UserWellbeingData {
+  scores: WellbeingScores;
+  previousScores: WellbeingScores | null;
   moodHistory: MoodEntry[];
   nervousSystemStatus: "regulated" | "elevated" | "dysregulated";
   burnoutRisk: "low" | "moderate" | "high";
@@ -70,7 +70,7 @@ export interface UserWellnessData {
 }
 
 // Default wellness scores
-const defaultScores: WellnessScores = {
+const defaultScores: WellbeingScores = {
   mind: 60,
   body: 60,
   sleep: 60,
@@ -83,7 +83,7 @@ const defaultScores: WellnessScores = {
 };
 
 // Calculate nervous system status from scores
-export function calculateNervousSystemStatus(scores: WellnessScores): "regulated" | "elevated" | "dysregulated" {
+export function calculateNervousSystemStatus(scores: WellbeingScores): "regulated" | "elevated" | "dysregulated" {
   const avgScore = (scores.stress + scores.mood) / 2;
   if (avgScore < 40) return "dysregulated";
   if (avgScore < 60) return "elevated";
@@ -91,7 +91,7 @@ export function calculateNervousSystemStatus(scores: WellnessScores): "regulated
 }
 
 // Calculate burnout risk from scores
-export function calculateBurnoutRisk(scores: WellnessScores): "low" | "moderate" | "high" {
+export function calculateBurnoutRisk(scores: WellbeingScores): "low" | "moderate" | "high" {
   const avgScore = (scores.energy + scores.stress + scores.sleep) / 3;
   if (avgScore < 40) return "high";
   if (avgScore < 60) return "moderate";
@@ -99,7 +99,7 @@ export function calculateBurnoutRisk(scores: WellnessScores): "low" | "moderate"
 }
 
 // Calculate overall alignment score
-export function calculateAlignmentScore(scores: WellnessScores): number {
+export function calculateAlignmentScore(scores: WellbeingScores): number {
   const weights = {
     mind: 0.15,
     body: 0.1,
@@ -113,7 +113,7 @@ export function calculateAlignmentScore(scores: WellnessScores): number {
   
   let total = 0;
   for (const [key, weight] of Object.entries(weights)) {
-    total += (scores[key as keyof WellnessScores] || 60) * weight;
+    total += (scores[key as keyof WellbeingScores] || 60) * weight;
   }
   return Math.round(total);
 }
@@ -128,7 +128,7 @@ function scoreToMoodType(score: number): "great" | "happy" | "neutral" | "low" |
 }
 
 // Extract insights from user data
-function generateInsights(data: Partial<UserWellnessData>): string[] {
+function generateInsights(data: Partial<UserWellbeingData>): string[] {
   const insights: string[] = [];
   const scores = data.scores || defaultScores;
   
@@ -178,7 +178,7 @@ function generateInsights(data: Partial<UserWellnessData>): string[] {
 }
 
 // Main function to fetch all user wellness data
-export async function fetchUserWellnessData(userId?: string): Promise<UserWellnessData> {
+export async function fetchUserWellbeingData(userId?: string): Promise<UserWellbeingData> {
   const supabase = createAppClient();
   
   // Get current user if no userId provided
@@ -280,7 +280,7 @@ export async function fetchUserWellnessData(userId?: string): Promise<UserWellne
     const bookingsData = bookingsResult.data;
     const ordersData = ordersResult.data;
     
-    const scores: WellnessScores = profile?.wellness_scores || defaultScores;
+    const scores: WellbeingScores = profile?.wellness_scores || defaultScores;
     
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const moodHistory: MoodEntry[] = (checkins || []).slice(0, 7).map((checkin: any) => {
@@ -314,7 +314,7 @@ export async function fetchUserWellnessData(userId?: string): Promise<UserWellne
       }
     }
     
-    const previousScores: WellnessScores | null = lastWeekCheckin?.scores || null;
+    const previousScores: WellbeingScores | null = lastWeekCheckin?.scores || null;
     
     const chatHistory: ChatMessage[] = (chatMessages || []).map((msg: any) => ({
       id: msg.id,
@@ -348,7 +348,7 @@ export async function fetchUserWellnessData(userId?: string): Promise<UserWellne
     }));
     
     // Build complete data object
-    const data: UserWellnessData = {
+    const data: UserWellbeingData = {
       scores,
       previousScores,
       moodHistory,
@@ -451,9 +451,9 @@ export async function saveChatMessage(
 }
 
 // Update wellness scores based on various inputs
-export async function updateWellnessScores(
+export async function updateWellbeingScores(
   userId: string,
-  updates: Partial<WellnessScores>
+  updates: Partial<WellbeingScores>
 ) {
   const supabase = createAppClient();
   
@@ -465,10 +465,10 @@ export async function updateWellnessScores(
       .eq("id", userId)
       .single();
     
-    const currentScores: WellnessScores = profile?.wellness_scores || defaultScores;
+    const currentScores: WellbeingScores = profile?.wellness_scores || defaultScores;
     
     // Merge updates
-    const newScores: WellnessScores = {
+    const newScores: WellbeingScores = {
       ...currentScores,
       ...updates,
     };
@@ -503,7 +503,7 @@ export interface AIRecommendation {
   reason: string;
 }
 
-export function generateSmartRecommendations(data: UserWellnessData): AIRecommendation[] {
+export function generateSmartRecommendations(data: UserWellbeingData): AIRecommendation[] {
   const recommendations: AIRecommendation[] = [];
   const { scores, moodHistory, chatHistory, bookings, burnoutRisk, nervousSystemStatus } = data;
   
@@ -686,7 +686,7 @@ export interface RegulationToolRecommendation {
   category: 'quick' | 'deep';
 }
 
-export function generateRegulationToolRecommendations(data: UserWellnessData): RegulationToolRecommendation[] {
+export function generateRegulationToolRecommendations(data: UserWellbeingData): RegulationToolRecommendation[] {
   const recommendations: RegulationToolRecommendation[] = [];
   const { scores, nervousSystemStatus, burnoutRisk, moodHistory, chatHistory } = data;
 
@@ -815,7 +815,7 @@ export function generateRegulationToolRecommendations(data: UserWellnessData): R
 }
 
 // Check if user should be shown regulation tool recommendations
-export function shouldRecommendRegulationTools(data: UserWellnessData): boolean {
+export function shouldRecommendRegulationTools(data: UserWellbeingData): boolean {
   const { scores, nervousSystemStatus, burnoutRisk } = data;
   
   // High priority situations

@@ -12,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { createAppClient } from "@/lib/supabase";
 
-interface WellnessData {
+interface WellbeingData {
   mind: number;
   body: number;
   sleep: number;
@@ -48,10 +48,10 @@ const wellnessMetrics = [
 
 const dayLabels = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
-export default function WellnessTrackerPage() {
+export default function WellbeingTrackerPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [wellnessScores, setWellnessScores] = useState<WellnessData>({
+  const [wellnessScores, setWellbeingScores] = useState<WellbeingData>({
     mind: 60, body: 60, sleep: 60, energy: 60, mood: 60, stress: 40
   });
   const [weeklyData, setWeeklyData] = useState<DailyScore[]>([]);
@@ -64,10 +64,10 @@ export default function WellnessTrackerPage() {
   const [energyLevel, setEnergyLevel] = useState(0);
 
   useEffect(() => {
-    fetchWellnessData();
+    fetchWellbeingData();
   }, []);
 
-  const fetchWellnessData = async () => {
+  const fetchWellbeingData = async () => {
     try {
       const supabase = createAppClient();
       const { data: { user } } = await supabase.auth.getUser();
@@ -85,7 +85,7 @@ export default function WellnessTrackerPage() {
         .single();
 
       if (profile?.wellness_scores) {
-        setWellnessScores({
+        setWellbeingScores({
           mind: profile.wellness_scores.mind || 60,
           body: profile.wellness_scores.body || 60,
           sleep: profile.wellness_scores.sleep || 60,
@@ -307,7 +307,7 @@ export default function WellnessTrackerPage() {
                 className="object-contain"
                 style={{ width: 56, height: 56 }}
               />
-              <h1 className="text-xl font-bold text-white">Wellness Intelligence</h1>
+              <h1 className="text-xl font-bold text-white">Wellbeing Intelligence</h1>
             </div>
             <p className="text-sm text-white/80">Your personal data moat grows smarter every day</p>
           </div>
@@ -327,7 +327,7 @@ export default function WellnessTrackerPage() {
           <div className="h-8 w-px bg-white/20" />
           <div className="text-center">
             <p className="text-lg font-bold text-[#7DD3D3]">{getOverallScore()}%</p>
-            <p className="text-[10px] text-white/70">Wellness Score</p>
+            <p className="text-[10px] text-white/70">Wellbeing Score</p>
           </div>
         </div>
       </div>
@@ -393,7 +393,7 @@ export default function WellnessTrackerPage() {
         {/* Weekly Summary */}
         <Card className="border-0 shadow-md">
           <CardContent className="p-4">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Weekly Wellness Summary</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Weekly Wellbeing Summary</h3>
             
             <div className="space-y-3">
               <div className="flex items-center justify-between py-2 border-b border-gray-100">
@@ -420,15 +420,15 @@ export default function WellnessTrackerPage() {
           </CardContent>
         </Card>
 
-        {/* Wellness Dimensions */}
+        {/* Wellbeing Dimensions */}
         <Card className="border-0 shadow-md">
           <CardContent className="p-4">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Your Wellness Dimensions</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Your Wellbeing Dimensions</h3>
             
             <div className="grid grid-cols-3 gap-3">
               {wellnessMetrics.map((metric) => {
                 const Icon = metric.icon;
-                const score = wellnessScores[metric.key as keyof WellnessData];
+                const score = wellnessScores[metric.key as keyof WellbeingData];
                 const displayScore = metric.key === 'stress' ? 100 - score : score;
                 
                 return (
@@ -474,10 +474,10 @@ export default function WellnessTrackerPage() {
           </CardContent>
         </Card>
 
-        {/* Wellness History */}
+        {/* Wellbeing History */}
         <Card className="border-0 shadow-md">
           <CardContent className="p-4">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Wellness History</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Wellbeing History</h3>
             <p className="text-sm text-gray-500 mb-4">Select date range to view wellness history.</p>
             
             <button className="w-full flex items-center justify-between bg-gray-50 rounded-xl p-4 border border-gray-200">

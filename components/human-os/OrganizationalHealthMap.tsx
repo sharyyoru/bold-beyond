@@ -183,7 +183,7 @@ export function OrganizationalHealthMap({
               <div className="grid lg:grid-cols-3 gap-6">
                 {/* Department List */}
                 <div className="lg:col-span-2">
-                  <h4 className="font-semibold text-brand-navy mb-4">Department Wellness</h4>
+                  <h4 className="font-semibold text-brand-navy mb-4">Department Wellbeing</h4>
                   <div className="space-y-3">
                     {healthMap.departments.map((dept, i) => (
                       <motion.div

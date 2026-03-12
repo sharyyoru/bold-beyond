@@ -26,12 +26,12 @@ const productCategories = ['skincare', 'supplements', 'aromatherapy', 'fitness-g
 
 // 20 Providers with diverse offerings
 const providers = [
-  { name: 'Serenity Spa & Wellness', category: 'spa', description: 'Luxury spa experiences for complete relaxation', rating: 4.9, hasProducts: true, hasServices: true },
+  { name: 'Serenity Spa & Wellbeing', category: 'spa', description: 'Luxury spa experiences for complete relaxation', rating: 4.9, hasProducts: true, hasServices: true },
   { name: 'MindBody Fitness Studio', category: 'fitness', description: 'Holistic fitness and wellness training', rating: 4.8, hasProducts: true, hasServices: true },
   { name: 'Zen Meditation Center', category: 'meditation', description: 'Ancient meditation practices for modern minds', rating: 4.7, hasProducts: true, hasServices: true },
   { name: 'Harmony Yoga Studio', category: 'yoga', description: 'Traditional and contemporary yoga classes', rating: 4.9, hasProducts: false, hasServices: true },
   { name: 'Glow Beauty Clinic', category: 'beauty', description: 'Premium skincare and beauty treatments', rating: 4.6, hasProducts: true, hasServices: true },
-  { name: 'NutriLife Wellness', category: 'nutrition', description: 'Personalized nutrition and diet planning', rating: 4.8, hasProducts: true, hasServices: true },
+  { name: 'NutriLife Wellbeing', category: 'nutrition', description: 'Personalized nutrition and diet planning', rating: 4.8, hasProducts: true, hasServices: true },
   { name: 'Tranquil Touch Massage', category: 'spa', description: 'Therapeutic massage and bodywork', rating: 4.9, hasProducts: true, hasServices: true },
   { name: 'Peak Performance Coaching', category: 'coaching', description: 'Elite performance and life coaching', rating: 4.7, hasProducts: false, hasServices: true },
   { name: 'Inner Peace Therapy', category: 'therapy', description: 'Mental health and emotional wellness', rating: 4.8, hasProducts: false, hasServices: true },
@@ -65,7 +65,7 @@ const services = [
   // Coaching services (8)
   { title: 'Executive Life Coaching', category: 'coaching', price: 250, duration: 60, description: 'Premium coaching for executives and leaders', rating: 4.9 },
   { title: 'Career Transition Coaching', category: 'coaching', price: 180, duration: 60, description: 'Navigate career changes with confidence', rating: 4.8 },
-  { title: 'Health & Wellness Coaching', category: 'coaching', price: 120, duration: 45, description: 'Achieve your health goals with expert guidance', rating: 4.7 },
+  { title: 'Health & Wellbeing Coaching', category: 'coaching', price: 120, duration: 45, description: 'Achieve your health goals with expert guidance', rating: 4.7 },
   { title: 'Relationship Coaching', category: 'coaching', price: 160, duration: 60, description: 'Build stronger personal relationships', rating: 4.6 },
   { title: 'Confidence Building Workshop', category: 'coaching', price: 90, duration: 90, description: 'Group workshop to boost self-confidence', rating: 4.8 },
   { title: 'Goal Setting Masterclass', category: 'coaching', price: 75, duration: 120, description: 'Learn to set and achieve meaningful goals', rating: 4.7 },
@@ -172,7 +172,7 @@ const products = [
   { name: 'Massage Ball Set', category: 'fitness-gear', price: 25, salePrice: null, description: 'Trigger point release balls', stock: 90 },
   { name: 'Yoga Strap', category: 'fitness-gear', price: 18, salePrice: 14, description: 'Stretching and pose assistance', stock: 150 },
   
-  // Wellness Tools (5)
+  // Wellbeing Tools (5)
   { name: 'Acupressure Mat & Pillow', category: 'wellness-tools', price: 48, salePrice: 40, description: 'Stimulate pressure points', stock: 60 },
   { name: 'Jade Face Roller', category: 'wellness-tools', price: 35, salePrice: null, description: 'Reduce puffiness and tension', stock: 80 },
   { name: 'Gua Sha Stone Set', category: 'wellness-tools', price: 28, salePrice: 22, description: 'Traditional facial massage', stock: 90 },

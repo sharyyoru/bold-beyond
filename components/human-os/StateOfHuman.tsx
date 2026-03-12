@@ -253,7 +253,7 @@ export function StateOfHuman({
             <div className="relative z-10 grid md:grid-cols-2 gap-8 items-center">
               <div>
                 <h3 className="font-display text-2xl md:text-3xl font-bold mb-4">
-                  Generic Wellness Doesn't Work
+                  Generic Wellbeing Doesn't Work
                 </h3>
                 <p className="text-gray-300 mb-6">
                   67% of wellness programs fail to show measurable ROI because they take a 

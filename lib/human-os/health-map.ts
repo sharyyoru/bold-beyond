@@ -73,7 +73,7 @@ function generateHealthTrends(): HealthTrend[] {
 
   return [
     {
-      metric: 'Overall Wellness',
+      metric: 'Overall Wellbeing',
       values: generateTrendData(),
       direction: 'up' as const,
     },
@@ -259,7 +259,7 @@ export const BURNOUT_STATISTICS = {
   sources: [
     { stat: "Global burnout cost", source: "WHO Global Report 2024" },
     { stat: "Workplace stress", source: "Gallup State of Workplace 2024" },
-    { stat: "Program failure rate", source: "SHRM Wellness Study 2023" },
+    { stat: "Program failure rate", source: "SHRM Wellbeing Study 2023" },
     { stat: "Productivity loss", source: "Deloitte Mental Health Report 2024" },
   ],
 };
@@ -268,7 +268,7 @@ export const STATE_OF_HUMAN_MESSAGING = {
   headline: "System Failure",
   subheadline: "The human operating system is overloaded",
   crisis: {
-    title: "The Cost of Ignoring Human Wellness",
+    title: "The Cost of Ignoring Human Wellbeing",
     stats: [
       {
         value: "$322B",

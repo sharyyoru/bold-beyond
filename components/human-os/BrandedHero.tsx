@@ -50,7 +50,7 @@ export function BrandedHero({
               </span>
 
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-                Your Wellness,{" "}
+                Your Wellbeing,{" "}
                 <span className="text-brand-gold">Intelligently Routed</span>
               </h1>
 
@@ -83,7 +83,7 @@ export function BrandedHero({
                 <div className="h-12 w-px bg-white/20" />
                 <div className="text-center">
                   <p className="text-3xl font-bold text-brand-gold">50+</p>
-                  <p className="text-sm text-gray-400">Wellness Modalities</p>
+                  <p className="text-sm text-gray-400">Wellbeing Modalities</p>
                 </div>
                 <div className="h-12 w-px bg-white/20" />
                 <div className="text-center">
@@ -317,7 +317,7 @@ export function BrandedHero({
               <div className="relative w-full aspect-square max-w-lg mx-auto">
                 <Image
                   src="/assets/female-sports-model.png"
-                  alt="Wellness"
+                  alt="Wellbeing"
                   fill
                   className="object-contain"
                 />
@@ -338,7 +338,7 @@ export function BrandedHero({
                     />
                     <div>
                       <p className="font-semibold text-brand-navy">Feeling Great!</p>
-                      <p className="text-xs text-muted-foreground">Wellness Score: 87%</p>
+                      <p className="text-xs text-muted-foreground">Wellbeing Score: 87%</p>
                     </div>
                   </div>
                 </motion.div>
