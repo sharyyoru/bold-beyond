@@ -918,7 +918,7 @@ export default function AppXPage() {
       {/* Draggable Sheet Content Container */}
       <div
         ref={sheetRef}
-        className={`flex-1 bg-gradient-to-br from-[#D4A574] to-[#C99B6D] rounded-t-[2rem] overflow-hidden relative z-10 transition-all duration-300 ease-out ${
+        className={`flex-1 bg-gradient-to-br from-[#F5E6D3] to-[#E8D5C4] rounded-t-[2rem] overflow-hidden relative z-10 transition-all duration-300 ease-out ${
           isCollapsed ? 'rounded-t-none' : ''
         }`}
         style={{ marginTop: isCollapsed ? 0 : -28 }}
@@ -944,7 +944,7 @@ export default function AppXPage() {
             WebkitOverflowScrolling: 'touch'
           }}
         >
-          <div className={`pb-32 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #D4A574 0%, #C99B6D 100%)' }}>
+          <div className={`pb-32 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #F5E6D3 0%, #E8D5C4 100%)' }}>
             {/* Wellness Dashboard Container - Glassmorphism */}
             <div className="mx-4 mb-5 bg-white/70 backdrop-blur-xl rounded-3xl p-4 shadow-glass border border-white/40">
               {/* Row 1: 8 Wellness Charts - Horizontal Scroll + Daily Check-in */}
