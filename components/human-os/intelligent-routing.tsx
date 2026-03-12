@@ -208,7 +208,7 @@ export function IntelligentRouting({ userState, onActionClick, onDismiss, onShow
       case "high":
         return "bg-gradient-to-br from-[#C17767] to-[#A65D4D] border-red-400/30";
       case "medium":
-        return "bg-gradient-to-br from-[#E8A87C] to-[#D4956A] border-orange-400/30";
+        return "bg-gradient-to-br from-[#D4A574] to-[#C99B6D] border-[#D4A574]/40";
       default:
         return "bg-gradient-to-br from-[#5BB5B0] to-[#4A9A96] border-teal-400/30";
     }

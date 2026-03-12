@@ -25,17 +25,15 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-gradient-to-r from-palette-sky/95 via-palette-sea/90 to-palette-sky/95 backdrop-blur-xl supports-[backdrop-filter]:bg-palette-sky/80">
       <nav className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-3">
+        <Link href="/" className="flex items-center">
           <Image
-            src="/new-assets/bnb-orang.png"
+            src="/new-assets/bnb-white.png"
             alt="Bold & Beyond"
-            width={40}
-            height={40}
+            width={120}
+            height={120}
             className="object-contain"
+            style={{ width: 120, height: 120 }}
           />
-          <span className="font-display text-xl font-bold text-white">
-            Bold & Beyond
-          </span>
         </Link>
 
         {/* Desktop Navigation */}

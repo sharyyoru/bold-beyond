@@ -852,8 +852,8 @@ export default function AppXPage() {
           }`}
         >
           <div className="h-full flex flex-col px-5 pb-6">
-            {/* B&B Logo + Human OS Badge */}
-            <div className="flex justify-center items-center gap-3 mb-1">
+            {/* B&B Logo */}
+            <div className="flex justify-center items-center mb-1">
               <Image
                 src="/new-assets/bnb-white.png"
                 alt="Bold & Beyond"
@@ -862,12 +862,6 @@ export default function AppXPage() {
                 className="object-contain"
                 style={{ width: 72, height: 72 }}
               />
-              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md rounded-full px-4 py-2.5 border border-white/20">
-                <div className="h-7 w-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                  <Sparkles className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-base font-semibold text-white">Human OS</span>
-              </div>
             </div>
             
             {/* Greeting */}
@@ -906,11 +900,11 @@ export default function AppXPage() {
               </div>
             </div>
             
-            {/* Go to Human OS Button */}
+            {/* Go to Human OS Button - Glassmorphism Style */}
             <div className="flex justify-center pb-4">
               <Link 
                 href="/appx/human-os"
-                className="flex items-center gap-2 bg-white/90 backdrop-blur-sm text-[#1B365D] font-semibold px-5 py-2.5 rounded-full shadow-glass hover:bg-white transition-all"
+                className="flex items-center gap-2 bg-white/15 backdrop-blur-md text-white font-semibold px-5 py-2.5 rounded-full border border-white/20 hover:bg-white/25 transition-all"
               >
                 <Brain className="h-5 w-5" />
                 Open Human OS
