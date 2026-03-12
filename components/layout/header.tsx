@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
@@ -21,12 +22,18 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-gradient-to-r from-palette-sky/95 via-palette-sea/90 to-palette-sky/95 backdrop-blur-xl supports-[backdrop-filter]:bg-palette-sky/80">
       <nav className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-full gradient-gold" />
-          <span className="font-display text-xl font-bold text-brand-navy">
+        <Link href="/" className="flex items-center space-x-3">
+          <Image
+            src="/new-assets/bnb-orang.png"
+            alt="Bold & Beyond"
+            width={40}
+            height={40}
+            className="object-contain"
+          />
+          <span className="font-display text-xl font-bold text-white">
             Bold & Beyond
           </span>
         </Link>
@@ -38,10 +45,10 @@ export function Header() {
               key={item.name}
               href={item.href}
               className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
+                "text-sm font-medium transition-colors hover:text-white",
                 pathname === item.href
-                  ? "text-primary"
-                  : "text-muted-foreground"
+                  ? "text-white"
+                  : "text-white/70"
               )}
             >
               {item.name}
@@ -51,10 +58,10 @@ export function Header() {
 
         {/* CTA Buttons */}
         <div className="hidden md:flex md:items-center md:gap-x-4">
-          <Button variant="ghost" asChild>
+          <Button variant="ghost" className="text-white hover:text-white hover:bg-white/20" asChild>
             <Link href="/login">Sign In</Link>
           </Button>
-          <Button variant="gold" asChild>
+          <Button className="bg-palette-sand text-gray-800 hover:bg-palette-sand/90 shadow-lg" asChild>
             <Link href="/signup">Get Started</Link>
           </Button>
         </div>
@@ -76,7 +83,7 @@ export function Header() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t bg-background">
+        <div className="md:hidden border-t border-white/20 bg-palette-sky/95 backdrop-blur-xl">
           <div className="space-y-1 px-4 py-4">
             {navigation.map((item) => (
               <Link
@@ -85,19 +92,19 @@ export function Header() {
                 className={cn(
                   "block rounded-lg px-3 py-2 text-base font-medium transition-colors",
                   pathname === item.href
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-accent"
+                    ? "bg-white/20 text-white"
+                    : "text-white/70 hover:bg-white/10 hover:text-white"
                 )}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
-            <div className="mt-4 space-y-2 border-t pt-4">
-              <Button variant="outline" className="w-full" asChild>
+            <div className="mt-4 space-y-2 border-t border-white/20 pt-4">
+              <Button variant="outline" className="w-full border-white/30 text-white hover:bg-white/10" asChild>
                 <Link href="/login">Sign In</Link>
               </Button>
-              <Button variant="gold" className="w-full" asChild>
+              <Button className="w-full bg-palette-sand text-gray-800 hover:bg-palette-sand/90" asChild>
                 <Link href="/signup">Get Started</Link>
               </Button>
             </div>

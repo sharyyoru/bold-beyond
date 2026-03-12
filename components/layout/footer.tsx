@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { 
   Facebook, 
   Twitter, 
@@ -40,18 +41,26 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="border-t bg-brand-navy text-white">
-      <div className="container py-12 md:py-16">
+    <footer className="border-t border-white/20 bg-gradient-to-br from-palette-sky via-palette-sea to-palette-sky text-white relative overflow-hidden">
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-palette-sand/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+      <div className="container py-12 md:py-16 relative z-10">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-full gradient-gold" />
+            <Link href="/" className="flex items-center space-x-3">
+              <Image
+                src="/new-assets/bnb-orang.png"
+                alt="Bold & Beyond"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
               <span className="font-display text-xl font-bold">
                 Bold & Beyond
               </span>
             </Link>
-            <p className="mt-4 text-sm text-gray-300 max-w-xs">
+            <p className="mt-4 text-sm text-white/70 max-w-xs">
               Your comprehensive wellness journey starts here. Connect with
               expert therapists, book sessions, and unlock exclusive partner
               perks.
@@ -61,7 +70,7 @@ export function Footer() {
                 <a
                   key={item.name}
                   href={item.href}
-                  className="text-gray-400 hover:text-brand-gold transition-colors"
+                  className="text-white/60 hover:text-palette-sand transition-colors"
                 >
                   <span className="sr-only">{item.name}</span>
                   <item.icon className="h-5 w-5" />
@@ -72,7 +81,7 @@ export function Footer() {
 
           {/* Services */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-gold">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-palette-sand">
               Services
             </h3>
             <ul className="mt-4 space-y-2">
@@ -80,7 +89,7 @@ export function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-gray-300 hover:text-white transition-colors"
+                    className="text-sm text-white/70 hover:text-white transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -91,7 +100,7 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-gold">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-palette-sand">
               Company
             </h3>
             <ul className="mt-4 space-y-2">
@@ -99,7 +108,7 @@ export function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-gray-300 hover:text-white transition-colors"
+                    className="text-sm text-white/70 hover:text-white transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -110,7 +119,7 @@ export function Footer() {
 
           {/* Support */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-gold">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-palette-sand">
               Support
             </h3>
             <ul className="mt-4 space-y-2">
@@ -118,7 +127,7 @@ export function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-gray-300 hover:text-white transition-colors"
+                    className="text-sm text-white/70 hover:text-white transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -128,14 +137,14 @@ export function Footer() {
             <div className="mt-6 space-y-2">
               <a
                 href="mailto:hello@boldandbeyond.ae"
-                className="flex items-center gap-2 text-sm text-gray-300 hover:text-white"
+                className="flex items-center gap-2 text-sm text-white/70 hover:text-white"
               >
                 <Mail className="h-4 w-4" />
                 hello@boldandbeyond.ae
               </a>
               <a
                 href="tel:+97142345678"
-                className="flex items-center gap-2 text-sm text-gray-300 hover:text-white"
+                className="flex items-center gap-2 text-sm text-white/70 hover:text-white"
               >
                 <Phone className="h-4 w-4" />
                 +971 4 234 5678
@@ -145,8 +154,8 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 border-t border-gray-700 pt-8">
-          <p className="text-center text-sm text-gray-400">
+        <div className="mt-12 border-t border-white/20 pt-8">
+          <p className="text-center text-sm text-white/60">
             &copy; {new Date().getFullYear()} Bold & Beyond. All rights
             reserved. Dubai, UAE.
           </p>
