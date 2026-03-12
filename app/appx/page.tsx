@@ -265,12 +265,6 @@ function SlideProgressBar({ duration, isActive, onComplete }: { duration: number
   );
 }
 
-// Quick action cards
-const quickActions = [
-  { label: "Add birthdate", sublabel: "Enjoy surprises", icon: Calendar, href: "/appx/profile?tab=personal" },
-  { label: "Personalise", sublabel: "Add preferences", icon: Sparkles, href: "/appx/profile?tab=preferences" },
-  { label: "Verify", sublabel: "Get perks", icon: Star, href: "/appx/profile?tab=settings" },
-];
 
 // Service type for Sanity data
 interface SanityService {
@@ -401,9 +395,9 @@ function AIInsightsCard({ routingAccuracy, tenureDays, dataPoints }: { routingAc
 // Network Effect Badge Component
 function NetworkBadge({ usersHelped }: { usersHelped: number }) {
   return (
-    <div className="flex items-center gap-2 bg-brand-teal/10 rounded-full px-3 py-1.5">
-      <Activity className="h-3 w-3 text-brand-teal" />
-      <span className="text-[10px] text-brand-teal font-medium">
+    <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/30">
+      <Activity className="h-3 w-3 text-white" />
+      <span className="text-[10px] text-white font-medium">
         Your data helps {usersHelped.toLocaleString()}+ users
       </span>
     </div>
@@ -1007,30 +1001,6 @@ export default function AppXPage() {
               </div>
             </div>
 
-            {/* Quick Actions - Glassmorphism */}
-            <div className="mb-5">
-              <div 
-                className="flex gap-3 overflow-x-auto pb-2 px-4 cursor-grab active:cursor-grabbing"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {quickActions.map((action, i) => (
-                  <Link
-                    key={i}
-                    href={action.href}
-                    className="flex-shrink-0 flex items-center gap-3 bg-white/70 backdrop-blur-lg rounded-2xl px-5 py-4 shadow-glass-sm hover:shadow-glass border border-white/40 active:scale-95 transition-all duration-300"
-                  >
-                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#F5E6D3]/80 to-[#E8D5C4] backdrop-blur-sm flex items-center justify-center border border-white/30">
-                      <action.icon className="h-6 w-6 text-[#D4AF37]" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-sm font-semibold text-gray-800">{action.label}</p>
-                      <p className="text-xs text-gray-500">{action.sublabel}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
           {/* AI Insights Card - Human OS */}
           <div className="px-4 mb-5">
             <AIInsightsCard 
@@ -1070,8 +1040,8 @@ export default function AppXPage() {
           {/* Featured Services from Sanity - with subtle branded background */}
           <BrandedSection pattern="diamond" opacity={0.12} patternSize={60} className="mb-6 py-4 bg-gradient-to-r from-palette-sand-light/30 to-white">
             <div className="flex items-center justify-between px-4 mb-3">
-              <h3 className="font-semibold text-gray-900">Popular Services</h3>
-              <Link href="/appx/services" className="text-sm text-brand-teal font-medium">
+              <h3 className="font-semibold text-white">Popular Services</h3>
+              <Link href="/appx/services" className="text-sm text-white font-medium">
                 See All
               </Link>
             </div>
@@ -1151,8 +1121,8 @@ export default function AppXPage() {
           {/* Featured Products from Sanity - with subtle branded background */}
           <BrandedSection pattern="diamond" opacity={0.10} patternSize={60} className="mb-6 py-4 bg-gradient-to-r from-white to-palette-sand-light/20">
             <div className="flex items-center justify-between px-4 mb-3">
-              <h3 className="font-semibold text-gray-900">Wellness Products</h3>
-              <Link href="/appx/products" className="text-sm text-brand-teal font-medium">
+              <h3 className="font-semibold text-white">Wellness Products</h3>
+              <Link href="/appx/products" className="text-sm text-white font-medium">
                 See All
               </Link>
             </div>
@@ -1240,8 +1210,8 @@ export default function AppXPage() {
           {/* Featured Providers from Sanity - with subtle branded background */}
           <BrandedSection pattern="diamond" opacity={0.08} patternSize={60} className="mb-6 py-4 bg-gradient-to-l from-palette-sand-light/25 to-white">
             <div className="flex items-center justify-between px-4 mb-3">
-              <h3 className="font-semibold text-gray-900">Top Providers</h3>
-              <Link href="/appx/providers" className="text-sm text-brand-teal font-medium">
+              <h3 className="font-semibold text-white">Top Providers</h3>
+              <Link href="/appx/providers" className="text-sm text-white font-medium">
                 See All
               </Link>
             </div>
@@ -1377,30 +1347,6 @@ export default function AppXPage() {
             </Card>
           </div>
 
-          {/* Discover Section */}
-          <div className="px-4">
-            <h3 className="font-semibold text-gray-900 mb-3">
-              Discover the hottest spots in town 🌴
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-              <Card className="overflow-hidden border-0 shadow-md">
-                <div className="h-24 bg-gradient-to-br from-brand-teal to-brand-teal-light relative">
-                  <div className="absolute inset-0 p-3 flex flex-col justify-end">
-                    <p className="text-white font-semibold text-sm">Partner Perks</p>
-                    <p className="text-white/80 text-xs">Save on wellness</p>
-                  </div>
-                </div>
-              </Card>
-              <Card className="overflow-hidden border-0 shadow-md">
-                <div className="h-24 bg-gradient-to-br from-brand-gold to-yellow-400 relative">
-                  <div className="absolute inset-0 p-3 flex flex-col justify-end">
-                    <p className="text-white font-semibold text-sm">Group Sessions</p>
-                    <p className="text-white/80 text-xs">Join the community</p>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </div>
         </div>
         </div>
       </div>
