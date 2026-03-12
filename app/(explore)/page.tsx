@@ -144,7 +144,7 @@ export default async function HomePage() {
               </p>
               <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
                 <Button size="xl" className="bg-palette-sand text-gray-800 hover:bg-palette-sand/90 shadow-lg" asChild>
-                  <Link href="/signup">
+                  <Link href="/download">
                     {content.heroPrimaryCta}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
@@ -454,7 +454,7 @@ export default async function HomePage() {
             </p>
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Button size="xl" className="bg-palette-sand text-gray-800 hover:bg-palette-sand/90 shadow-lg" asChild>
-                <Link href="/signup">
+                <Link href="/download">
                   {content.ctaPrimaryButton}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>

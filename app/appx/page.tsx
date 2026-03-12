@@ -395,9 +395,9 @@ function AIInsightsCard({ routingAccuracy, tenureDays, dataPoints }: { routingAc
 // Network Effect Badge Component
 function NetworkBadge({ usersHelped }: { usersHelped: number }) {
   return (
-    <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/30">
-      <Activity className="h-3 w-3 text-white" />
-      <span className="text-[10px] text-white font-medium">
+    <div className="flex items-center gap-2 bg-[#0D9488]/10 backdrop-blur-sm rounded-full px-3 py-1.5 border border-[#0D9488]/30">
+      <Activity className="h-3 w-3 text-[#0D9488]" />
+      <span className="text-[10px] text-[#0D9488] font-medium">
         Your data helps {usersHelped.toLocaleString()}+ users
       </span>
     </div>

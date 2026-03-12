@@ -54,15 +54,6 @@ export function Header() {
           ))}
         </div>
 
-        {/* CTA Buttons */}
-        <div className="hidden md:flex md:items-center md:gap-x-4">
-          <Button variant="ghost" className="text-white hover:text-white hover:bg-white/20" asChild>
-            <Link href="/login">Sign In</Link>
-          </Button>
-          <Button className="bg-palette-sand text-gray-800 hover:bg-palette-sand/90 shadow-lg" asChild>
-            <Link href="/signup">Get Started</Link>
-          </Button>
-        </div>
 
         {/* Mobile menu button */}
         <button
@@ -98,14 +89,6 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
-            <div className="mt-4 space-y-2 border-t border-white/20 pt-4">
-              <Button variant="outline" className="w-full border-white/30 text-white hover:bg-white/10" asChild>
-                <Link href="/login">Sign In</Link>
-              </Button>
-              <Button className="w-full bg-palette-sand text-gray-800 hover:bg-palette-sand/90" asChild>
-                <Link href="/signup">Get Started</Link>
-              </Button>
-            </div>
           </div>
         </div>
       )}
