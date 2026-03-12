@@ -930,7 +930,7 @@ export default function AppXPage() {
       {/* Draggable Sheet Content Container */}
       <div
         ref={sheetRef}
-        className={`flex-1 bg-white rounded-t-[2rem] overflow-hidden relative z-10 transition-all duration-300 ease-out ${
+        className={`flex-1 bg-gradient-to-br from-[#E8D5C4] to-[#DFC9B5] rounded-t-[2rem] overflow-hidden relative z-10 transition-all duration-300 ease-out ${
           isCollapsed ? 'rounded-t-none' : ''
         }`}
         style={{ marginTop: isCollapsed ? 0 : -28 }}
@@ -943,7 +943,7 @@ export default function AppXPage() {
           onPointerUp={handleHandlePointerUp}
           onPointerLeave={handleHandlePointerUp}
         >
-          <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+          <div className="w-12 h-1.5 bg-white/40 rounded-full" />
         </div>
         
         {/* Scrollable Content */}
@@ -956,7 +956,7 @@ export default function AppXPage() {
             WebkitOverflowScrolling: 'touch'
           }}
         >
-          <div className={`pb-32 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #FDFBF7 0%, #F8F6F0 100%)' }}>
+          <div className={`pb-32 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #E8D5C4 0%, #DFC9B5 100%)' }}>
             {/* Row 1: 8 Wellness Charts - Horizontal Scroll + Daily Check-in */}
             <div className="mb-4">
               <div 
