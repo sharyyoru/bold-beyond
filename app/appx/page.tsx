@@ -945,53 +945,56 @@ export default function AppXPage() {
           }}
         >
           <div className={`pb-32 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #D4A574 0%, #C99B6D 100%)' }}>
-            {/* Row 1: 8 Wellness Charts - Horizontal Scroll + Daily Check-in */}
-            <div className="mb-4">
-              <div 
-                className="flex gap-3 overflow-x-auto pb-2 px-4"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {/* Daily Check-in Button */}
-                <Link href="/appx/wellness-checkin" className="flex-shrink-0">
-                  <div className="flex flex-col items-center p-2 rounded-2xl bg-gradient-to-br from-[#0D9488] to-[#7DD3D3] shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95"
-                    style={{ minWidth: 80 }}
-                  >
-                    <div className="h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
-                      <span className="text-2xl">✨</span>
-                    </div>
-                    <span className="text-xs font-medium text-white mt-1">Check-in</span>
-                  </div>
-                </Link>
-                {wellnessMetricsConfig.map((metric, i) => {
-                  const score = userProfile?.wellness_scores?.[metric.id as keyof typeof userProfile.wellness_scores] ?? metric.defaultValue;
-                  return (
-                    <Link key={metric.id} href="/appx/wellness-tracker" className="flex-shrink-0">
-                      <WellnessChart value={score} label={metric.label} color={metric.color} delay={i * 100} icon={metric.icon} />
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-            
-            {/* Row 2: All Service Buttons - Horizontal Scroll */}
-            <div className="mb-5">
-              <div 
-                className="flex gap-3 overflow-x-auto pb-2 px-4"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {serviceCategories.map((service) => (
-                  <Link key={service.id} href={`/appx/services?category=${service.id}`} className="flex flex-col items-center gap-1.5 flex-shrink-0">
-                    <div className="relative">
-                      <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
-                        <service.icon className="h-8 w-8 text-white" />
+            {/* Wellness Dashboard Container - Glassmorphism */}
+            <div className="mx-4 mb-5 bg-white/70 backdrop-blur-xl rounded-3xl p-4 shadow-glass border border-white/40">
+              {/* Row 1: 8 Wellness Charts - Horizontal Scroll + Daily Check-in */}
+              <div className="mb-4">
+                <div 
+                  className="flex gap-3 overflow-x-auto pb-2"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {/* Daily Check-in Button */}
+                  <Link href="/appx/wellness-checkin" className="flex-shrink-0">
+                    <div className="flex flex-col items-center p-2 rounded-2xl bg-gradient-to-br from-[#0D9488] to-[#7DD3D3] shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95"
+                      style={{ minWidth: 80 }}
+                    >
+                      <div className="h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
+                        <span className="text-2xl">✨</span>
                       </div>
-                      {service.badge && (
-                        <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">{service.badge}</span>
-                      )}
+                      <span className="text-xs font-medium text-white mt-1">Check-in</span>
                     </div>
-                    <span className="text-xs font-medium text-gray-600">{service.label}</span>
                   </Link>
-                ))}
+                  {wellnessMetricsConfig.map((metric, i) => {
+                    const score = userProfile?.wellness_scores?.[metric.id as keyof typeof userProfile.wellness_scores] ?? metric.defaultValue;
+                    return (
+                      <Link key={metric.id} href="/appx/wellness-tracker" className="flex-shrink-0">
+                        <WellnessChart value={score} label={metric.label} color={metric.color} delay={i * 100} icon={metric.icon} />
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+              
+              {/* Row 2: All Service Buttons - Horizontal Scroll */}
+              <div>
+                <div 
+                  className="flex gap-3 overflow-x-auto pb-2"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {serviceCategories.map((service) => (
+                    <Link key={service.id} href={`/appx/services?category=${service.id}`} className="flex flex-col items-center gap-1.5 flex-shrink-0">
+                      <div className="relative">
+                        <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95`}>
+                          <service.icon className="h-8 w-8 text-white" />
+                        </div>
+                        {service.badge && (
+                          <span className="absolute -top-1 -right-1 bg-[#7DD3D3] text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full shadow">{service.badge}</span>
+                        )}
+                      </div>
+                      <span className="text-xs font-medium text-gray-600">{service.label}</span>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -1034,8 +1037,8 @@ export default function AppXPage() {
           {/* Featured Services from Sanity - with subtle branded background */}
           <BrandedSection pattern="diamond" opacity={0.12} patternSize={60} className="mb-6 py-4 bg-gradient-to-r from-palette-sand-light/30 to-white">
             <div className="flex items-center justify-between px-4 mb-3">
-              <h3 className="font-semibold text-white">Popular Services</h3>
-              <Link href="/appx/services" className="text-sm text-white font-medium">
+              <h3 className="font-semibold text-[#0D9488]">Popular Services</h3>
+              <Link href="/appx/services" className="text-sm text-[#0D9488] font-medium">
                 See All
               </Link>
             </div>
@@ -1115,8 +1118,8 @@ export default function AppXPage() {
           {/* Featured Products from Sanity - with subtle branded background */}
           <BrandedSection pattern="diamond" opacity={0.10} patternSize={60} className="mb-6 py-4 bg-gradient-to-r from-white to-palette-sand-light/20">
             <div className="flex items-center justify-between px-4 mb-3">
-              <h3 className="font-semibold text-white">Wellness Products</h3>
-              <Link href="/appx/products" className="text-sm text-white font-medium">
+              <h3 className="font-semibold text-[#0D9488]">Wellness Products</h3>
+              <Link href="/appx/products" className="text-sm text-[#0D9488] font-medium">
                 See All
               </Link>
             </div>
@@ -1204,8 +1207,8 @@ export default function AppXPage() {
           {/* Featured Providers from Sanity - with subtle branded background */}
           <BrandedSection pattern="diamond" opacity={0.08} patternSize={60} className="mb-6 py-4 bg-gradient-to-l from-palette-sand-light/25 to-white">
             <div className="flex items-center justify-between px-4 mb-3">
-              <h3 className="font-semibold text-white">Top Providers</h3>
-              <Link href="/appx/providers" className="text-sm text-white font-medium">
+              <h3 className="font-semibold text-[#0D9488]">Top Providers</h3>
+              <Link href="/appx/providers" className="text-sm text-[#0D9488] font-medium">
                 See All
               </Link>
             </div>
