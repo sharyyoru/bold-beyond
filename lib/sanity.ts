@@ -106,6 +106,27 @@ export const queries = {
     seoMetadata
   }`,
 
+  servicesByCategory: `*[_type == "service" && isActive == true && category == $category] | order(order asc) {
+    _id,
+    title,
+    slug,
+    description,
+    icon,
+    category,
+    benefits,
+    duration,
+    image,
+    rating,
+    reviewCount,
+    serviceType,
+    "provider": provider-> {
+      _id,
+      name,
+      slug,
+      logo
+    }
+  }`,
+
   serviceBySlug: `*[_type == "service" && slug.current == $slug][0] {
     _id,
     title,

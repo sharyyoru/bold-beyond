@@ -49,10 +49,10 @@ const defaultContent = {
   servicesTitle: "Comprehensive Wellbeing Services",
   servicesDescription: "From therapy to coaching, find the support you need for every aspect of your wellbeing.",
   featuredServices: [
-    { title: "Psychotherapy", description: "Professional mental health support with licensed therapists", icon: "brain", href: "/services/psychotherapy" },
-    { title: "Life Coaching", description: "Transform your goals into achievements with expert guidance", icon: "sparkles", href: "/services/life-coaching" },
-    { title: "Couples Therapy", description: "Strengthen your relationships with specialized counseling", icon: "heart", href: "/services/couples-therapy" },
-    { title: "Group Sessions", description: "Connect and grow with supportive community workshops", icon: "users", href: "/services/group-sessions" },
+    { title: "Psychotherapy", description: "Professional mental health support with licensed therapists", icon: "brain", href: "/services/psychotherapy", video: "/updated-assets/psychotherapy.mov" },
+    { title: "Life Coaching", description: "Transform your goals into achievements with expert guidance", icon: "sparkles", href: "/services/life-coaching", video: "/updated-assets/lifecoaching.mov" },
+    { title: "Couples Therapy", description: "Strengthen your relationships with specialized counseling", icon: "heart", href: "/services/couples-therapy", video: "/updated-assets/couplestherapy.mp4" },
+    { title: "Group Sessions", description: "Connect and grow with supportive community workshops", icon: "users", href: "/services/group-sessions", video: "/updated-assets/groupsessions.mp4" },
   ],
   featuresTagline: "Why Choose Us",
   featuresTitle: "Everything You Need for Your Wellbeing Journey",
@@ -94,7 +94,7 @@ interface HomepageData {
   heroImage?: { asset: { _ref: string } };
   servicesTitle?: string;
   servicesDescription?: string;
-  featuredServices?: Array<{ title: string; description: string; icon: string; href: string }>;
+  featuredServices?: Array<{ title: string; description: string; icon: string; href: string; video?: string }>;
   featuresTagline?: string;
   featuresTitle?: string;
   featuresDescription?: string;
@@ -243,16 +243,32 @@ export default async function HomePage() {
               const IconComponent = iconMap[service.icon] || Brain;
               return (
                 <Link key={service.title} href={service.href} className="group">
-                  <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-palette-sky/20 bg-white/80 backdrop-blur-sm hover:border-palette-sea/40">
-                    <CardHeader>
-                      <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-palette-sea/10 text-palette-sea group-hover:bg-palette-sea group-hover:text-white transition-colors">
-                        <IconComponent className="h-6 w-6" />
+                  <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-palette-sky/20 bg-white/80 backdrop-blur-sm hover:border-palette-sea/40 overflow-hidden">
+                    {/* Video Container */}
+                    {service.video && (
+                      <div className="relative w-full aspect-video overflow-hidden">
+                        <video
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          preload="metadata"
+                          className="absolute inset-0 w-full h-full object-cover"
+                        >
+                          <source src={service.video} type={service.video.endsWith('.mov') ? 'video/quicktime' : 'video/mp4'} />
+                        </video>
+                        <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" />
                       </div>
-                      <CardTitle className="text-xl text-palette-sky">{service.title}</CardTitle>
+                    )}
+                    <CardHeader className="pt-4">
+                      <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-palette-sea/10 text-palette-sea group-hover:bg-palette-sea group-hover:text-white transition-colors">
+                        <IconComponent className="h-5 w-5" />
+                      </div>
+                      <CardTitle className="text-lg text-palette-sky">{service.title}</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <p className="text-gray-600">{service.description}</p>
-                      <div className="mt-4 flex items-center text-palette-sea font-medium">
+                    <CardContent className="pt-0">
+                      <p className="text-gray-600 text-sm">{service.description}</p>
+                      <div className="mt-3 flex items-center text-palette-sea font-medium text-sm">
                         Learn more
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </div>
