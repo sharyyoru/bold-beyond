@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { 
   ArrowRight, 
   Brain, 
@@ -22,6 +23,13 @@ import {
   History,
   Compass
 } from "lucide-react";
+
+const HeroAnimation = dynamic(() => import("@/components/home/HeroAnimation"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full max-w-lg aspect-square bg-white/10 rounded-3xl animate-pulse" />
+  ),
+});
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchSanity, queries, urlFor } from "@/lib/sanity";
@@ -180,48 +188,9 @@ export default async function HomePage() {
               </div>
             </div>
             
-            {/* Hero Image with branded elements */}
+            {/* Hero Animation with branded elements */}
             <div className="hidden lg:flex justify-center relative">
-              <div className="relative w-full max-w-md aspect-square">
-                <Image
-                  src="/assets/female-sports-model.png"
-                  alt="Wellbeing"
-                  fill
-                  className="object-contain"
-                  priority
-                />
-                
-                {/* Floating branded cards with glassmorphism */}
-                <div className="absolute -left-8 top-1/4 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl p-4 animate-fade-in border border-white/50">
-                  <div className="flex items-center gap-3">
-                    <Image
-                      src="/assets/excellent-emoticon.svg"
-                      alt="Excellent"
-                      width={40}
-                      height={40}
-                    />
-                    <div>
-                      <p className="font-semibold text-palette-sky text-sm">Feeling Great!</p>
-                      <p className="text-xs text-gray-500">Wellbeing Score: 87%</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="absolute -right-4 bottom-1/3 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl p-4 animate-fade-in border border-white/50">
-                  <div className="flex items-center gap-3">
-                    <Image
-                      src="/assets/mandala-filled.svg"
-                      alt="AI Match"
-                      width={32}
-                      height={32}
-                    />
-                    <div>
-                      <p className="font-semibold text-palette-sky text-sm">AI Match Found</p>
-                      <p className="text-xs text-palette-sea">94.3% confidence</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <HeroAnimation />
             </div>
           </div>
         </div>
