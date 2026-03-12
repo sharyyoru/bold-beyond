@@ -10,11 +10,28 @@ import {
   X,
   Play,
   Pause,
-  RotateCcw
+  RotateCcw,
+  Target,
+  Heart,
+  HelpCircle,
+  History,
+  Compass,
+  ChevronRight,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  SetOutcomesTool,
+  ElicitValuesTool,
+  DrivingQuestionTool,
+  PersonalHistoryTool,
+  TheWantTool,
+  ToolCompletionScreen,
+} from "./deep-regulation-tools";
 
-type ToolType = "breathing" | "grounding" | "tapping" | "wave";
+type ToolType = "breathing" | "grounding" | "tapping" | "wave" | "set_outcomes" | "elicit_values" | "driving_question" | "personal_history" | "the_want";
+
+type ToolCategory = "quick" | "deep";
 
 interface RegulationTool {
   id: ToolType;
@@ -25,7 +42,12 @@ interface RegulationTool {
   color: string;
 }
 
-const tools: RegulationTool[] = [
+interface ExtendedRegulationTool extends RegulationTool {
+  category: ToolCategory;
+  steps?: number;
+}
+
+const quickTools: ExtendedRegulationTool[] = [
   {
     id: "breathing",
     name: "Box Breathing",
@@ -33,6 +55,7 @@ const tools: RegulationTool[] = [
     description: "4-4-4-4 breathing pattern to calm your nervous system",
     icon: Wind,
     color: "#5BB5B0",
+    category: "quick",
   },
   {
     id: "grounding",
@@ -41,6 +64,7 @@ const tools: RegulationTool[] = [
     description: "Sensory awareness to bring you back to the present",
     icon: Eye,
     color: "#6B9BC3",
+    category: "quick",
   },
   {
     id: "tapping",
@@ -49,6 +73,7 @@ const tools: RegulationTool[] = [
     description: "Meridian tapping to release emotional tension",
     icon: Hand,
     color: "#8B7355",
+    category: "quick",
   },
   {
     id: "wave",
@@ -57,8 +82,64 @@ const tools: RegulationTool[] = [
     description: "Quick vagus nerve stimulation for instant calm",
     icon: Waves,
     color: "#E8A87C",
+    category: "quick",
   },
 ];
+
+const deepTools: ExtendedRegulationTool[] = [
+  {
+    id: "set_outcomes",
+    name: "Set Outcomes",
+    duration: "15-20 min",
+    description: "14-step process to clarify and align your goals",
+    icon: Target,
+    color: "#1B365D",
+    category: "deep",
+    steps: 14,
+  },
+  {
+    id: "elicit_values",
+    name: "Elicit Values",
+    duration: "10 min",
+    description: "Discover what truly matters to you in any life area",
+    icon: Heart,
+    color: "#8B7355",
+    category: "deep",
+    steps: 3,
+  },
+  {
+    id: "driving_question",
+    name: "Driving Question",
+    duration: "15 min",
+    description: "Uncover and transform your core life question",
+    icon: HelpCircle,
+    color: "#6B9BC3",
+    category: "deep",
+    steps: 6,
+  },
+  {
+    id: "the_want",
+    name: "The Want",
+    duration: "10 min",
+    description: "Ecology check - explore all dimensions of your desires",
+    icon: Compass,
+    color: "#E8A87C",
+    category: "deep",
+    steps: 6,
+  },
+  {
+    id: "personal_history",
+    name: "Personal History",
+    duration: "30-45 min",
+    description: "Deep exploration of patterns and their origins",
+    icon: History,
+    color: "#1B365D",
+    category: "deep",
+    steps: 23,
+  },
+];
+
+const tools: RegulationTool[] = quickTools;
 
 interface RegulationToolsProps {
   onToolSelect?: (tool: RegulationTool) => void;
@@ -520,15 +601,26 @@ function VagalResetExercise({ onClose }: { onClose: () => void }) {
 
 export function RegulationTools({ onToolSelect, activeTool }: RegulationToolsProps) {
   const [selectedTool, setSelectedTool] = useState<ToolType | null>(activeTool || null);
+  const [showDeepTools, setShowDeepTools] = useState(false);
+  const [completedTool, setCompletedTool] = useState<{ name: string; insights: string[]; color: string } | null>(null);
 
   const handleToolClick = (tool: RegulationTool) => {
     setSelectedTool(tool.id);
     onToolSelect?.(tool);
   };
 
+  const handleDeepToolComplete = (toolName: string, color: string) => (responses: Record<string, string>, insights: string[]) => {
+    setCompletedTool({ name: toolName, insights, color });
+    setSelectedTool(null);
+  };
+
+  const handleCloseCompletion = () => {
+    setCompletedTool(null);
+  };
+
   return (
     <>
-      {/* Tool selector - Glassmorphism */}
+      {/* Quick Tools - Glassmorphism */}
       <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-5 shadow-glass border border-white/30">
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -538,7 +630,7 @@ export function RegulationTools({ onToolSelect, activeTool }: RegulationToolsPro
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          {tools.map((tool) => (
+          {quickTools.map((tool) => (
             <motion.button
               key={tool.id}
               onClick={() => handleToolClick(tool)}
@@ -560,7 +652,68 @@ export function RegulationTools({ onToolSelect, activeTool }: RegulationToolsPro
         </div>
       </div>
 
-      {/* Active tool modal */}
+      {/* Deep Transformation Tools */}
+      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-5 shadow-glass border border-white/30 mt-4">
+        <button 
+          onClick={() => setShowDeepTools(!showDeepTools)}
+          className="w-full flex items-center justify-between"
+        >
+          <div>
+            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-[#E8A87C]" />
+              Deep Transformation
+            </h3>
+            <p className="text-xs text-gray-500">Powerful coaching protocols</p>
+          </div>
+          <ChevronRight className={`h-5 w-5 text-gray-400 transition-transform ${showDeepTools ? 'rotate-90' : ''}`} />
+        </button>
+
+        <AnimatePresence>
+          {showDeepTools && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="grid grid-cols-1 gap-3 mt-4">
+                {deepTools.map((tool) => (
+                  <motion.button
+                    key={tool.id}
+                    onClick={() => handleToolClick(tool)}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="p-4 rounded-2xl text-left transition-all backdrop-blur-md border border-white/40 hover:shadow-glass flex items-center gap-4"
+                    style={{ backgroundColor: `${tool.color}15` }}
+                  >
+                    <div
+                      className="h-12 w-12 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/30 flex-shrink-0"
+                      style={{ backgroundColor: `${tool.color}25` }}
+                    >
+                      <tool.icon className="h-6 w-6" style={{ color: tool.color }} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium text-gray-900">{tool.name}</p>
+                        {tool.steps && (
+                          <span className="text-xs bg-white/50 px-2 py-0.5 rounded-full text-gray-600">
+                            {tool.steps} steps
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500 truncate">{tool.description}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{tool.duration}</p>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-gray-300 flex-shrink-0" />
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Active tool modals - Quick tools */}
       <AnimatePresence>
         {selectedTool === "breathing" && (
           <BreathingExercise onClose={() => setSelectedTool(null)} />
@@ -575,9 +728,55 @@ export function RegulationTools({ onToolSelect, activeTool }: RegulationToolsPro
           <VagalResetExercise onClose={() => setSelectedTool(null)} />
         )}
       </AnimatePresence>
+
+      {/* Active tool modals - Deep tools */}
+      <AnimatePresence>
+        {selectedTool === "set_outcomes" && (
+          <SetOutcomesTool 
+            onClose={() => setSelectedTool(null)} 
+            onComplete={handleDeepToolComplete("Set Outcomes", "#1B365D")}
+          />
+        )}
+        {selectedTool === "elicit_values" && (
+          <ElicitValuesTool 
+            onClose={() => setSelectedTool(null)} 
+            onComplete={handleDeepToolComplete("Elicit Values", "#8B7355")}
+          />
+        )}
+        {selectedTool === "driving_question" && (
+          <DrivingQuestionTool 
+            onClose={() => setSelectedTool(null)} 
+            onComplete={handleDeepToolComplete("Driving Question", "#6B9BC3")}
+          />
+        )}
+        {selectedTool === "the_want" && (
+          <TheWantTool 
+            onClose={() => setSelectedTool(null)} 
+            onComplete={handleDeepToolComplete("The Want", "#E8A87C")}
+          />
+        )}
+        {selectedTool === "personal_history" && (
+          <PersonalHistoryTool 
+            onClose={() => setSelectedTool(null)} 
+            onComplete={handleDeepToolComplete("Personal History", "#1B365D")}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Completion screen */}
+      <AnimatePresence>
+        {completedTool && (
+          <ToolCompletionScreen
+            toolName={completedTool.name}
+            insights={completedTool.insights}
+            accentColor={completedTool.color}
+            onClose={handleCloseCompletion}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }
 
-export { tools };
-export type { RegulationTool, ToolType };
+export { tools, quickTools, deepTools };
+export type { RegulationTool, ToolType, ExtendedRegulationTool };

@@ -676,3 +676,157 @@ export function generateSmartRecommendations(data: UserWellnessData): AIRecommen
   const priorityOrder = { high: 0, medium: 1, low: 2 };
   return recommendations.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
 }
+
+// Generate regulation tool recommendations based on wellness data
+export interface RegulationToolRecommendation {
+  toolType: string;
+  toolName: string;
+  priority: 'high' | 'medium' | 'low';
+  reason: string;
+  category: 'quick' | 'deep';
+}
+
+export function generateRegulationToolRecommendations(data: UserWellnessData): RegulationToolRecommendation[] {
+  const recommendations: RegulationToolRecommendation[] = [];
+  const { scores, nervousSystemStatus, burnoutRisk, moodHistory, chatHistory } = data;
+
+  // QUICK TOOLS - For immediate regulation needs
+  
+  // Dysregulated nervous system - immediate intervention
+  if (nervousSystemStatus === 'dysregulated') {
+    recommendations.push({
+      toolType: 'breathing',
+      toolName: 'Box Breathing',
+      priority: 'high',
+      reason: 'Your nervous system needs immediate calming. Box breathing activates your parasympathetic response.',
+      category: 'quick'
+    });
+    recommendations.push({
+      toolType: 'wave',
+      toolName: 'Vagal Reset',
+      priority: 'high',
+      reason: 'Vagal stimulation can quickly shift your system from fight-or-flight to rest-and-digest.',
+      category: 'quick'
+    });
+  }
+
+  // Elevated nervous system
+  if (nervousSystemStatus === 'elevated') {
+    recommendations.push({
+      toolType: 'grounding',
+      toolName: '5-4-3-2-1 Grounding',
+      priority: 'high',
+      reason: 'Grounding will help anchor you in the present moment and reduce anxiety.',
+      category: 'quick'
+    });
+  }
+
+  // High stress
+  if (scores.stress < 50) {
+    recommendations.push({
+      toolType: 'tapping',
+      toolName: 'EFT Tapping',
+      priority: 'medium',
+      reason: 'Tapping on meridian points can release stored emotional tension and reduce stress.',
+      category: 'quick'
+    });
+  }
+
+  // DEEP TOOLS - For transformational work
+
+  // Low overall alignment - need to clarify goals
+  if (scores.overall < 55 || burnoutRisk === 'high') {
+    recommendations.push({
+      toolType: 'set_outcomes',
+      toolName: 'Set Outcomes',
+      priority: 'medium',
+      reason: 'Clarifying your outcomes can bring focus and direction when feeling overwhelmed or misaligned.',
+      category: 'deep'
+    });
+  }
+
+  // Burnout risk - reconnect with values
+  if (burnoutRisk === 'high' || burnoutRisk === 'moderate') {
+    recommendations.push({
+      toolType: 'elicit_values',
+      toolName: 'Elicit Values',
+      priority: 'medium',
+      reason: 'Reconnecting with your core values can restore motivation and purpose during burnout.',
+      category: 'deep'
+    });
+  }
+
+  // Low mind score - cognitive clarity needed
+  if (scores.mind < 55) {
+    recommendations.push({
+      toolType: 'driving_question',
+      toolName: 'Driving Question',
+      priority: 'medium',
+      reason: 'Understanding your driving question can bring mental clarity and conscious direction.',
+      category: 'deep'
+    });
+  }
+
+  // Analyze mood patterns for persistent low mood
+  if (moodHistory.length >= 5) {
+    const recentMoods = moodHistory.slice(-5);
+    const avgScore = recentMoods.reduce((sum, m) => sum + m.score, 0) / recentMoods.length;
+    if (avgScore < 45) {
+      recommendations.push({
+        toolType: 'personal_history',
+        toolName: 'Personal History',
+        priority: 'low',
+        reason: 'Persistent low mood may have roots in past patterns. Deep exploration can bring transformative insights.',
+        category: 'deep'
+      });
+    }
+  }
+
+  // Check chat history for recurring themes
+  if (chatHistory.length > 0) {
+    const negativeChats = chatHistory.filter(m => m.sentiment === 'negative').length;
+    if (negativeChats > chatHistory.length * 0.4) {
+      recommendations.push({
+        toolType: 'the_want',
+        toolName: 'The Want',
+        priority: 'medium',
+        reason: 'Exploring what you truly want can help shift from negative patterns to positive direction.',
+        category: 'deep'
+      });
+    }
+  }
+
+  // Low energy combined with unclear direction
+  if (scores.energy < 50 && scores.mind < 60) {
+    recommendations.push({
+      toolType: 'the_want',
+      toolName: 'The Want',
+      priority: 'medium',
+      reason: 'Low energy often comes from unclear direction. The Want helps clarify your true desires.',
+      category: 'deep'
+    });
+  }
+
+  // Sort by priority and limit
+  const priorityOrder = { high: 0, medium: 1, low: 2 };
+  return recommendations
+    .sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
+    .slice(0, 4); // Return top 4 recommendations
+}
+
+// Check if user should be shown regulation tool recommendations
+export function shouldRecommendRegulationTools(data: UserWellnessData): boolean {
+  const { scores, nervousSystemStatus, burnoutRisk } = data;
+  
+  // High priority situations
+  if (nervousSystemStatus === 'dysregulated' || nervousSystemStatus === 'elevated') return true;
+  if (burnoutRisk === 'high') return true;
+  
+  // Check for low scores
+  if (scores.stress < 50) return true;
+  if (scores.mood < 50) return true;
+  if (scores.overall < 55) return true;
+  if (scores.mind < 50) return true;
+  
+  return false;
+}
