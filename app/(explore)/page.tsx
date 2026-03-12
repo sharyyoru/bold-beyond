@@ -384,7 +384,7 @@ export default async function HomePage() {
 
           <div className="mt-12 text-center">
             <Button size="lg" className="bg-palette-sea text-white hover:bg-palette-sea-dark" asChild>
-              <Link href="/appx">
+              <Link href="/download">
                 Try Human OS Free
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>

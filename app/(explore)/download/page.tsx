@@ -122,19 +122,6 @@ export default function DownloadPage() {
             </div>
           </div>
 
-          {/* Web app link */}
-          <div className="mt-12">
-            <p className="text-white/60 mb-4">Or continue on the web</p>
-            <Button 
-              variant="outline" 
-              className="bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-full px-8"
-              asChild
-            >
-              <Link href="/appx">
-                Open Web App
-              </Link>
-            </Button>
-          </div>
         </div>
       </div>
     </div>
