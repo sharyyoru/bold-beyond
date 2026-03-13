@@ -934,7 +934,17 @@ export default function AppXPage() {
             WebkitOverflowScrolling: 'touch'
           }}
         >
-          <div className={`pb-32 ${isCollapsed ? 'pt-4' : 'pt-2'}`} style={{ background: 'linear-gradient(180deg, #F5E6D3 0%, #E8D5C4 100%)' }}>
+          <div className={`pb-32 ${isCollapsed ? 'pt-4' : 'pt-2'} relative`} style={{ background: 'linear-gradient(180deg, #F5E6D3 0%, #E8D5C4 100%)' }}>
+            {/* Tiled pattern background */}
+            <div 
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage: 'url(/new-assets/pattern-asset.png)',
+                backgroundRepeat: 'repeat',
+                backgroundSize: '100px 100px',
+                opacity: 0.1,
+              }}
+            />
             {/* Wellbeing Dashboard Container - Glassmorphism */}
             <div className="mx-4 mb-5 bg-white/70 backdrop-blur-xl rounded-3xl p-4 shadow-glass border border-white/40">
               {/* Row 1: 8 Wellbeing Charts - Horizontal Scroll + Daily Check-in */}
