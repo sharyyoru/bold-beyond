@@ -13,8 +13,23 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { VENDOR_NEUTRAL_MESSAGING, WELLNESS_MODALITIES } from "@/lib/human-os/decision-engine";
+
 import Image from "next/image";
+
+const MODALITY_MATCH_RATES: Record<string, number> = {
+  'Psychotherapy': 89.2,
+  'Life Coaching': 87.5,
+  'Meditation & Mindfulness': 91.8,
+  'Physical Fitness': 93.4,
+  'Nutrition & Diet': 88.7,
+  'Sleep Optimization': 85.3,
+  'Stress Management': 90.1,
+  'Couples Therapy': 82.6,
+  'Group Sessions': 86.9,
+  'Holistic Wellbeing': 84.2,
+};
 
 interface DecisionEngineProps {
   variant?: "hero" | "feature" | "compact";
@@ -36,7 +51,7 @@ export function DecisionEngine({
     {
       icon: Target,
       title: "AI-Powered Matching",
-      description: "94.3% accuracy in matching users with effective interventions.",
+      description: "85-93% accuracy in matching users with effective interventions.",
     },
     {
       icon: Shield,
@@ -107,9 +122,11 @@ export function DecisionEngine({
                 </p>
               </div>
 
-              <Button variant="gold" size="lg" className="group">
-                Experience the Engine
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              <Button variant="gold" size="lg" className="group" asChild>
+                <Link href="/download">
+                  Experience the Engine
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
               </Button>
             </motion.div>
 
@@ -163,7 +180,7 @@ export function DecisionEngine({
 
                 <div className="mt-6 p-4 bg-brand-teal/5 rounded-lg">
                   <p className="text-sm text-center text-brand-teal">
-                    <span className="font-semibold">94.3%</span> match confidence for{" "}
+                    <span className="font-semibold">{MODALITY_MATCH_RATES[WELLNESS_MODALITIES[activeModality]?.name] || 87.5}%</span> match confidence for{" "}
                     <span className="font-semibold">{WELLNESS_MODALITIES[activeModality]?.name}</span>
                   </p>
                 </div>
@@ -190,12 +207,12 @@ export function DecisionEngine({
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Routing accuracy</span>
-            <span className="font-semibold text-brand-teal">94.3%</span>
+            <span className="font-semibold text-brand-teal">88.5%</span>
           </div>
           <div className="mt-2 h-2 bg-gray-100 rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
-              whileInView={{ width: "94.3%" }}
+              whileInView={{ width: "88.5%" }}
               viewport={{ once: true }}
               transition={{ duration: 1, delay: 0.5 }}
               className="h-full bg-brand-teal rounded-full"

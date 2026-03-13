@@ -160,7 +160,7 @@ export function getRoutingStats(): {
   return {
     totalModalities: WELLNESS_MODALITIES.length,
     vendorNeutral: true, // Core principle: we route, we don't provide
-    accuracyRate: 0.94, // 94% routing accuracy from network effects
+    accuracyRate: 0.885, // 88.5% routing accuracy from network effects
     providersRouted: 500, // Number of providers in network
   };
 }

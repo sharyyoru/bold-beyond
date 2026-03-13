@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, Play } from "lucide-react";
+import { ArrowRight, Sparkles, Apple, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
@@ -61,23 +61,29 @@ export function BrandedHero({
 
               <div className="flex flex-wrap gap-4">
                 <Button variant="gold" size="lg" asChild className="group">
-                  <Link href="/signup">
+                  <Link href="/download">
                     Get Started
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>
-                {showVideo && (
-                  <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10">
-                    <Play className="mr-2 h-5 w-5" />
-                    Watch Demo
-                  </Button>
-                )}
+                <Button size="lg" className="bg-black text-white hover:bg-gray-900 gap-2" asChild>
+                  <Link href="/download">
+                    <Apple className="h-5 w-5" />
+                    App Store
+                  </Link>
+                </Button>
+                <Button size="lg" className="bg-white/10 text-white border-white/30 hover:bg-white/20 gap-2" asChild>
+                  <Link href="/download">
+                    <Smartphone className="h-5 w-5" />
+                    Play Store
+                  </Link>
+                </Button>
               </div>
 
               {/* Trust indicators */}
               <div className="mt-12 flex items-center gap-8">
                 <div className="text-center">
-                  <p className="text-3xl font-bold text-brand-gold">94.3%</p>
+                  <p className="text-3xl font-bold text-brand-gold">88.5%</p>
                   <p className="text-sm text-gray-400">Routing Accuracy</p>
                 </div>
                 <div className="h-12 w-px bg-white/20" />
@@ -125,18 +131,28 @@ export function BrandedHero({
                   />
                 </div>
 
-                {/* Floating elements */}
+                {/* Floating elements with animation */}
                 {[
-                  { icon: "excellent-emoticon", pos: "top-0 left-0", delay: 0 },
-                  { icon: "great-emoticon", pos: "top-0 right-0", delay: 0.2 },
-                  { icon: "neutral-emoticon", pos: "bottom-0 left-0", delay: 0.4 },
+                  { icon: "excellent-emoticon", pos: "top-0 left-0", delay: 0, floatY: [-8, 0, -8], floatX: [4, 0, 4], duration: 3 },
+                  { icon: "great-emoticon", pos: "top-0 right-0", delay: 0.2, floatY: [-6, 0, -6], floatX: [-4, 0, -4], duration: 4 },
+                  { icon: "neutral-emoticon", pos: "bottom-0 left-0", delay: 0.4, floatY: [-10, 0, -10], floatX: [2, 0, 2], duration: 3.5 },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
                     className={`absolute ${item.pos} w-12 h-12`}
                     initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.5 + item.delay }}
+                    animate={{ 
+                      opacity: 1, 
+                      scale: 1,
+                      y: item.floatY,
+                      x: item.floatX,
+                    }}
+                    transition={{ 
+                      opacity: { duration: 0.5, delay: 0.5 + item.delay },
+                      scale: { duration: 0.5, delay: 0.5 + item.delay },
+                      y: { duration: item.duration, repeat: Infinity, ease: "easeInOut", delay: item.delay },
+                      x: { duration: item.duration, repeat: Infinity, ease: "easeInOut", delay: item.delay },
+                    }}
                   >
                     <Image
                       src={`/assets/${item.icon}.svg`}
@@ -290,7 +306,7 @@ export function BrandedHero({
             <div className="grid grid-cols-3 gap-6">
               {[
                 { label: "Vendor Neutral", desc: "No conflicts of interest" },
-                { label: "AI-Powered", desc: "94.3% accuracy" },
+                { label: "AI-Powered", desc: "88.5% accuracy" },
                 { label: "Data Network", desc: "Gets smarter daily" },
               ].map((item, i) => (
                 <motion.div
@@ -360,7 +376,7 @@ export function BrandedHero({
                     </div>
                     <div>
                       <p className="font-semibold text-brand-navy">AI Match Found</p>
-                      <p className="text-xs text-brand-teal">94.3% confidence</p>
+                      <p className="text-xs text-brand-teal">88.5% confidence</p>
                     </div>
                   </div>
                 </motion.div>

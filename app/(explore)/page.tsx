@@ -42,7 +42,7 @@ const ScrollReveal = dynamic(() => import("@/components/ui/ScrollReveal"), {
   ssr: false,
 });
 
-const SmiliesAnimation = dynamic(() => import("@/components/home/SmiliesAnimation"), {
+const SpinningLotusAnimation = dynamic(() => import("@/components/home/SpinningLotusAnimation"), {
   ssr: false,
 });
 
@@ -306,14 +306,14 @@ export default async function HomePage() {
             <ScrollReveal direction="right" delay={200}>
               <div className="relative">
                 <div className="rounded-3xl bg-white/10 backdrop-blur-lg border border-white/20 p-6 flex flex-row gap-6 relative overflow-hidden">
-                  {/* Mandala Background Pattern */}
+                  {/* Geometric Tile Pattern Background */}
                   <div 
-                    className="absolute inset-0 opacity-15 pointer-events-none"
+                    className="absolute inset-0 opacity-10 pointer-events-none"
                     style={{
-                      backgroundImage: "url('/assets/mandala-filled.svg')",
-                      backgroundSize: "400px 400px",
+                      backgroundImage: "url('/assets/b&b-pattern.svg')",
+                      backgroundSize: "150px 150px",
                       backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat",
+                      backgroundRepeat: "repeat",
                     }}
                   />
                   {/* Yoga Animation - Full Height Left */}
@@ -343,9 +343,9 @@ export default async function HomePage() {
       {/* Regulation Tools Section - NEW */}
       <section className="py-20 md:py-28 bg-gradient-to-b from-white to-palette-sand/20 relative overflow-hidden">
         <div className="absolute top-20 -right-32 w-96 h-96 bg-palette-sea/10 rounded-full blur-3xl" />
-        {/* Smilies Animation - Top Right */}
+        {/* Spinning Lotus Animation - Top Right */}
         <div className="absolute top-8 right-8 lg:right-16 hidden md:block">
-          <SmiliesAnimation />
+          <SpinningLotusAnimation />
         </div>
         <div className="container relative z-10">
           <ScrollReveal>
