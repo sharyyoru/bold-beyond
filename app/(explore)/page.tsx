@@ -30,6 +30,13 @@ const HeroAnimation = dynamic(() => import("@/components/home/HeroAnimation"), {
     <div className="w-full max-w-lg aspect-square bg-white/10 rounded-3xl animate-pulse" />
   ),
 });
+
+const YogaAnimation = dynamic(() => import("@/components/home/YogaAnimation"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-48 bg-white/10 rounded-2xl animate-pulse" />
+  ),
+});
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchSanity, queries, urlFor } from "@/lib/sanity";
@@ -215,16 +222,19 @@ export default async function HomePage() {
                   <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-palette-sky/20 bg-white/80 backdrop-blur-sm hover:border-palette-sea/40 overflow-hidden">
                     {/* Video Container */}
                     {service.video && (
-                      <div className="relative w-full aspect-video overflow-hidden">
+                      <div className="relative w-full aspect-video overflow-hidden bg-gradient-to-br from-palette-sea/20 to-palette-sky/20">
                         <video
                           autoPlay
                           loop
                           muted
                           playsInline
-                          preload="metadata"
+                          preload="auto"
                           className="absolute inset-0 w-full h-full object-cover"
                         >
-                          <source src={service.video} type={service.video.endsWith('.mov') ? 'video/quicktime' : 'video/mp4'} />
+                          {/* MP4 source for Chrome/Firefox/Edge */}
+                          <source src={service.video.replace('.mov', '.mp4')} type="video/mp4" />
+                          {/* QuickTime source for Safari */}
+                          <source src={service.video} type="video/quicktime" />
                         </video>
                         <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" />
                       </div>
@@ -282,15 +292,20 @@ export default async function HomePage() {
               </Button>
             </div>
             <div className="relative">
-              <div className="aspect-square rounded-3xl bg-white/10 backdrop-blur-lg border border-white/20 p-8 flex items-center justify-center">
-                <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
+              <div className="rounded-3xl bg-white/10 backdrop-blur-lg border border-white/20 p-6 flex flex-col">
+                {/* Yoga Animation */}
+                <div className="mb-4 h-48">
+                  <YogaAnimation />
+                </div>
+                {/* Compressed Stats Grid */}
+                <div className="grid grid-cols-2 gap-3 w-full">
                   {content.stats?.map((stat, index) => {
                     const StatIcon = iconMap[stat.icon] || Calendar;
                     return (
-                      <div key={index} className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-4 text-center hover:bg-white/20 transition-all">
-                        <StatIcon className="h-8 w-8 mx-auto mb-2 text-palette-sand" />
-                        <span className="text-2xl font-bold">{stat.value}</span>
-                        <p className="text-sm text-white/70">{stat.label}</p>
+                      <div key={index} className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 text-center hover:bg-white/20 transition-all">
+                        <StatIcon className="h-6 w-6 mx-auto mb-1 text-palette-sand" />
+                        <span className="text-xl font-bold">{stat.value}</span>
+                        <p className="text-xs text-white/70">{stat.label}</p>
                       </div>
                     );
                   })}
