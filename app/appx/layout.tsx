@@ -2,6 +2,7 @@
 
 import { FavoritesProvider } from "@/contexts/favorites-context";
 import { CartProvider } from "@/contexts/cart-context";
+import { LoadingProvider } from "@/components/providers/LoadingProvider";
 
 export default function AppXLayout({
   children,
@@ -9,12 +10,14 @@ export default function AppXLayout({
   children: React.ReactNode;
 }) {
   return (
-    <FavoritesProvider>
-      <CartProvider>
-        <div data-app="true" className="min-h-screen bg-gray-100 overflow-hidden">
-          {children}
-        </div>
-      </CartProvider>
-    </FavoritesProvider>
+    <LoadingProvider>
+      <FavoritesProvider>
+        <CartProvider>
+          <div data-app="true" className="min-h-screen bg-gray-100 overflow-hidden">
+            {children}
+          </div>
+        </CartProvider>
+      </FavoritesProvider>
+    </LoadingProvider>
   );
 }

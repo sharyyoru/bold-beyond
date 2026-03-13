@@ -10,7 +10,7 @@ export default function HeroAnimation() {
   const [animationData, setAnimationData] = useState<object | null>(null);
 
   useEffect(() => {
-    fetch("/animations/using-tablet.json")
+    fetch("/animations/using-app.json")
       .then((res) => res.json())
       .then((data) => setAnimationData(data))
       .catch((err) => console.error("Failed to load animation:", err));
