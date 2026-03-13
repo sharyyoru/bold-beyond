@@ -482,10 +482,10 @@ export default async function HomePage() {
       <DecisionEngine variant="hero" showModalities />
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-br from-palette-sky via-palette-sea to-palette-sky py-20 md:py-28 relative overflow-hidden">
+      <section className="bg-palette-sand py-20 md:py-28 relative overflow-hidden">
         {/* Background orbs */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-palette-sand/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/30 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-palette-sky/10 rounded-full blur-3xl" />
         {/* Rotating Big Icon Background */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <Image
@@ -499,27 +499,27 @@ export default async function HomePage() {
         
         <div className="container relative z-10">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-3xl font-bold text-white md:text-4xl">
+            <h2 className="font-display text-3xl font-bold text-brand-navy md:text-4xl">
               {content.ctaTitle}
             </h2>
-            <p className="mt-4 text-lg text-white/80">
+            <p className="mt-4 text-lg text-brand-navy/70">
               {content.ctaDescription}
             </p>
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Button size="xl" className="bg-palette-sand text-gray-800 hover:bg-palette-sand/90 shadow-lg" asChild>
+              <Button size="xl" className="bg-brand-gold text-white hover:bg-brand-gold/90 shadow-lg" asChild>
                 <Link href="/download">
                   {content.ctaPrimaryButton}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button size="xl" className="bg-white/20 backdrop-blur-sm text-white border-white/30 hover:bg-white/30" asChild>
+              <Button size="xl" className="bg-white/80 backdrop-blur-sm text-brand-navy border-brand-navy/20 hover:bg-white" asChild>
                 <Link href="/contact">{content.ctaSecondaryButton}</Link>
               </Button>
             </div>
             
             {/* Additional CTAs for Human OS */}
-            <div className="mt-8 pt-8 border-t border-white/20">
-              <p className="text-sm text-white/70 mb-4">
+            <div className="mt-8 pt-8 border-t border-brand-navy/20">
+              <p className="text-sm text-brand-navy/70 mb-4">
                 For enterprise solutions and corporate wellness programs:
               </p>
               <div className="flex flex-wrap justify-center gap-4">
