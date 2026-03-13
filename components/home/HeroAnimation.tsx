@@ -32,14 +32,20 @@ export default function HeroAnimation() {
         <div className="w-full h-full bg-white/10 rounded-3xl animate-pulse" />
       )}
       
-      {/* Floating branded cards with glassmorphism */}
-      <div className="absolute -left-8 top-1/4 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl p-4 animate-fade-in border border-white/50">
+      {/* Floating branded cards with glassmorphism and animations */}
+      <div 
+        className="absolute -left-8 top-1/4 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl p-4 border border-white/50"
+        style={{
+          animation: "float-left 3s ease-in-out infinite",
+        }}
+      >
         <div className="flex items-center gap-3">
           <Image
             src="/assets/excellent-emoticon.svg"
             alt="Excellent"
             width={40}
             height={40}
+            className="animate-pulse"
           />
           <div>
             <p className="font-semibold text-palette-sky text-sm">Feeling Great!</p>
@@ -48,13 +54,20 @@ export default function HeroAnimation() {
         </div>
       </div>
       
-      <div className="absolute -right-4 bottom-1/3 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl p-4 animate-fade-in border border-white/50">
+      <div 
+        className="absolute -right-4 bottom-1/3 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl p-4 border border-white/50"
+        style={{
+          animation: "float-right 4s ease-in-out infinite 0.5s",
+        }}
+      >
         <div className="flex items-center gap-3">
           <Image
             src="/assets/mandala-filled.svg"
             alt="AI Match"
             width={32}
             height={32}
+            className="animate-spin"
+            style={{ animationDuration: "8s" }}
           />
           <div>
             <p className="font-semibold text-palette-sky text-sm">AI Match Found</p>
@@ -62,6 +75,18 @@ export default function HeroAnimation() {
           </div>
         </div>
       </div>
+      
+      {/* CSS Keyframes for floating animations */}
+      <style jsx>{`
+        @keyframes float-left {
+          0%, 100% { transform: translateY(0) translateX(0); }
+          50% { transform: translateY(-12px) translateX(5px); }
+        }
+        @keyframes float-right {
+          0%, 100% { transform: translateY(0) translateX(0); }
+          50% { transform: translateY(-8px) translateX(-5px); }
+        }
+      `}</style>
     </div>
   );
 }
