@@ -150,6 +150,16 @@ export default async function HomePage() {
           <div className="absolute top-20 -left-32 w-96 h-96 bg-palette-sand/30 rounded-full blur-3xl" />
           <div className="absolute bottom-20 -right-32 w-96 h-96 bg-white/20 rounded-full blur-3xl" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-palette-sea/20 rounded-full blur-3xl" />
+          {/* Rotating Big Icon - Upper Right */}
+          <div className="absolute -top-32 -right-32 w-[500px] h-[500px] overflow-hidden">
+            <Image
+              src="/new-assets/big-icon.png"
+              alt=""
+              width={500}
+              height={500}
+              className="opacity-50 animate-spin-slow"
+            />
+          </div>
         </div>
         
         <div className="container relative z-10">
