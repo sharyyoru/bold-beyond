@@ -37,6 +37,11 @@ const YogaAnimation = dynamic(() => import("@/components/home/YogaAnimation"), {
     <div className="w-full h-48 bg-white/10 rounded-2xl animate-pulse" />
   ),
 });
+
+const ScrollReveal = dynamic(() => import("@/components/ui/ScrollReveal"), {
+  ssr: false,
+});
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchSanity, queries, urlFor } from "@/lib/sanity";
@@ -206,20 +211,23 @@ export default async function HomePage() {
       {/* Services Section */}
       <section className="py-20 md:py-28 bg-gradient-to-b from-palette-sand/30 to-white">
         <div className="container">
-          <div className="mx-auto max-w-2xl text-center mb-16">
-            <h2 className="font-display text-3xl font-bold text-palette-sky md:text-4xl">
-              {content.servicesTitle}
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              {content.servicesDescription}
-            </p>
-          </div>
+          <ScrollReveal>
+            <div className="mx-auto max-w-2xl text-center mb-16">
+              <h2 className="font-display text-3xl font-bold text-palette-sky md:text-4xl">
+                {content.servicesTitle}
+              </h2>
+              <p className="mt-4 text-lg text-gray-600">
+                {content.servicesDescription}
+              </p>
+            </div>
+          </ScrollReveal>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {content.featuredServices?.map((service) => {
+            {content.featuredServices?.map((service, index) => {
               const IconComponent = iconMap[service.icon] || Brain;
               return (
-                <Link key={service.title} href={service.href} className="group">
-                  <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-palette-sky/20 bg-white/80 backdrop-blur-sm hover:border-palette-sea/40 overflow-hidden">
+                <ScrollReveal key={service.title} delay={index * 100} direction="up">
+                  <Link href={service.href} className="group block h-full">
+                    <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-palette-sky/20 bg-white/80 backdrop-blur-sm hover:border-palette-sea/40 overflow-hidden">
                     {/* Video Container */}
                     {service.video && (
                       <div className="relative w-full aspect-video overflow-hidden bg-gradient-to-br from-palette-sea/20 to-palette-sky/20">
@@ -249,8 +257,9 @@ export default async function HomePage() {
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </div>
                     </CardContent>
-                  </Card>
-                </Link>
+                    </Card>
+                  </Link>
+                </ScrollReveal>
               );
             })}
           </div>
@@ -263,52 +272,56 @@ export default async function HomePage() {
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
         <div className="container relative z-10">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
-            <div>
-              <span className="text-palette-sand font-medium uppercase tracking-wider text-sm">
-                {content.featuresTagline}
-              </span>
-              <h2 className="mt-4 font-display text-3xl font-bold md:text-4xl">
-                {content.featuresTitle}
-              </h2>
-              <p className="mt-4 text-white/80 text-lg">
-                {content.featuresDescription}
-              </p>
-              <ul className="mt-8 space-y-4">
-                {content.featuresList?.map((item, index) => (
-                  <li key={index} className="flex items-center gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-palette-sand flex-shrink-0" />
-                    <span className="text-white/90">{item.feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button size="lg" className="mt-8 bg-palette-sand text-gray-800 hover:bg-palette-sand/90" asChild>
-                <Link href="/about">
-                  Learn More About Us
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-            <div className="relative">
-              <div className="rounded-3xl bg-white/10 backdrop-blur-lg border border-white/20 p-6 flex flex-row gap-6">
-                {/* Yoga Animation - Full Height Left */}
-                <div className="flex-1 min-h-[320px]">
-                  <YogaAnimation />
-                </div>
-                {/* Stats - Vertical Stack Right */}
-                <div className="flex flex-col gap-3 w-32">
-                  {content.stats?.map((stat, index) => {
-                    const StatIcon = iconMap[stat.icon] || Calendar;
-                    return (
-                      <div key={index} className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 text-center hover:bg-white/20 transition-all flex-1">
-                        <StatIcon className="h-5 w-5 mx-auto mb-1 text-palette-sand" />
-                        <span className="text-lg font-bold">{stat.value}</span>
-                        <p className="text-[10px] text-white/70 leading-tight">{stat.label}</p>
-                      </div>
-                    );
-                  })}
+            <ScrollReveal direction="left">
+              <div>
+                <span className="text-palette-sand font-medium uppercase tracking-wider text-sm">
+                  {content.featuresTagline}
+                </span>
+                <h2 className="mt-4 font-display text-3xl font-bold md:text-4xl">
+                  {content.featuresTitle}
+                </h2>
+                <p className="mt-4 text-white/80 text-lg">
+                  {content.featuresDescription}
+                </p>
+                <ul className="mt-8 space-y-4">
+                  {content.featuresList?.map((item, index) => (
+                    <li key={index} className="flex items-center gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-palette-sand flex-shrink-0" />
+                      <span className="text-white/90">{item.feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button size="lg" className="mt-8 bg-palette-sand text-gray-800 hover:bg-palette-sand/90" asChild>
+                  <Link href="/about">
+                    Learn More About Us
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal direction="right" delay={200}>
+              <div className="relative">
+                <div className="rounded-3xl bg-white/10 backdrop-blur-lg border border-white/20 p-6 flex flex-row gap-6">
+                  {/* Yoga Animation - Full Height Left */}
+                  <div className="flex-1 min-h-[320px]">
+                    <YogaAnimation />
+                  </div>
+                  {/* Stats - Vertical Stack Right */}
+                  <div className="flex flex-col gap-3 w-32">
+                    {content.stats?.map((stat, index) => {
+                      const StatIcon = iconMap[stat.icon] || Calendar;
+                      return (
+                        <div key={index} className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 text-center hover:bg-white/20 transition-all flex-1">
+                          <StatIcon className="h-5 w-5 mx-auto mb-1 text-palette-sand" />
+                          <span className="text-lg font-bold">{stat.value}</span>
+                          <p className="text-[10px] text-white/70 leading-tight">{stat.label}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -317,18 +330,20 @@ export default async function HomePage() {
       <section className="py-20 md:py-28 bg-gradient-to-b from-white to-palette-sand/20 relative overflow-hidden">
         <div className="absolute top-20 -right-32 w-96 h-96 bg-palette-sea/10 rounded-full blur-3xl" />
         <div className="container relative z-10">
-          <div className="mx-auto max-w-3xl text-center mb-16">
-            <span className="inline-flex items-center rounded-full bg-palette-sea/10 px-4 py-1.5 text-sm font-medium text-palette-sea mb-4">
-              <Brain className="mr-2 h-4 w-4" />
-              Human OS Technology
-            </span>
-            <h2 className="font-display text-3xl font-bold text-palette-sky md:text-4xl">
-              Powerful Regulation Tools
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Access science-backed tools for nervous system regulation, emotional processing, and personal transformation - all integrated into your wellness journey.
-            </p>
-          </div>
+          <ScrollReveal>
+            <div className="mx-auto max-w-3xl text-center mb-16">
+              <span className="inline-flex items-center rounded-full bg-palette-sea/10 px-4 py-1.5 text-sm font-medium text-palette-sea mb-4">
+                <Brain className="mr-2 h-4 w-4" />
+                Human OS Technology
+              </span>
+              <h2 className="font-display text-3xl font-bold text-palette-sky md:text-4xl">
+                Powerful Regulation Tools
+              </h2>
+              <p className="mt-4 text-lg text-gray-600">
+                Access science-backed tools for nervous system regulation, emotional processing, and personal transformation - all integrated into your wellness journey.
+              </p>
+            </div>
+          </ScrollReveal>
           
           {/* Quick Tools */}
           <div className="mb-12">

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Apple, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -37,7 +37,7 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex md:items-center md:gap-x-8">
+        <div className="hidden md:flex md:items-center md:gap-x-6">
           {navigation.map((item) => (
             <Link
               key={item.name}
@@ -52,6 +52,22 @@ export function Header() {
               {item.name}
             </Link>
           ))}
+          
+          {/* Download Buttons */}
+          <div className="flex items-center gap-2 ml-4">
+            <Button size="sm" variant="outline" className="bg-black text-white border-black hover:bg-gray-900 gap-1.5" asChild>
+              <Link href="/download">
+                <Apple className="h-4 w-4" />
+                <span className="text-xs">App Store</span>
+              </Link>
+            </Button>
+            <Button size="sm" variant="outline" className="bg-white/10 text-white border-white/30 hover:bg-white/20 gap-1.5" asChild>
+              <Link href="/download">
+                <Smartphone className="h-4 w-4" />
+                <span className="text-xs">Play Store</span>
+              </Link>
+            </Button>
+          </div>
         </div>
 
 
@@ -89,6 +105,21 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
+            {/* Mobile Download Buttons */}
+            <div className="flex gap-2 pt-4 border-t border-white/20 mt-4">
+              <Button size="sm" className="flex-1 bg-black text-white gap-1.5" asChild>
+                <Link href="/download" onClick={() => setMobileMenuOpen(false)}>
+                  <Apple className="h-4 w-4" />
+                  App Store
+                </Link>
+              </Button>
+              <Button size="sm" className="flex-1 bg-white/10 text-white gap-1.5" asChild>
+                <Link href="/download" onClick={() => setMobileMenuOpen(false)}>
+                  <Smartphone className="h-4 w-4" />
+                  Play Store
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       )}

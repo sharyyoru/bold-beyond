@@ -48,17 +48,15 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center">
               <Image
-                src="/new-assets/bnb-orang.png"
+                src="/new-assets/bnb-white.png"
                 alt="Bold & Beyond"
-                width={40}
-                height={40}
+                width={120}
+                height={120}
                 className="object-contain"
+                style={{ width: 120, height: 120 }}
               />
-              <span className="font-display text-xl font-bold">
-                Bold & Beyond
-              </span>
             </Link>
             <p className="mt-4 text-sm text-white/70 max-w-xs">
               Your comprehensive wellness journey starts here. Connect with
