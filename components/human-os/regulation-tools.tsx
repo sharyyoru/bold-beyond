@@ -20,6 +20,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import dynamic from "next/dynamic";
 import {
   SetOutcomesTool,
   ElicitValuesTool,
@@ -28,6 +29,11 @@ import {
   TheWantTool,
   ToolCompletionScreen,
 } from "./deep-regulation-tools";
+
+const ModuleLottie = dynamic(() => import("@/components/ui/ModuleLottie"), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-gray-100/50 animate-pulse rounded-xl" />,
+});
 
 type ToolType = "breathing" | "grounding" | "tapping" | "wave" | "set_outcomes" | "elicit_values" | "driving_question" | "personal_history" | "the_want";
 
@@ -40,11 +46,13 @@ interface RegulationTool {
   description: string;
   icon: typeof Wind;
   color: string;
+  lottie?: string;
 }
 
 interface ExtendedRegulationTool extends RegulationTool {
   category: ToolCategory;
   steps?: number;
+  lottie?: string;
 }
 
 const quickTools: ExtendedRegulationTool[] = [
@@ -56,6 +64,7 @@ const quickTools: ExtendedRegulationTool[] = [
     icon: Wind,
     color: "#5BB5B0",
     category: "quick",
+    lottie: "/animations/modules/boxbreathing.json",
   },
   {
     id: "grounding",
@@ -65,6 +74,7 @@ const quickTools: ExtendedRegulationTool[] = [
     icon: Eye,
     color: "#6B9BC3",
     category: "quick",
+    lottie: "/animations/modules/54321.json",
   },
   {
     id: "tapping",
@@ -74,6 +84,7 @@ const quickTools: ExtendedRegulationTool[] = [
     icon: Hand,
     color: "#8B7355",
     category: "quick",
+    lottie: "/animations/modules/EFTtapping.json",
   },
   {
     id: "wave",
@@ -83,6 +94,7 @@ const quickTools: ExtendedRegulationTool[] = [
     icon: Waves,
     color: "#E8A87C",
     category: "quick",
+    lottie: "/animations/modules/Vagal.json",
   },
 ];
 
@@ -96,6 +108,7 @@ const deepTools: ExtendedRegulationTool[] = [
     color: "#1B365D",
     category: "deep",
     steps: 14,
+    lottie: "/animations/modules/SetOutcomes.json",
   },
   {
     id: "elicit_values",
@@ -106,6 +119,7 @@ const deepTools: ExtendedRegulationTool[] = [
     color: "#8B7355",
     category: "deep",
     steps: 3,
+    lottie: "/animations/modules/ElicitValues.json",
   },
   {
     id: "driving_question",
@@ -116,6 +130,7 @@ const deepTools: ExtendedRegulationTool[] = [
     color: "#6B9BC3",
     category: "deep",
     steps: 6,
+    lottie: "/animations/modules/DrivingQuestion.json",
   },
   {
     id: "the_want",
@@ -126,6 +141,7 @@ const deepTools: ExtendedRegulationTool[] = [
     color: "#E8A87C",
     category: "deep",
     steps: 6,
+    lottie: "/animations/modules/TheWant.json",
   },
   {
     id: "personal_history",
@@ -136,6 +152,7 @@ const deepTools: ExtendedRegulationTool[] = [
     color: "#1B365D",
     category: "deep",
     steps: 23,
+    lottie: "/animations/modules/PersonalHistory.json",
   },
 ];
 
@@ -640,13 +657,17 @@ export function RegulationTools({ onToolSelect, activeTool }: RegulationToolsPro
               style={{ backgroundColor: `${tool.color}20` }}
             >
               <div
-                className="h-10 w-10 rounded-xl flex items-center justify-center mb-2 backdrop-blur-sm border border-white/30"
-                style={{ backgroundColor: `${tool.color}30` }}
+                className="h-16 w-16 rounded-xl flex items-center justify-center mb-2 overflow-hidden mx-auto"
+                style={{ backgroundColor: `${tool.color}15` }}
               >
-                <tool.icon className="h-5 w-5" style={{ color: tool.color }} />
+                {tool.lottie ? (
+                  <ModuleLottie animationPath={tool.lottie} className="w-full h-full" />
+                ) : (
+                  <tool.icon className="h-8 w-8" style={{ color: tool.color }} />
+                )}
               </div>
-              <p className="font-medium text-gray-900 text-sm">{tool.name}</p>
-              <p className="text-xs text-gray-500">{tool.duration}</p>
+              <p className="font-medium text-gray-900 text-sm text-center">{tool.name}</p>
+              <p className="text-xs text-gray-500 text-center">{tool.duration}</p>
             </motion.button>
           ))}
         </div>
@@ -687,10 +708,14 @@ export function RegulationTools({ onToolSelect, activeTool }: RegulationToolsPro
                     style={{ backgroundColor: `${tool.color}15` }}
                   >
                     <div
-                      className="h-12 w-12 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/30 flex-shrink-0"
-                      style={{ backgroundColor: `${tool.color}25` }}
+                      className="h-16 w-16 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0"
+                      style={{ backgroundColor: `${tool.color}15` }}
                     >
-                      <tool.icon className="h-6 w-6" style={{ color: tool.color }} />
+                      {tool.lottie ? (
+                        <ModuleLottie animationPath={tool.lottie} className="w-full h-full" />
+                      ) : (
+                        <tool.icon className="h-8 w-8" style={{ color: tool.color }} />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">

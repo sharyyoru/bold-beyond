@@ -50,6 +50,11 @@ const ScrollDownButton = dynamic(() => import("@/components/home/ScrollDownButto
   ssr: false,
 });
 
+const ModuleLottie = dynamic(() => import("@/components/ui/ModuleLottie"), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-gray-100 animate-pulse rounded-xl" />,
+});
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchSanity, queries, urlFor } from "@/lib/sanity";
@@ -385,20 +390,20 @@ export default async function HomePage() {
           {/* Quick Tools */}
           <div className="mb-12">
             <h3 className="text-xl font-semibold text-palette-sky mb-6 text-center">Quick Regulation Tools</h3>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {[
-                { icon: Wind, name: "Box Breathing", duration: "3 min", description: "4-4-4-4 breathing pattern to calm your nervous system", color: "#5BB5B0" },
-                { icon: Eye, name: "5-4-3-2-1 Grounding", duration: "2 min", description: "Sensory awareness to bring you back to the present", color: "#6B9BC3" },
-                { icon: Hand, name: "EFT Tapping", duration: "5 min", description: "Meridian tapping to release emotional tension", color: "#8B7355" },
-                { icon: Waves, name: "Vagal Reset", duration: "1 min", description: "Quick vagus nerve stimulation for instant calm", color: "#E8A87C" },
+                { lottie: "/animations/modules/boxbreathing.json", name: "Box Breathing", duration: "3 min", description: "4-4-4-4 breathing pattern to calm your nervous system" },
+                { lottie: "/animations/modules/54321.json", name: "5-4-3-2-1 Grounding", duration: "2 min", description: "Sensory awareness to bring you back to the present" },
+                { lottie: "/animations/modules/EFTtapping.json", name: "EFT Tapping", duration: "5 min", description: "Meridian tapping to release emotional tension" },
+                { lottie: "/animations/modules/Vagal.json", name: "Vagal Reset", duration: "1 min", description: "Quick vagus nerve stimulation for instant calm" },
               ].map((tool, i) => (
-                <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 border border-white/50 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1">
-                  <div className="h-12 w-12 rounded-xl flex items-center justify-center mb-3" style={{ backgroundColor: `${tool.color}20` }}>
-                    <tool.icon className="h-6 w-6" style={{ color: tool.color }} />
+                <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1">
+                  <div className="h-24 w-24 mx-auto mb-4 rounded-2xl overflow-hidden bg-gradient-to-br from-palette-sand/20 to-palette-sea/10">
+                    <ModuleLottie animationPath={tool.lottie} className="w-full h-full" />
                   </div>
-                  <h4 className="font-semibold text-palette-sky">{tool.name}</h4>
-                  <p className="text-xs text-palette-sea mb-2">{tool.duration}</p>
-                  <p className="text-sm text-gray-600">{tool.description}</p>
+                  <h4 className="font-semibold text-palette-sky text-center">{tool.name}</h4>
+                  <p className="text-xs text-palette-sea mb-2 text-center">{tool.duration}</p>
+                  <p className="text-sm text-gray-600 text-center">{tool.description}</p>
                 </div>
               ))}
             </div>
@@ -407,19 +412,19 @@ export default async function HomePage() {
           {/* Deep Transformation Tools */}
           <div>
             <h3 className="text-xl font-semibold text-palette-sky mb-6 text-center">Deep Transformation Tools</h3>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[
-                { icon: Target, name: "Set Outcomes", steps: 14, description: "14-step process to clarify and align your goals with your values", color: "#1B365D" },
-                { icon: Heart, name: "Elicit Values", steps: 3, description: "Discover what truly matters to you in any life area", color: "#8B7355" },
-                { icon: HelpCircle, name: "Driving Question", steps: 6, description: "Uncover and transform your core life question", color: "#6B9BC3" },
-                { icon: Compass, name: "The Want", steps: 6, description: "Ecology check - explore all dimensions of your desires", color: "#E8A87C" },
-                { icon: History, name: "Personal History", steps: 23, description: "Deep exploration of patterns and their origins", color: "#1B365D" },
+                { lottie: "/animations/modules/SetOutcomes.json", name: "Set Outcomes", steps: 14, description: "14-step process to clarify and align your goals with your values" },
+                { lottie: "/animations/modules/ElicitValues.json", name: "Elicit Values", steps: 3, description: "Discover what truly matters to you in any life area" },
+                { lottie: "/animations/modules/DrivingQuestion.json", name: "Driving Question", steps: 6, description: "Uncover and transform your core life question" },
+                { lottie: "/animations/modules/TheWant.json", name: "The Want", steps: 6, description: "Ecology check - explore all dimensions of your desires" },
+                { lottie: "/animations/modules/PersonalHistory.json", name: "Personal History", steps: 23, description: "Deep exploration of patterns and their origins" },
               ].map((tool, i) => (
-                <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 border border-white/50 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 flex gap-4">
-                  <div className="h-14 w-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${tool.color}15` }}>
-                    <tool.icon className="h-7 w-7" style={{ color: tool.color }} />
+                <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 flex items-center gap-5">
+                  <div className="h-20 w-20 rounded-2xl overflow-hidden bg-gradient-to-br from-palette-sand/20 to-palette-sea/10 flex-shrink-0">
+                    <ModuleLottie animationPath={tool.lottie} className="w-full h-full" />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-semibold text-palette-sky">{tool.name}</h4>
                       <span className="text-xs bg-palette-sand/50 px-2 py-0.5 rounded-full text-gray-600">{tool.steps} steps</span>
