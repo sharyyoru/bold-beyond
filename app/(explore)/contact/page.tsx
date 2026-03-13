@@ -1,6 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import dynamic from "next/dynamic";
+
+const ModuleLottie = dynamic(() => import("@/components/ui/ModuleLottie"), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-gray-100 animate-pulse rounded-xl" />,
+});
 
 export default function ContactPage() {
   return (
@@ -66,6 +72,12 @@ export default function ContactPage() {
             <p>
               Location: Dubai, United Arab Emirates
             </p>
+            {/* Contact Us Lottie Animation */}
+            <div className="mt-6 flex justify-end">
+              <div className="w-32 h-32">
+                <ModuleLottie animationPath="/new-assets/Contact Us.json" className="w-full h-full" />
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>

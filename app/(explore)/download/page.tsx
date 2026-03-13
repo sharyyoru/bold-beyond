@@ -110,10 +110,14 @@ export default function DownloadPage() {
                 { title: "Regulation Tools", description: "Science-backed tools for nervous system regulation and emotional balance" },
               ].map((feature, i) => (
                 <div key={i} className="text-center">
-                  <div className="h-12 w-12 rounded-xl bg-palette-sand/30 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">
-                      {i === 0 ? "🧠" : i === 1 ? "👥" : "🎯"}
-                    </span>
+                  <div className="h-14 w-14 rounded-xl bg-palette-sand/20 flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                    <Image
+                      src="/new-assets/sand-icon.png"
+                      alt=""
+                      width={48}
+                      height={48}
+                      className="object-contain"
+                    />
                   </div>
                   <h4 className="font-semibold text-white mb-2">{feature.title}</h4>
                   <p className="text-sm text-white/70">{feature.description}</p>

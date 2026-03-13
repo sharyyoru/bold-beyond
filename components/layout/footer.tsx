@@ -58,7 +58,7 @@ export function Footer() {
                 style={{ width: 120, height: 120 }}
               />
             </Link>
-            <p className="mt-4 text-sm text-white/70 max-w-xs">
+            <p className="mt-4 text-sm text-white/70 max-w-xs font-bold">
               Your comprehensive wellness journey starts here. Connect with
               expert therapists, book sessions, and unlock exclusive partner
               perks.

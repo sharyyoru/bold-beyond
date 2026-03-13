@@ -487,10 +487,10 @@ export default async function HomePage() {
       <DecisionEngine variant="hero" showModalities />
 
       {/* CTA Section */}
-      <section className="bg-palette-sand py-20 md:py-28 relative overflow-hidden">
+      <section className="bg-gradient-to-b from-white to-palette-sand/20 py-20 md:py-28 relative overflow-hidden">
         {/* Background orbs */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-palette-sky/10 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-palette-sand/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-palette-sea/10 rounded-full blur-3xl" />
         {/* Rotating Big Icon Background */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <Image
