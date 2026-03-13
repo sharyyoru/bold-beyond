@@ -914,14 +914,14 @@ export default function AppXPage() {
         style={{ 
           marginTop: isCollapsed ? 0 : -28,
           backgroundImage: `url('/new-assets/pattern-asset.png')`,
-          backgroundSize: '100px 100px',
+          backgroundSize: '60px 60px',
           backgroundRepeat: 'repeat',
         }}
       >
         {/* Pattern overlay with gradient */}
         <div 
           className="absolute inset-0 bg-gradient-to-br from-[#F5E6D3] to-[#E8D5C4]" 
-          style={{ opacity: 0.9 }}
+          style={{ opacity: 0.93 }}
         />
         {/* Drag Handle - Functional */}
         <div 
