@@ -113,22 +113,13 @@ export function DecorativeBackground() {
 
 export function BrandLogo({ className = "h-16 w-16" }: { className?: string }) {
   return (
-    <div className={`${className} text-brand-teal`}>
-      <svg viewBox="0 0 100 100" fill="none" className="w-full h-full">
-        <circle cx="50" cy="50" r="45" stroke="currentColor" strokeWidth="3" />
-        <circle cx="50" cy="50" r="35" stroke="currentColor" strokeWidth="2" />
-        <path
-          d="M50 15 L50 85 M15 50 L85 50"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <path
-          d="M25 25 L75 75 M75 25 L25 75"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <circle cx="50" cy="50" r="8" fill="currentColor" />
-      </svg>
+    <div className={`${className}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/new-assets/sand-icon.png"
+        alt="Bold & Beyond"
+        className="w-full h-full object-contain"
+      />
     </div>
   );
 }

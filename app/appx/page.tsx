@@ -911,11 +911,21 @@ export default function AppXPage() {
         className={`flex-1 bg-gradient-to-br from-[#F5E6D3] to-[#E8D5C4] rounded-t-[2rem] overflow-hidden relative z-10 transition-all duration-300 ease-out ${
           isCollapsed ? 'rounded-t-none' : ''
         }`}
-        style={{ marginTop: isCollapsed ? 0 : -28 }}
+        style={{ 
+          marginTop: isCollapsed ? 0 : -28,
+          backgroundImage: `url('/new-assets/pattern-asset.png')`,
+          backgroundSize: '100px 100px',
+          backgroundRepeat: 'repeat',
+        }}
       >
+        {/* Pattern overlay with gradient */}
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-[#F5E6D3] to-[#E8D5C4]" 
+          style={{ opacity: 0.9 }}
+        />
         {/* Drag Handle - Functional */}
         <div 
-          className="flex justify-center py-4 cursor-grab active:cursor-grabbing touch-none"
+          className="flex justify-center py-4 cursor-grab active:cursor-grabbing touch-none relative z-10"
           onPointerDown={handleHandlePointerDown}
           onPointerMove={handleHandlePointerMove}
           onPointerUp={handleHandlePointerUp}
@@ -927,24 +937,14 @@ export default function AppXPage() {
         {/* Scrollable Content */}
         <div
           ref={contentRef}
-          className="h-full overflow-y-auto overflow-x-hidden scrollbar-none"
+          className="h-full overflow-y-auto overflow-x-hidden scrollbar-none relative z-10"
           style={{ 
             scrollbarWidth: 'none', 
             msOverflowStyle: 'none',
             WebkitOverflowScrolling: 'touch'
           }}
         >
-          <div className={`pb-32 ${isCollapsed ? 'pt-4' : 'pt-2'} relative`} style={{ background: 'linear-gradient(180deg, #F5E6D3 0%, #E8D5C4 100%)' }}>
-            {/* Tiled pattern background */}
-            <div 
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                backgroundImage: 'url(/new-assets/pattern-asset.png)',
-                backgroundRepeat: 'repeat',
-                backgroundSize: '100px 100px',
-                opacity: 0.1,
-              }}
-            />
+          <div className={`pb-32 ${isCollapsed ? 'pt-4' : 'pt-2'}`}>
             {/* Wellbeing Dashboard Container - Glassmorphism */}
             <div className="mx-4 mb-5 bg-white/70 backdrop-blur-xl rounded-3xl p-4 shadow-glass border border-white/40">
               {/* Row 1: 8 Wellbeing Charts - Horizontal Scroll + Daily Check-in */}
