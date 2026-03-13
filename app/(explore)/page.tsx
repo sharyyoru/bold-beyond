@@ -64,8 +64,8 @@ const defaultContent = {
   servicesTitle: "Comprehensive Wellbeing Services",
   servicesDescription: "From therapy to coaching, find the support you need for every aspect of your wellbeing.",
   featuredServices: [
-    { title: "Psychotherapy", description: "Professional mental health support with licensed therapists", icon: "brain", href: "/services/psychotherapy", video: "/updated-assets/psychotherapy.mov" },
-    { title: "Life Coaching", description: "Transform your goals into achievements with expert guidance", icon: "sparkles", href: "/services/life-coaching", video: "/updated-assets/lifecoaching.mov" },
+    { title: "Psychotherapy", description: "Professional mental health support with licensed therapists", icon: "brain", href: "/services/psychotherapy", video: "/updated-assets/Psychotherapy.mp4" },
+    { title: "Life Coaching", description: "Transform your goals into achievements with expert guidance", icon: "sparkles", href: "/services/life-coaching", video: "/updated-assets/Lifecoaching.mp4" },
     { title: "Couples Therapy", description: "Strengthen your relationships with specialized counseling", icon: "heart", href: "/services/couples-therapy", video: "/updated-assets/couplestherapy.mp4" },
     { title: "Group Sessions", description: "Connect and grow with supportive community workshops", icon: "users", href: "/services/group-sessions", video: "/updated-assets/groupsessions.mp4" },
   ],
@@ -231,10 +231,7 @@ export default async function HomePage() {
                           preload="auto"
                           className="absolute inset-0 w-full h-full object-cover"
                         >
-                          {/* MP4 source for Chrome/Firefox/Edge */}
-                          <source src={service.video.replace('.mov', '.mp4')} type="video/mp4" />
-                          {/* QuickTime source for Safari */}
-                          <source src={service.video} type="video/quicktime" />
+                          <source src={service.video} type="video/mp4" />
                         </video>
                         <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" />
                       </div>
