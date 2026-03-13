@@ -2,11 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import dynamic from "next/dynamic";
-
-const PageLoader = dynamic(() => import("@/components/ui/PageLoader"), {
-  ssr: false,
-});
+import PageLoader from "@/components/ui/PageLoader";
 
 interface LoadingContextType {
   isLoading: boolean;
@@ -28,23 +24,23 @@ export function LoadingProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Show loader on first page load
+    // Show loader on first page load - quick 800ms
     if (isFirstLoad) {
       const timer = setTimeout(() => {
         setIsLoading(false);
         setIsFirstLoad(false);
-      }, 1500);
+      }, 800);
       return () => clearTimeout(timer);
     }
   }, [isFirstLoad]);
 
   useEffect(() => {
-    // Show loader briefly on route changes (after first load)
+    // Show loader briefly on route changes (after first load) - quick 300ms
     if (!isFirstLoad) {
       setIsLoading(true);
       const timer = setTimeout(() => {
         setIsLoading(false);
-      }, 500);
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [pathname, isFirstLoad]);
@@ -52,7 +48,7 @@ export function LoadingProvider({ children }: { children: ReactNode }) {
   return (
     <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
       {isLoading && <PageLoader />}
-      <div style={{ opacity: isLoading ? 0 : 1, transition: "opacity 0.3s ease-in-out" }}>
+      <div style={{ opacity: isLoading ? 0 : 1, transition: "opacity 0.2s ease-in-out" }}>
         {children}
       </div>
     </LoadingContext.Provider>

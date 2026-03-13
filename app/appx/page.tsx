@@ -597,17 +597,7 @@ export default function AppXPage() {
     return `from-${from} to-${to}`;
   };
 
-  // Show loading screen until session is checked
-  if (!sessionChecked) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-[#FDFBF7]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 rounded-full border-4 border-[#0D9488] border-t-transparent animate-spin" />
-          <p className="text-gray-500 text-sm">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  // Session check handled by LoadingProvider - no duplicate loading screen needed
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-brand-navy select-none">
