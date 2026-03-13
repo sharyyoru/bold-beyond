@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowLeft,
   Send,
@@ -269,8 +270,14 @@ export default function WellbeingChatPage() {
             <ArrowLeft className="h-5 w-5 text-gray-700" />
           </button>
           <div className="flex-1 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#0D9488]/90 to-[#7DD3D3]/90 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-glow-sea">
-              <Sparkles className="h-5 w-5 text-white" />
+            <div className="h-10 w-10 rounded-full bg-palette-sand/30 backdrop-blur-sm border border-palette-sand/50 flex items-center justify-center overflow-hidden">
+              <Image
+                src="/new-assets/sand-icon.png"
+                alt="Wellbeing Coach"
+                width={32}
+                height={32}
+                className="object-contain"
+              />
             </div>
             <div>
               <h1 className="font-semibold text-gray-900">Wellbeing Coach</h1>

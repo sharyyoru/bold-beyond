@@ -1332,6 +1332,20 @@ export default function AppXPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Chat with Wellbeing Coach Button */}
+            <Link href="/appx/wellness-chat" className="block">
+              <Button className="w-full bg-white/80 backdrop-blur-sm border border-palette-sand/30 hover:bg-white text-brand-navy rounded-2xl py-6 shadow-glass flex items-center justify-center gap-3">
+                <Image
+                  src="/new-assets/sand-icon.png"
+                  alt=""
+                  width={28}
+                  height={28}
+                  className="object-contain"
+                />
+                <span className="font-semibold">Chat with your Wellbeing Coach</span>
+              </Button>
+            </Link>
           </div>
 
         </div>
