@@ -289,20 +289,20 @@ export default async function HomePage() {
               </Button>
             </div>
             <div className="relative">
-              <div className="rounded-3xl bg-white/10 backdrop-blur-lg border border-white/20 p-6 flex flex-col">
-                {/* Yoga Animation */}
-                <div className="mb-4 h-48">
+              <div className="rounded-3xl bg-white/10 backdrop-blur-lg border border-white/20 p-6 flex flex-row gap-6">
+                {/* Yoga Animation - Full Height Left */}
+                <div className="flex-1 min-h-[320px]">
                   <YogaAnimation />
                 </div>
-                {/* Compressed Stats Grid */}
-                <div className="grid grid-cols-2 gap-3 w-full">
+                {/* Stats - Vertical Stack Right */}
+                <div className="flex flex-col gap-3 w-32">
                   {content.stats?.map((stat, index) => {
                     const StatIcon = iconMap[stat.icon] || Calendar;
                     return (
-                      <div key={index} className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 text-center hover:bg-white/20 transition-all">
-                        <StatIcon className="h-6 w-6 mx-auto mb-1 text-palette-sand" />
-                        <span className="text-xl font-bold">{stat.value}</span>
-                        <p className="text-xs text-white/70">{stat.label}</p>
+                      <div key={index} className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 text-center hover:bg-white/20 transition-all flex-1">
+                        <StatIcon className="h-5 w-5 mx-auto mb-1 text-palette-sand" />
+                        <span className="text-lg font-bold">{stat.value}</span>
+                        <p className="text-[10px] text-white/70 leading-tight">{stat.label}</p>
                       </div>
                     );
                   })}

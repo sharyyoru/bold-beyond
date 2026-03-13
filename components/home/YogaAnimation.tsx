@@ -24,7 +24,7 @@ export default function YogaAnimation() {
       animationData={animationData}
       loop={true}
       autoplay={true}
-      className="w-full h-full max-h-64"
+      className="w-full h-full"
       rendererSettings={{
         preserveAspectRatio: "xMidYMid meet",
       }}
