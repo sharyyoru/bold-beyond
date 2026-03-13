@@ -157,15 +157,15 @@ export default function PartnerLoginPage() {
             </Button>
           </form>
 
-          {/* Demo credentials */}
-          <div className="mt-6 p-4 bg-white/5 rounded-xl border border-white/10">
-            <p className="text-xs text-slate-400 mb-2">Demo Credentials:</p>
-            <p className="text-xs text-slate-300">
-              <span className="text-teal-400">Email:</span> serenity@demo.com
-            </p>
-            <p className="text-xs text-slate-300">
-              <span className="text-teal-400">Password:</span> demo123456
-            </p>
+          {/* Apply to be Partner */}
+          <div className="mt-6 p-4 bg-gradient-to-r from-teal-500/10 to-teal-600/10 rounded-xl border border-teal-500/20">
+            <p className="text-sm text-slate-300 mb-3">Want to join our partner network?</p>
+            <Button 
+              asChild 
+              className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white"
+            >
+              <Link href="/partners/apply">Apply to be a Partner</Link>
+            </Button>
           </div>
         </div>
 

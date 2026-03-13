@@ -42,6 +42,10 @@ const ScrollReveal = dynamic(() => import("@/components/ui/ScrollReveal"), {
   ssr: false,
 });
 
+const SmiliesAnimation = dynamic(() => import("@/components/home/SmiliesAnimation"), {
+  ssr: false,
+});
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchSanity, queries, urlFor } from "@/lib/sanity";
@@ -301,9 +305,19 @@ export default async function HomePage() {
             </ScrollReveal>
             <ScrollReveal direction="right" delay={200}>
               <div className="relative">
-                <div className="rounded-3xl bg-white/10 backdrop-blur-lg border border-white/20 p-6 flex flex-row gap-6">
+                <div className="rounded-3xl bg-white/10 backdrop-blur-lg border border-white/20 p-6 flex flex-row gap-6 relative overflow-hidden">
+                  {/* Mandala Background Pattern */}
+                  <div 
+                    className="absolute inset-0 opacity-15 pointer-events-none"
+                    style={{
+                      backgroundImage: "url('/assets/mandala-filled.svg')",
+                      backgroundSize: "400px 400px",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  />
                   {/* Yoga Animation - Full Height Left */}
-                  <div className="flex-1 min-h-[320px]">
+                  <div className="flex-1 min-h-[320px] relative z-10">
                     <YogaAnimation />
                   </div>
                   {/* Stats - Vertical Stack Right */}
@@ -329,6 +343,10 @@ export default async function HomePage() {
       {/* Regulation Tools Section - NEW */}
       <section className="py-20 md:py-28 bg-gradient-to-b from-white to-palette-sand/20 relative overflow-hidden">
         <div className="absolute top-20 -right-32 w-96 h-96 bg-palette-sea/10 rounded-full blur-3xl" />
+        {/* Smilies Animation - Top Right */}
+        <div className="absolute top-8 right-8 lg:right-16 hidden md:block">
+          <SmiliesAnimation />
+        </div>
         <div className="container relative z-10">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center mb-16">
@@ -455,6 +473,16 @@ export default async function HomePage() {
         {/* Background orbs */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-palette-sand/20 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+        {/* Mandala Background Pattern */}
+        <div 
+          className="absolute inset-0 opacity-15 pointer-events-none"
+          style={{
+            backgroundImage: "url('/assets/mandala-filled.svg')",
+            backgroundSize: "600px 600px",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
         
         <div className="container relative z-10">
           <div className="mx-auto max-w-3xl text-center">
@@ -482,10 +510,10 @@ export default async function HomePage() {
                 For enterprise solutions and corporate wellness programs:
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Button size="lg" className="bg-white/10 backdrop-blur-sm text-white border-white/20 hover:bg-white/20" asChild>
+                <Button size="lg" className="bg-palette-sand text-gray-800 hover:bg-palette-sand/90 shadow-lg border-2 border-palette-sand" asChild>
                   <Link href="/partners">Corporate Partnerships</Link>
                 </Button>
-                <Button size="lg" className="bg-white/10 backdrop-blur-sm text-white border-white/20 hover:bg-white/20" asChild>
+                <Button size="lg" className="bg-white text-palette-sky hover:bg-white/90 shadow-lg border-2 border-white" asChild>
                   <Link href="/human-os">Learn About Human OS</Link>
                 </Button>
               </div>

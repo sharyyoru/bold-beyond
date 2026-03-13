@@ -12,6 +12,7 @@ import {
   BarChart3,
   HelpCircle,
   LogOut,
+  ClipboardList,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ const sidebarLinks = [
   { name: "Users", href: "/admin/users", icon: Users },
   { name: "Therapists", href: "/admin/therapists", icon: UserCheck },
   { name: "Partners", href: "/admin/partners", icon: Building2 },
+  { name: "Partner Applications", href: "/admin/partner-applications", icon: ClipboardList },
   { name: "Content", href: "/admin/content", icon: FileText },
   { name: "Reports", href: "/admin/reports", icon: BarChart3 },
   { name: "Settings", href: "/admin/settings", icon: Settings },
