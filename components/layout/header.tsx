@@ -43,10 +43,10 @@ export function Header() {
               key={item.name}
               href={item.href}
               className={cn(
-                "text-sm font-medium transition-colors hover:text-white",
+                "text-base font-bold transition-colors hover:text-palette-sand",
                 pathname === item.href
-                  ? "text-white"
-                  : "text-white/70"
+                  ? "text-palette-sand"
+                  : "text-palette-sand/80"
               )}
             >
               {item.name}

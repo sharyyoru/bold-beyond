@@ -67,125 +67,111 @@ export function DecisionEngine({
 
   if (variant === "hero") {
     return (
-      <section className="relative py-16 md:py-24 overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-cream via-white to-brand-cream">
+      <section className="relative py-16 md:py-24 overflow-hidden bg-brand-navy">
+        {/* Background Pattern */}
+        <div className="absolute inset-0">
           <div 
             className="absolute inset-0 opacity-10"
             style={{ 
-              backgroundImage: "url('/assets/b&b-pattern.svg')",
-              backgroundSize: "400px",
+              backgroundImage: "url('/assets/b&b-diamond-pattern.svg')",
+              backgroundSize: "300px",
             }}
           />
         </div>
 
         <div className="container relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+          {/* Header */}
+          <div className="text-center mb-12">
+            <motion.span 
+              initial={{ opacity: 0, y: -10 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 bg-brand-gold/20 text-brand-gold px-4 py-2 rounded-full mb-6"
             >
-              <span className="inline-flex items-center gap-2 bg-brand-gold/10 text-brand-gold px-4 py-2 rounded-full mb-6">
-                <Zap className="h-4 w-4" />
-                <span className="text-sm font-medium">The Decision Engine</span>
-              </span>
-              
-              <h2 className="font-display text-3xl md:text-5xl font-bold text-brand-navy mb-6">
-                {VENDOR_NEUTRAL_MESSAGING.headline}
-              </h2>
-              
-              <p className="text-xl text-muted-foreground mb-8">
-                {VENDOR_NEUTRAL_MESSAGING.subheadline}
-              </p>
+              <Zap className="h-4 w-4" />
+              <span className="text-sm font-medium">Decision Engine</span>
+            </motion.span>
+            
+            <motion.h2 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="font-display text-3xl md:text-5xl font-bold text-white mb-4"
+            >
+              {VENDOR_NEUTRAL_MESSAGING.headline}
+            </motion.h2>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-xl text-white/70 max-w-2xl mx-auto"
+            >
+              {VENDOR_NEUTRAL_MESSAGING.subheadline}
+            </motion.p>
+          </div>
 
-              <div className="space-y-4 mb-8">
-                {VENDOR_NEUTRAL_MESSAGING.points.map((point, i) => (
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            {features.map((feature, i) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+                className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10"
+              >
+                <feature.icon className="h-8 w-8 text-brand-gold mb-3" />
+                <h3 className="font-semibold text-white mb-1">{feature.title}</h3>
+                <p className="text-sm text-white/60">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Modalities Section */}
+          {showModalities && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="bg-white rounded-2xl p-8 max-w-4xl mx-auto"
+            >
+              <h3 className="font-semibold text-brand-navy text-center mb-6">
+                50+ Wellbeing Modalities, One Intelligent Layer
+              </h3>
+              <div className="flex flex-wrap justify-center gap-3">
+                {WELLNESS_MODALITIES.map((modality, i) => (
                   <motion.div
-                    key={point}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    key={modality.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.1 }}
-                    className="flex items-start gap-3"
+                    transition={{ duration: 0.3, delay: 0.4 + i * 0.05 }}
+                    className={`px-4 py-2 rounded-full text-sm transition-all cursor-pointer ${
+                      i === activeModality 
+                        ? "bg-brand-navy text-white" 
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                    onMouseEnter={() => setActiveModality(i)}
                   >
-                    <CheckCircle2 className="h-5 w-5 text-brand-gold mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">{point}</span>
+                    {modality.name}
                   </motion.div>
                 ))}
               </div>
-
-              <div className="p-4 bg-brand-navy/5 rounded-xl border-l-4 border-brand-gold mb-8">
-                <p className="text-brand-navy font-medium italic">
-                  "{VENDOR_NEUTRAL_MESSAGING.differentiator}"
-                </p>
-              </div>
-
-              <Button variant="gold" size="lg" className="group" asChild>
-                <Link href="/download">
-                  Experience the Engine
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </Button>
             </motion.div>
+          )}
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative"
-            >
-              {/* Visualization of routing */}
-              <div className="relative bg-white rounded-2xl shadow-xl p-8 border">
-                <div className="absolute -top-4 -right-4 bg-brand-gold text-white px-4 py-2 rounded-full text-sm font-medium">
-                  Live Routing
-                </div>
-                
-                <div className="text-center mb-8">
-                  <div className="inline-flex p-4 rounded-full bg-brand-teal/10 mb-4">
-                    <Image
-                      src="/assets/mandala-logo.svg"
-                      alt="Decision Engine"
-                      width={64}
-                      height={64}
-                      className="animate-pulse"
-                    />
-                  </div>
-                  <h3 className="font-semibold text-brand-navy">Decision Engine</h3>
-                  <p className="text-sm text-muted-foreground">Processing your needs...</p>
-                </div>
-
-                {/* Modality routing visualization */}
-                <div className="grid grid-cols-2 gap-3">
-                  {WELLNESS_MODALITIES.slice(0, 6).map((modality, i) => (
-                    <motion.div
-                      key={modality.id}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.3, delay: 0.5 + i * 0.1 }}
-                      className={`p-3 rounded-lg border text-center text-sm transition-all cursor-pointer ${
-                        i === activeModality 
-                          ? "bg-brand-teal text-white border-brand-teal" 
-                          : "bg-gray-50 hover:bg-gray-100"
-                      }`}
-                      onMouseEnter={() => setActiveModality(i)}
-                    >
-                      {modality.name}
-                    </motion.div>
-                  ))}
-                </div>
-
-                <div className="mt-6 p-4 bg-brand-teal/5 rounded-lg">
-                  <p className="text-sm text-center text-brand-teal">
-                    <span className="font-semibold">{MODALITY_MATCH_RATES[WELLNESS_MODALITIES[activeModality]?.name] || 87.5}%</span> match confidence for{" "}
-                    <span className="font-semibold">{WELLNESS_MODALITIES[activeModality]?.name}</span>
-                  </p>
-                </div>
-              </div>
-            </motion.div>
+          {/* CTA */}
+          <div className="text-center mt-10">
+            <Button variant="gold" size="lg" className="group" asChild>
+              <Link href="/download">
+                Experience the Engine
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

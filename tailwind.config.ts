@@ -118,6 +118,7 @@ const config: Config = {
         "fade-in": "fade-in 0.3s ease-out",
         "slide-up": "slide-up 0.4s ease-out",
         "spin-slow": "spin-slow 60s linear infinite",
+        "spin-slower": "spin-slow 240s linear infinite",
       },
       backdropBlur: {
         xs: "2px",

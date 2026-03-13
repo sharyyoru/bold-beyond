@@ -46,6 +46,10 @@ const SpinningLotusAnimation = dynamic(() => import("@/components/home/SpinningL
   ssr: false,
 });
 
+const ScrollDownButton = dynamic(() => import("@/components/home/ScrollDownButton"), {
+  ssr: false,
+});
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchSanity, queries, urlFor } from "@/lib/sanity";
@@ -151,13 +155,13 @@ export default async function HomePage() {
           <div className="absolute bottom-20 -right-32 w-96 h-96 bg-white/20 rounded-full blur-3xl" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-palette-sea/20 rounded-full blur-3xl" />
           {/* Rotating Big Icon - Upper Right */}
-          <div className="absolute -top-32 -right-32 w-[500px] h-[500px] overflow-hidden">
+          <div className="absolute -top-64 -right-64 w-[1000px] h-[1000px] overflow-hidden">
             <Image
               src="/new-assets/big-icon.png"
               alt=""
-              width={500}
-              height={500}
-              className="opacity-50 animate-spin-slow"
+              width={1000}
+              height={1000}
+              className="opacity-[5%] animate-spin-slower"
             />
           </div>
         </div>
@@ -220,10 +224,15 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
+        
+        {/* Scroll Down Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
+          <ScrollDownButton />
+        </div>
       </section>
 
       {/* Services Section */}
-      <section className="py-20 md:py-28 bg-gradient-to-b from-palette-sand/30 to-white">
+      <section id="services-section" className="py-20 md:py-28 bg-gradient-to-b from-palette-sand/30 to-white">
         <div className="container">
           <ScrollReveal>
             <div className="mx-auto max-w-2xl text-center mb-16">
@@ -271,7 +280,7 @@ export default async function HomePage() {
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </div>
                     </CardContent>
-                    </Card>
+                  </Card>
                   </Link>
                 </ScrollReveal>
               );
@@ -469,30 +478,24 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Human OS - State of the Human (Compact) */}
-      <StateOfHuman variant="hero" showCTA={false} />
-
-      {/* Human OS - Decision Engine (Compact) */}
-      <DecisionEngine variant="feature" showModalities />
-
-      {/* Human OS - Network Effects (Compact) */}
-      <NetworkEffects variant="full" showPrivacy={false} />
+      {/* Human OS - Decision Engine (Redesigned with dark background) */}
+      <DecisionEngine variant="hero" showModalities />
 
       {/* CTA Section */}
       <section className="bg-gradient-to-br from-palette-sky via-palette-sea to-palette-sky py-20 md:py-28 relative overflow-hidden">
         {/* Background orbs */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-palette-sand/20 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-        {/* Mandala Background Pattern */}
-        <div 
-          className="absolute inset-0 opacity-15 pointer-events-none"
-          style={{
-            backgroundImage: "url('/assets/mandala-filled.svg')",
-            backgroundSize: "600px 600px",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        />
+        {/* Rotating Big Icon Background */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <Image
+            src="/new-assets/big-icon.png"
+            alt=""
+            width={800}
+            height={800}
+            className="opacity-10 animate-spin-slower"
+          />
+        </div>
         
         <div className="container relative z-10">
           <div className="mx-auto max-w-3xl text-center">
@@ -520,7 +523,7 @@ export default async function HomePage() {
                 For enterprise solutions and corporate wellness programs:
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Button size="lg" className="bg-palette-sand text-gray-800 hover:bg-palette-sand/90 shadow-lg border-2 border-palette-sand" asChild>
+                <Button size="lg" className="bg-brand-navy text-white hover:bg-brand-navy/90 shadow-lg border-2 border-brand-navy" asChild>
                   <Link href="/partners">Corporate Partnerships</Link>
                 </Button>
                 <Button size="lg" className="bg-white text-palette-sky hover:bg-white/90 shadow-lg border-2 border-white" asChild>

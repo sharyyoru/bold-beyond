@@ -13,7 +13,7 @@ export default function ContactPage() {
           Get in touch with Bold & Beyond
         </h1>
         <p className="text-muted-foreground text-base">
-          For product questions, partnerships, or press, send us a note and well
+          For product questions, partnerships, or press, send us a note and we'll
           connect you with the right person.
         </p>
       </div>
@@ -43,7 +43,7 @@ export default function ContactPage() {
               <textarea
                 id="message"
                 className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Tell us a bit about what youre looking for"
+                placeholder="Tell us a bit about what you're looking for"
               />
             </div>
             <Button variant="gold" className="w-full">

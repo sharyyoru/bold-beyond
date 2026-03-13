@@ -57,8 +57,8 @@ export default function AboutPage() {
             </p>
             <p className="text-sm text-muted-foreground max-w-xl">
               We are building Bold & Beyond with clinicians, researchers, and
-              community partners across MENA. If youd like to collaborate or
-              bring Bold & Beyond to your organisation, wed love to hear from you.
+              community partners across MENA. If you'd like to collaborate or
+              bring Bold & Beyond to your organisation, we'd love to hear from you.
             </p>
           </div>
           <Button variant="gold" asChild>
