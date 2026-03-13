@@ -1344,8 +1344,8 @@ export default function AppXPage() {
             </Card>
 
             {/* Chat with Wellbeing Coach Button */}
-            <Link href="/appx/wellness-chat" className="block">
-              <Button className="w-full bg-white/80 backdrop-blur-sm border border-palette-sand/30 hover:bg-white text-brand-navy rounded-2xl py-6 shadow-glass flex items-center justify-center gap-3">
+            <Link href="/appx/wellness-chat" className="block mt-6">
+              <Button className="w-full bg-white/40 backdrop-blur-xl border border-white/50 hover:bg-white/60 text-brand-navy rounded-2xl py-6 shadow-glass flex items-center justify-center gap-3">
                 <Image
                   src="/new-assets/sand-icon.png"
                   alt=""
@@ -1356,6 +1356,23 @@ export default function AppXPage() {
                 <span className="font-semibold">Chat with your Wellbeing Coach</span>
               </Button>
             </Link>
+
+            {/* Back to Top Button */}
+            <div className="py-8">
+              <button
+                onClick={() => {
+                  if (contentRef.current) {
+                    contentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
+                className="w-full bg-white/30 backdrop-blur-xl border border-white/40 hover:bg-white/50 text-brand-navy/70 rounded-2xl py-4 shadow-glass flex items-center justify-center gap-2 transition-all"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                </svg>
+                <span className="font-medium text-sm">Back to Top</span>
+              </button>
+            </div>
           </div>
 
         </div>
