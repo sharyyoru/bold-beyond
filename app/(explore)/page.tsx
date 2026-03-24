@@ -134,15 +134,15 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col">
-      {/* Hero Section - WHOOP-inspired dark, bold design */}
+      {/* Hero Section - WHOOP-inspired dark, bold design with parallax */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-brand-navy">
-        {/* Background elements */}
+        {/* Background elements with floating parallax */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-brand-navy via-brand-navy to-palette-sky/20" />
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-palette-sea/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-palette-sand/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
-          {/* Rotating big icon */}
-          <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/3 w-[700px] h-[700px] opacity-5">
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-palette-sea/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 animate-float-slow" />
+          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-palette-sand/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 animate-float" style={{ animationDelay: '2s' }} />
+          {/* Rotating big icon with parallax */}
+          <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/3 w-[700px] h-[700px] opacity-5 animate-float-slow" style={{ animationDelay: '1s' }}>
             <Image
               src="/new-assets/big-icon.png"
               alt=""
@@ -421,8 +421,8 @@ export default function HomePage() {
 
             <ScrollReveal>
               <div className="relative">
-                {/* Meditating Lottie behind the card - 3x bigger */}
-                <div className="absolute -right-32 -bottom-32 w-[600px] h-[600px] opacity-40 z-0">
+                {/* Meditating Lottie behind the card - 3x bigger with parallax float */}
+                <div className="absolute -right-32 -bottom-32 w-[600px] h-[600px] opacity-40 z-0 animate-float-slow">
                   <ModuleLottie animationPath="/animations/Yoga.json" />
                 </div>
                 
@@ -457,11 +457,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Final CTA - Download Section */}
+      {/* Final CTA - Download Section with parallax */}
       <section className="relative py-20 lg:py-32 bg-gradient-to-br from-palette-sand/50 to-white overflow-hidden">
-        {/* Animated Mandala Background */}
+        {/* Animated Mandala Background with parallax */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[600px] h-[600px] opacity-10 animate-spin-slow">
+          <div className="w-[600px] h-[600px] opacity-10 animate-spin-slow animate-float" style={{ animationDuration: '60s' }}>
             <Image
               src="/assets/mandala-outline.svg"
               alt=""
@@ -470,6 +470,9 @@ export default function HomePage() {
             />
           </div>
         </div>
+        {/* Additional floating orbs for depth */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-palette-sea/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-20 right-10 w-48 h-48 bg-palette-sky/5 rounded-full blur-2xl animate-float-slow" />
         
         <div className="container relative z-10">
           <div className="max-w-4xl mx-auto text-center">
