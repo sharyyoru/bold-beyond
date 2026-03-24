@@ -232,9 +232,9 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {pillars.map((pillar, index) => (
               <ScrollReveal key={pillar.name}>
-                <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-shadow group overflow-hidden">
+                <div className="h-full bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-2xl hover:shadow-xl transition-all group overflow-hidden">
                   {/* Video thumbnail */}
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-t-2xl">
                     <video
                       src={pillar.video}
                       autoPlay
@@ -243,21 +243,21 @@ export default function HomePage() {
                       playsInline
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className={`absolute inset-0 bg-gradient-to-t ${pillar.color} opacity-20`} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-palette-sky/30 to-transparent" />
                   </div>
-                  <CardContent className="p-6">
+                  <div className="p-6">
                     <h3 className="text-xl font-bold text-gray-900 mb-2">{pillar.name}</h3>
                     <p className="text-gray-600 text-sm mb-4">{pillar.description}</p>
                     <ul className="space-y-2">
                       {pillar.features.map((feature) => (
                         <li key={feature} className="flex items-start gap-2 text-sm text-gray-500">
-                          <CheckCircle2 className={`h-4 w-4 mt-0.5 flex-shrink-0 ${pillar.textColor}`} />
+                          <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0 text-palette-sky" />
                           {feature}
                         </li>
                       ))}
                     </ul>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </ScrollReveal>
             ))}
           </div>
@@ -265,11 +265,11 @@ export default function HomePage() {
       </section>
 
       {/* Signature Features Section */}
-      <section className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-20 lg:py-32 bg-gradient-to-b from-palette-sky/10 to-white">
         <div className="container">
           <ScrollReveal>
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="inline-flex items-center gap-2 bg-brand-navy/10 text-brand-navy px-4 py-2 rounded-full mb-6 text-sm font-medium">
+              <span className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm border border-white/50 text-brand-navy px-4 py-2 rounded-full mb-6 text-sm font-medium">
                 🔥 No One Has This
               </span>
               <h2 className="font-display text-4xl lg:text-5xl font-bold text-brand-navy mb-6">
@@ -284,24 +284,22 @@ export default function HomePage() {
           <div className="space-y-6">
             {signatureFeatures.map((feature, index) => (
               <ScrollReveal key={feature.title}>
-                <Card className="border-0 shadow-lg overflow-hidden">
-                  <CardContent className="p-0">
-                    <div className="flex flex-col lg:flex-row">
-                      <div className={`${feature.bgColor} p-6 lg:w-72 flex items-center justify-center`}>
-                        <div className="w-32 h-32">
-                          <ModuleLottie animationPath={feature.lottie} />
-                        </div>
-                      </div>
-                      <div className="flex-1 p-8">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                        <p className="text-gray-600 mb-4">{feature.description}</p>
-                        <div className="bg-gray-100 rounded-xl p-4 border-l-4 border-palette-sea">
-                          <p className="text-sm text-gray-700 italic">👉 {feature.example}</p>
-                        </div>
+                <div className="bg-white/60 backdrop-blur-xl border border-white/50 shadow-glass rounded-2xl overflow-hidden">
+                  <div className="flex flex-col lg:flex-row">
+                    <div className="bg-palette-sky/10 backdrop-blur-sm p-6 lg:w-72 flex items-center justify-center">
+                      <div className="w-32 h-32">
+                        <ModuleLottie animationPath={feature.lottie} />
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                    <div className="flex-1 p-8">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-3">{feature.title}</h3>
+                      <p className="text-gray-600 mb-4">{feature.description}</p>
+                      <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border-l-4 border-palette-sky">
+                        <p className="text-sm text-gray-700 italic">👉 {feature.example}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </ScrollReveal>
             ))}
           </div>
@@ -356,8 +354,8 @@ export default function HomePage() {
 
             <ScrollReveal>
               <div className="relative">
-                {/* Meditating Lottie behind the card */}
-                <div className="absolute -right-8 -bottom-8 w-80 h-80 opacity-60 z-0">
+                {/* Meditating Lottie behind the card - 3x bigger */}
+                <div className="absolute -right-32 -bottom-32 w-[600px] h-[600px] opacity-40 z-0">
                   <ModuleLottie animationPath="/animations/Yoga.json" />
                 </div>
                 
