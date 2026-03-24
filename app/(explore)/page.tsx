@@ -262,7 +262,8 @@ export default function HomePage() {
           <ScrollReveal>
             <div className="max-w-3xl mb-12">
               <h2 className="font-display text-4xl lg:text-5xl font-bold text-brand-navy mb-6">
-                Features that actually transform you
+                Features that actually
+                <span className="block text-palette-sand">Transform You</span>
               </h2>
               <p className="text-lg text-gray-600">
                 Not surface-level metrics. Deep insights that help you understand and realign who you are — so you can make smarter decisions every day.
@@ -272,6 +273,17 @@ export default function HomePage() {
 
           {/* Slider Container */}
           <div className="relative">
+            {/* Navigation Arrow - Left */}
+            <button 
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-colors hidden lg:flex"
+              onClick={() => {
+                const slider = document.getElementById('features-slider');
+                if (slider) slider.scrollBy({ left: -400, behavior: 'smooth' });
+              }}
+            >
+              <ChevronLeft className="h-6 w-6 text-gray-700" />
+            </button>
+
             {/* Navigation Arrow - Right */}
             <button 
               className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-colors hidden lg:flex"
@@ -286,7 +298,7 @@ export default function HomePage() {
             {/* Scrollable Cards */}
             <div 
               id="features-slider"
-              className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 lg:-mx-0 lg:px-0"
+              className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 lg:mx-14 lg:px-0"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {signatureFeatures.map((feature, index) => (
@@ -294,17 +306,17 @@ export default function HomePage() {
                   key={feature.title}
                   className="flex-shrink-0 w-[320px] lg:w-[380px] h-[480px] rounded-3xl overflow-hidden relative group snap-start"
                 >
-                  {/* Lottie Background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-palette-sky/20 to-palette-sand/20">
-                    <div className="absolute inset-0 flex items-center justify-center opacity-40">
+                  {/* Lottie Background - Darker */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-brand-navy/80 to-palette-sea/60">
+                    <div className="absolute inset-0 flex items-center justify-center opacity-70">
                       <div className="w-full h-full">
                         <ModuleLottie animationPath={feature.lottie} />
                       </div>
                     </div>
                   </div>
 
-                  {/* Glassmorphism Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/40 to-transparent" />
+                  {/* Glassmorphism Overlay - adjusted for dark bg */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/60 to-transparent" />
 
                   {/* Content */}
                   <div className="relative h-full flex flex-col p-6">
