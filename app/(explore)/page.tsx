@@ -47,7 +47,7 @@ const pillars = [
   {
     name: "Mind",
     icon: Brain,
-    video: "/updated-assets/Psychotherapy.mp4",
+    video: "/updated-assets/Psychotherapy.mp4#t=0.1",
     color: "from-blue-500 to-indigo-600",
     bgColor: "bg-blue-50",
     textColor: "text-blue-600",
@@ -57,7 +57,7 @@ const pillars = [
   {
     name: "Emotion",
     icon: Heart,
-    video: "/updated-assets/couplestherapy.mp4",
+    video: "/updated-assets/couplestherapy.mp4#t=0.1",
     color: "from-rose-500 to-pink-600",
     bgColor: "bg-rose-50",
     textColor: "text-rose-600",
@@ -67,7 +67,7 @@ const pillars = [
   {
     name: "Energy",
     icon: Zap,
-    video: "/updated-assets/Lifecoaching.mp4",
+    video: "/updated-assets/Lifecoaching.mp4#t=0.1",
     color: "from-amber-500 to-orange-600",
     bgColor: "bg-amber-50",
     textColor: "text-amber-600",
@@ -77,7 +77,7 @@ const pillars = [
   {
     name: "Purpose",
     icon: Target,
-    video: "/updated-assets/groupsessions.mp4",
+    video: "/updated-assets/groupsessions.mp4#t=0.1",
     color: "from-teal-500 to-emerald-600",
     bgColor: "bg-teal-50",
     textColor: "text-teal-600",
@@ -167,9 +167,9 @@ export default function HomePage() {
         </div>
 
         <div className="container relative z-10 py-20 lg:py-32">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Left - Text content */}
-            <div className="text-center lg:text-left">
+            <div className="text-center lg:text-left w-full">
               {/* Category badge */}
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8">
                 <Sparkles className="h-4 w-4 text-palette-sand" />
@@ -183,7 +183,7 @@ export default function HomePage() {
               </h1>
 
               {/* Subheadline */}
-              <p className="text-xl text-white/70 max-w-xl mx-auto lg:mx-0 mb-10">
+              <p className="text-xl text-white/70 max-w-xl mx-auto lg:mx-0 mb-10 px-4 sm:px-0">
                 Not a fitness app. Not a wellness tracker. Not a coaching platform. 
                 <span className="text-white font-medium"> A system that tracks, understands, and aligns the human within.</span>
               </p>
@@ -241,14 +241,15 @@ export default function HomePage() {
             {pillars.map((pillar, index) => (
               <ScrollReveal key={pillar.name}>
                 <div className="relative h-[500px] rounded-3xl overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02]">
-                  {/* Video Background */}
-                  <div className="absolute inset-0">
+                  {/* Video Background with sand fallback */}
+                  <div className="absolute inset-0 bg-palette-sand">
                     <video
                       src={pillar.video}
                       autoPlay
                       loop
                       muted
                       playsInline
+                      preload="auto"
                       className="w-full h-full object-cover"
                     />
                   </div>
