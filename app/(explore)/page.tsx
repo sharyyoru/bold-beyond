@@ -11,6 +11,9 @@ import {
   Apple,
   Play,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
   Activity,
   RefreshCw,
   TrendingUp,
@@ -251,44 +254,89 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Signature Features Section */}
+      {/* Signature Features Section - WHOOP Style Slider */}
       <section className="py-20 lg:py-32 bg-gradient-to-b from-palette-sky/10 to-white">
         <div className="container">
           <ScrollReveal>
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm border border-white/50 text-brand-navy px-4 py-2 rounded-full mb-6 text-sm font-medium">
-                🔥 No One Has This
-              </span>
+            <div className="max-w-3xl mb-12">
               <h2 className="font-display text-4xl lg:text-5xl font-bold text-brand-navy mb-6">
-                Signature Features
+                Features that actually transform you
               </h2>
               <p className="text-lg text-gray-600">
-                Features that go beyond tracking. Features that transform.
+                Not surface-level metrics. Deep insights that help you understand and realign who you are — so you can make smarter decisions every day.
               </p>
             </div>
           </ScrollReveal>
 
-          <div className="space-y-6">
-            {signatureFeatures.map((feature, index) => (
-              <ScrollReveal key={feature.title}>
-                <div className="bg-white/60 backdrop-blur-xl border border-white/50 shadow-glass rounded-2xl overflow-hidden">
-                  <div className="flex flex-col lg:flex-row">
-                    <div className="bg-palette-sky/10 backdrop-blur-sm p-6 lg:w-72 flex items-center justify-center">
-                      <div className="w-32 h-32">
+          {/* Slider Container */}
+          <div className="relative">
+            {/* Navigation Arrow - Right */}
+            <button 
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-colors hidden lg:flex"
+              onClick={() => {
+                const slider = document.getElementById('features-slider');
+                if (slider) slider.scrollBy({ left: 400, behavior: 'smooth' });
+              }}
+            >
+              <ChevronRight className="h-6 w-6 text-gray-700" />
+            </button>
+
+            {/* Scrollable Cards */}
+            <div 
+              id="features-slider"
+              className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 lg:-mx-0 lg:px-0"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {signatureFeatures.map((feature, index) => (
+                <div 
+                  key={feature.title}
+                  className="flex-shrink-0 w-[320px] lg:w-[380px] h-[480px] rounded-3xl overflow-hidden relative group snap-start"
+                >
+                  {/* Lottie Background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-palette-sky/20 to-palette-sand/20">
+                    <div className="absolute inset-0 flex items-center justify-center opacity-40">
+                      <div className="w-full h-full">
                         <ModuleLottie animationPath={feature.lottie} />
                       </div>
                     </div>
-                    <div className="flex-1 p-8">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                      <p className="text-gray-600 mb-4">{feature.description}</p>
-                      <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border-l-4 border-palette-sky">
-                        <p className="text-sm text-gray-700 italic">👉 {feature.example}</p>
+                  </div>
+
+                  {/* Glassmorphism Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/40 to-transparent" />
+
+                  {/* Content */}
+                  <div className="relative h-full flex flex-col p-6">
+                    {/* Title at top */}
+                    <h3 className="text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-auto">
+                      {feature.title}
+                    </h3>
+
+                    {/* Description and example at bottom */}
+                    <div className="mt-auto">
+                      <p className="text-gray-700 text-sm mb-4">{feature.description}</p>
+                      <div className="bg-white/70 backdrop-blur-sm rounded-xl p-3 border border-white/50">
+                        <p className="text-xs text-gray-600 italic">{feature.example}</p>
                       </div>
                     </div>
+
+                    {/* Plus Button */}
+                    <button className="absolute bottom-6 right-6 w-10 h-10 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full flex items-center justify-center hover:bg-white hover:scale-110 transition-all shadow-lg">
+                      <Plus className="h-5 w-5 text-gray-700" />
+                    </button>
                   </div>
                 </div>
-              </ScrollReveal>
-            ))}
+              ))}
+            </div>
+
+            {/* Dots Navigation */}
+            <div className="flex justify-center gap-2 mt-6">
+              {signatureFeatures.map((_, index) => (
+                <button 
+                  key={index}
+                  className={`w-2 h-2 rounded-full transition-colors ${index === 0 ? 'bg-brand-navy' : 'bg-gray-300'}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
