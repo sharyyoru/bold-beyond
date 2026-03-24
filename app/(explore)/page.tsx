@@ -339,7 +339,7 @@ export default function HomePage() {
           {signatureFeatures.map((feature, index) => (
             <div 
               key={feature.title}
-              className="flex-shrink-0 w-[320px] lg:w-[380px] h-[480px] rounded-3xl overflow-hidden relative group snap-start"
+              className="flex-shrink-0 w-[400px] lg:w-[500px] h-[520px] rounded-3xl overflow-hidden relative group snap-start"
             >
               {/* Lottie Background - Light on top */}
               <div className="absolute inset-0 bg-gradient-to-b from-palette-sky/30 via-palette-sea/40 to-brand-navy/70">
@@ -368,11 +368,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Plus Button */}
-                <button className="absolute bottom-6 right-6 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center hover:scale-110 transition-all">
-                  <Plus className="h-5 w-5 text-gray-700" />
-                </button>
-              </div>
+                              </div>
             </div>
           ))}
           </div>
@@ -406,13 +402,13 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Large Lottie Card - Full Height Left */}
             <ScrollReveal>
-              <div className="bg-white rounded-3xl p-8 h-full min-h-[500px] relative overflow-hidden group hover:shadow-xl transition-shadow flex flex-col">
+              <div className="bg-brand-navy rounded-3xl p-8 h-full min-h-[500px] relative overflow-hidden group hover:shadow-xl transition-shadow flex flex-col">
                 <div className="relative z-10 mb-4">
-                  <span className="inline-flex items-center gap-2 bg-palette-sand/30 text-brand-navy px-3 py-1 rounded-full text-xs font-medium mb-4">
+                  <span className="inline-flex items-center gap-2 bg-white/20 text-palette-sand px-3 py-1 rounded-full text-xs font-medium mb-4">
                     🧠 YOUR SECRET WEAPON
                   </span>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Deep, personalized insights</h3>
-                  <p className="text-gray-600 text-sm">Not generic advice. Confronting truths that actually move you forward.</p>
+                  <h3 className="text-2xl font-bold text-white mb-2">Deep, personalized insights</h3>
+                  <p className="text-white/70 text-sm">Not generic advice. Confronting truths that actually move you forward.</p>
                 </div>
                 
                 {/* Lottie - centered and sized to fit */}
@@ -425,7 +421,7 @@ export default function HomePage() {
                 <div className="relative z-10 mt-auto">
                   <Button 
                     size="lg" 
-                    className="bg-brand-navy text-white hover:bg-brand-navy/90 rounded-full px-6 w-full"
+                    className="bg-palette-sand text-brand-navy hover:bg-palette-sand/90 rounded-full px-6 w-full"
                     asChild
                   >
                     <Link href="/download">
