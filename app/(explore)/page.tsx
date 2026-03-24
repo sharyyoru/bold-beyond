@@ -29,6 +29,11 @@ const ScrollReveal = dynamic(() => import("@/components/ui/ScrollReveal"), {
   ssr: false,
 });
 
+const ModuleLottie = dynamic(() => import("@/components/ui/ModuleLottie"), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-gray-100 animate-pulse rounded-xl" />,
+});
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -80,36 +85,36 @@ const signatureFeatures = [
     title: "Emotional Pattern Mapping",
     description: "Track recurring emotions, triggers, and behaviors. See patterns over time.",
     example: '"You feel anxious every Sunday night → work anticipation"',
-    icon: Activity,
-    color: "bg-rose-500",
+    lottie: "/animations/modules/PersonalHistory.json",
+    bgColor: "bg-palette-sand/30",
   },
   {
     title: "Thought Reframe Engine",
     description: "CBT + NLP powered reframing. Input your thought, get a new perspective.",
     example: '"I\'m not good enough" → "You\'re interpreting uncertainty as failure"',
-    icon: RefreshCw,
-    color: "bg-blue-500",
+    lottie: "/animations/modules/DrivingQuestion.json",
+    bgColor: "bg-palette-sky/20",
   },
   {
     title: "Nervous System Tracker",
     description: "Not just HRV. Detect sympathetic vs parasympathetic states.",
     example: "Detects: fight/flight, freeze, flow",
-    icon: Zap,
-    color: "bg-amber-500",
+    lottie: "/animations/modules/Vagal.json",
+    bgColor: "bg-amber-100/50",
   },
   {
     title: "Alignment Actions",
     description: "Instead of 'walk 10,000 steps', get actions that actually matter.",
     example: '"Have a difficult conversation" • "Rest without guilt" • "Say no today"',
-    icon: Target,
-    color: "bg-emerald-500",
+    lottie: "/animations/modules/SetOutcomes.json",
+    bgColor: "bg-palette-sea/20",
   },
   {
     title: "Identity Shift Engine",
     description: "Track old patterns vs new patterns. See your growth over time.",
     example: '"You reacted differently today. This is growth."',
-    icon: TrendingUp,
-    color: "bg-purple-500",
+    lottie: "/animations/modules/ElicitValues.json",
+    bgColor: "bg-purple-100/50",
   },
 ];
 
@@ -282,8 +287,10 @@ export default function HomePage() {
                 <Card className="border-0 shadow-lg overflow-hidden">
                   <CardContent className="p-0">
                     <div className="flex flex-col lg:flex-row">
-                      <div className={`${feature.color} p-8 lg:w-72 flex items-center justify-center`}>
-                        <feature.icon className="h-16 w-16 text-white" />
+                      <div className={`${feature.bgColor} p-6 lg:w-72 flex items-center justify-center`}>
+                        <div className="w-32 h-32">
+                          <ModuleLottie animationPath={feature.lottie} />
+                        </div>
                       </div>
                       <div className="flex-1 p-8">
                         <h3 className="text-2xl font-bold text-gray-900 mb-3">{feature.title}</h3>
