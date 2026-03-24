@@ -307,14 +307,14 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Scrollable Cards - Container aligned start, overflow to edge */}
+        {/* Scrollable Cards - Aligned with container text, overflow to right edge */}
         <div 
           id="features-slider"
           className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide"
           style={{ 
             scrollbarWidth: 'none', 
             msOverflowStyle: 'none',
-            paddingLeft: 'max(1rem, calc((100vw - 1280px) / 2 + 1rem))',
+            paddingLeft: 'max(2rem, calc((100vw - 1400px) / 2 + 2rem))',
             paddingRight: '2rem',
           }}
           onScroll={handleSliderScroll}
