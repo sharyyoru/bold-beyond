@@ -177,9 +177,8 @@ export default function HomePage() {
               </div>
 
               {/* Main headline */}
-              <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
-                The Inside-out
-                <span className="block text-palette-sand">Transformation System</span>
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6 px-4 sm:px-0">
+                The Inside-out <span className="text-palette-sand">Transformation System</span>
               </h1>
 
               {/* Subheadline */}
