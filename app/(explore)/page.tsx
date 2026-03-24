@@ -126,6 +126,20 @@ const signatureFeatures = [
 
 export default function HomePage() {
   const [showLeftArrow, setShowLeftArrow] = React.useState(false);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [containerLeft, setContainerLeft] = React.useState(0);
+
+  React.useEffect(() => {
+    const updateContainerLeft = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setContainerLeft(rect.left);
+      }
+    };
+    updateContainerLeft();
+    window.addEventListener('resize', updateContainerLeft);
+    return () => window.removeEventListener('resize', updateContainerLeft);
+  }, []);
 
   const handleSliderScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
@@ -226,14 +240,9 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {pillars.map((pillar, index) => (
               <ScrollReveal key={pillar.name}>
-                <div className={`relative h-[500px] rounded-3xl overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02] ${
-                  index === 0 ? 'bg-gradient-to-br from-blue-600 to-indigo-800' :
-                  index === 1 ? 'bg-gradient-to-br from-rose-500 to-pink-700' :
-                  index === 2 ? 'bg-gradient-to-br from-amber-500 to-orange-700' :
-                  'bg-gradient-to-br from-teal-500 to-emerald-700'
-                }`}>
+                <div className="relative h-[500px] rounded-3xl overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02]">
                   {/* Video Background */}
-                  <div className="absolute inset-0 opacity-60">
+                  <div className="absolute inset-0">
                     <video
                       src={pillar.video}
                       autoPlay
@@ -244,8 +253,8 @@ export default function HomePage() {
                     />
                   </div>
                   
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  {/* Sand Color Overlay - consistent across all cards */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-palette-sand/90 via-palette-sand/40 to-palette-sand/20" />
                   
                   {/* Content */}
                   <div className="absolute inset-0 p-8 flex flex-col justify-between text-white">
@@ -273,7 +282,7 @@ export default function HomePage() {
 
       {/* Signature Features Section - WHOOP Style Slider */}
       <section className="py-20 lg:py-32 bg-gradient-to-b from-palette-sky/10 to-white overflow-hidden">
-        <div className="container">
+        <div className="container" ref={containerRef}>
           <ScrollReveal>
             <div className="max-w-3xl mb-12">
               <h2 className="font-display text-4xl lg:text-5xl font-bold text-brand-navy mb-6">
@@ -289,7 +298,7 @@ export default function HomePage() {
 
         {/* Slider with proper container alignment */}
         <div className="relative">
-          {/* Navigation Arrows - positioned relative to container */}
+          {/* Navigation Arrows */}
           <div className="container">
             <div className="relative">
               {showLeftArrow && (
@@ -315,14 +324,14 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Scrollable Cards - starts at container edge, overflows right */}
+          {/* Scrollable Cards - aligned with container left edge */}
           <div 
             id="features-slider"
             className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide"
             style={{ 
               scrollbarWidth: 'none', 
               msOverflowStyle: 'none',
-              paddingLeft: 'max(2rem, calc((100vw - min(100vw - 4rem, 1400px)) / 2))',
+              paddingLeft: containerLeft > 0 ? `${containerLeft}px` : '2rem',
               paddingRight: '2rem',
             }}
             onScroll={handleSliderScroll}
@@ -393,23 +402,27 @@ export default function HomePage() {
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            {/* Large Lottie Card - Left */}
+          {/* 2-Column Layout: Lottie Left, 2x2 Grid Right */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Large Lottie Card - Full Height Left */}
             <ScrollReveal>
-              <div className="lg:col-span-1 lg:row-span-2 bg-white rounded-3xl p-8 h-full min-h-[400px] relative overflow-hidden group hover:shadow-xl transition-shadow">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-full h-full opacity-80 animate-float-slow">
-                    <ModuleLottie animationPath="/animations/Yoga.json" />
-                  </div>
-                </div>
-                <div className="relative z-10">
+              <div className="bg-white rounded-3xl p-8 h-full min-h-[500px] relative overflow-hidden group hover:shadow-xl transition-shadow flex flex-col">
+                <div className="relative z-10 mb-4">
                   <span className="inline-flex items-center gap-2 bg-palette-sand/30 text-brand-navy px-3 py-1 rounded-full text-xs font-medium mb-4">
                     🧠 YOUR SECRET WEAPON
                   </span>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Deep, personalized insights</h3>
                   <p className="text-gray-600 text-sm">Not generic advice. Confronting truths that actually move you forward.</p>
                 </div>
-                <div className="absolute bottom-8 left-8 right-8 z-10">
+                
+                {/* Lottie - centered and sized to fit */}
+                <div className="flex-1 flex items-center justify-center min-h-[250px]">
+                  <div className="w-[280px] h-[280px] opacity-90 animate-float-slow">
+                    <ModuleLottie animationPath="/animations/Yoga.json" />
+                  </div>
+                </div>
+                
+                <div className="relative z-10 mt-auto">
                   <Button 
                     size="lg" 
                     className="bg-brand-navy text-white hover:bg-brand-navy/90 rounded-full px-6 w-full"
@@ -424,68 +437,69 @@ export default function HomePage() {
               </div>
             </ScrollReveal>
 
-            {/* Top Right Cards */}
-            <ScrollReveal>
-              <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow">
-                <div className="w-12 h-12 rounded-2xl bg-palette-sea/10 flex items-center justify-center mb-4">
-                  <Brain className="h-6 w-6 text-palette-sea" />
+            {/* 2x2 Grid of Cards - Right Side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <ScrollReveal>
+                <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow h-full">
+                  <div className="w-12 h-12 rounded-2xl bg-palette-sea/10 flex items-center justify-center mb-4">
+                    <Brain className="h-6 w-6 text-palette-sea" />
+                  </div>
+                  <p className="text-gray-900 font-medium mb-1">
+                    <span className="text-palette-sea">Identity</span> challenges that unlock growth.
+                  </p>
+                  <p className="text-sm text-gray-500 italic mt-3">
+                    "You're avoiding this, not because it's hard... but because it challenges your identity."
+                  </p>
                 </div>
-                <p className="text-gray-900 font-medium mb-1">
-                  <span className="text-palette-sea">Identity</span> challenges that unlock growth.
-                </p>
-                <p className="text-sm text-gray-500 italic mt-3">
-                  "You're avoiding this, not because it's hard... but because it challenges your identity."
-                </p>
-              </div>
-            </ScrollReveal>
+              </ScrollReveal>
 
-            <ScrollReveal>
-              <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow">
-                <div className="w-12 h-12 rounded-2xl bg-palette-sand/30 flex items-center justify-center mb-4">
-                  <Heart className="h-6 w-6 text-palette-sand" />
+              <ScrollReveal>
+                <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow h-full">
+                  <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center mb-4">
+                    <Heart className="h-6 w-6 text-rose-500" />
+                  </div>
+                  <p className="text-gray-900 font-medium mb-1">
+                    <span className="text-rose-500">Emotional</span> patterns decoded.
+                  </p>
+                  <p className="text-sm text-gray-500 italic mt-3">
+                    "Your exhaustion is not physical. It's emotional suppression."
+                  </p>
                 </div>
-                <p className="text-gray-900 font-medium mb-1">
-                  <span className="text-rose-500">Emotional</span> patterns decoded.
-                </p>
-                <p className="text-sm text-gray-500 italic mt-3">
-                  "Your exhaustion is not physical. It's emotional suppression."
-                </p>
-              </div>
-            </ScrollReveal>
+              </ScrollReveal>
 
-            {/* Bottom Right Cards */}
-            <ScrollReveal>
-              <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow">
-                <div className="w-12 h-12 rounded-2xl bg-palette-sky/10 flex items-center justify-center mb-4">
-                  <TrendingUp className="h-6 w-6 text-palette-sky" />
-                </div>
-                <p className="text-gray-900 font-medium mb-1">
-                  <span className="text-palette-sky">Track</span> your alignment score over time.
-                </p>
-                <div className="mt-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full w-[73%] bg-gradient-to-r from-palette-sea to-palette-sky rounded-full" />
+              <ScrollReveal>
+                <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow h-full">
+                  <div className="w-12 h-12 rounded-2xl bg-palette-sky/10 flex items-center justify-center mb-4">
+                    <TrendingUp className="h-6 w-6 text-palette-sky" />
+                  </div>
+                  <p className="text-gray-900 font-medium mb-1">
+                    <span className="text-palette-sky">Track</span> your alignment score over time.
+                  </p>
+                  <div className="mt-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-full w-[73%] bg-gradient-to-r from-palette-sea to-palette-sky rounded-full" />
+                      </div>
+                      <span className="font-bold text-palette-sea text-sm">73%</span>
                     </div>
-                    <span className="font-bold text-palette-sea text-sm">73%</span>
                   </div>
                 </div>
-              </div>
-            </ScrollReveal>
+              </ScrollReveal>
 
-            <ScrollReveal>
-              <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mb-4">
-                  <Lightbulb className="h-6 w-6 text-emerald-600" />
+              <ScrollReveal>
+                <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow h-full">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mb-4">
+                    <Lightbulb className="h-6 w-6 text-emerald-600" />
+                  </div>
+                  <p className="text-gray-900 font-medium mb-1">
+                    <span className="text-emerald-600">Insights</span> based on your actual patterns.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-3">
+                    Not surface-level metrics. Deep understanding of who you really are.
+                  </p>
                 </div>
-                <p className="text-gray-900 font-medium mb-1">
-                  <span className="text-emerald-600">Insights</span> based on your actual patterns.
-                </p>
-                <p className="text-sm text-gray-500 mt-3">
-                  Not surface-level metrics. Deep understanding of who you really are.
-                </p>
-              </div>
-            </ScrollReveal>
+              </ScrollReveal>
+            </div>
           </div>
         </div>
       </section>
