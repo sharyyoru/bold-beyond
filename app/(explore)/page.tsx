@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -124,6 +125,13 @@ const signatureFeatures = [
 ];
 
 export default function HomePage() {
+  const [showLeftArrow, setShowLeftArrow] = React.useState(false);
+
+  const handleSliderScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLDivElement;
+    setShowLeftArrow(target.scrollLeft > 50);
+  };
+
   return (
     <div className="flex flex-col">
       {/* Hero Section - WHOOP-inspired dark, bold design */}
@@ -271,22 +279,24 @@ export default function HomePage() {
             </div>
           </ScrollReveal>
 
-          {/* Slider Container */}
+          {/* Slider Container - Full width overflow */}
           <div className="relative">
-            {/* Navigation Arrow - Left */}
-            <button 
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-colors hidden lg:flex"
-              onClick={() => {
-                const slider = document.getElementById('features-slider');
-                if (slider) slider.scrollBy({ left: -400, behavior: 'smooth' });
-              }}
-            >
-              <ChevronLeft className="h-6 w-6 text-gray-700" />
-            </button>
+            {/* Navigation Arrow - Left (only shows after scroll) */}
+            {showLeftArrow && (
+              <button 
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center hover:scale-105 transition-all hidden lg:flex"
+                onClick={() => {
+                  const slider = document.getElementById('features-slider');
+                  if (slider) slider.scrollBy({ left: -400, behavior: 'smooth' });
+                }}
+              >
+                <ChevronLeft className="h-6 w-6 text-gray-700" />
+              </button>
+            )}
 
             {/* Navigation Arrow - Right */}
             <button 
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-colors hidden lg:flex"
+              className="absolute -right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center hover:scale-105 transition-all hidden lg:flex"
               onClick={() => {
                 const slider = document.getElementById('features-slider');
                 if (slider) slider.scrollBy({ left: 400, behavior: 'smooth' });
@@ -294,63 +304,66 @@ export default function HomePage() {
             >
               <ChevronRight className="h-6 w-6 text-gray-700" />
             </button>
+          </div>
+        </div>
 
-            {/* Scrollable Cards */}
+        {/* Scrollable Cards - Outside container for full width */}
+        <div 
+          id="features-slider"
+          className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide pl-4 lg:pl-[max(1rem,calc((100vw-1280px)/2+1rem))] pr-8"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          onScroll={handleSliderScroll}
+        >
+          {signatureFeatures.map((feature, index) => (
             <div 
-              id="features-slider"
-              className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 lg:mx-14 lg:px-0"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              key={feature.title}
+              className="flex-shrink-0 w-[320px] lg:w-[380px] h-[480px] rounded-3xl overflow-hidden relative group snap-start"
             >
-              {signatureFeatures.map((feature, index) => (
-                <div 
-                  key={feature.title}
-                  className="flex-shrink-0 w-[320px] lg:w-[380px] h-[480px] rounded-3xl overflow-hidden relative group snap-start"
-                >
-                  {/* Lottie Background - Darker */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-brand-navy/80 to-palette-sea/60">
-                    <div className="absolute inset-0 flex items-center justify-center opacity-70">
-                      <div className="w-full h-full">
-                        <ModuleLottie animationPath={feature.lottie} />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Glassmorphism Overlay - adjusted for dark bg */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/60 to-transparent" />
-
-                  {/* Content */}
-                  <div className="relative h-full flex flex-col p-6">
-                    {/* Title at top */}
-                    <h3 className="text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-auto">
-                      {feature.title}
-                    </h3>
-
-                    {/* Description and example at bottom */}
-                    <div className="mt-auto">
-                      <p className="text-gray-700 text-sm mb-4">{feature.description}</p>
-                      <div className="bg-white/70 backdrop-blur-sm rounded-xl p-3 border border-white/50">
-                        <p className="text-xs text-gray-600 italic">{feature.example}</p>
-                      </div>
-                    </div>
-
-                    {/* Plus Button */}
-                    <button className="absolute bottom-6 right-6 w-10 h-10 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full flex items-center justify-center hover:bg-white hover:scale-110 transition-all shadow-lg">
-                      <Plus className="h-5 w-5 text-gray-700" />
-                    </button>
+              {/* Lottie Background - Light on top */}
+              <div className="absolute inset-0 bg-gradient-to-b from-palette-sky/30 via-palette-sea/40 to-brand-navy/70">
+                <div className="absolute inset-0 flex items-center justify-center opacity-80">
+                  <div className="w-full h-full">
+                    <ModuleLottie animationPath={feature.lottie} />
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
 
-            {/* Dots Navigation */}
-            <div className="flex justify-center gap-2 mt-6">
-              {signatureFeatures.map((_, index) => (
-                <button 
-                  key={index}
-                  className={`w-2 h-2 rounded-full transition-colors ${index === 0 ? 'bg-brand-navy' : 'bg-gray-300'}`}
-                />
-              ))}
+              {/* Glassmorphism Overlay - dark at bottom */}
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white/90" />
+
+              {/* Content */}
+              <div className="relative h-full flex flex-col p-6">
+                {/* Title at top */}
+                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-auto">
+                  {feature.title}
+                </h3>
+
+                {/* Description and example at bottom */}
+                <div className="mt-auto">
+                  <p className="text-gray-700 text-sm mb-4">{feature.description}</p>
+                  <div className="bg-white/70 backdrop-blur-sm rounded-xl p-3 border border-white/50">
+                    <p className="text-xs text-gray-600 italic">{feature.example}</p>
+                  </div>
+                </div>
+
+                {/* Plus Button */}
+                <button className="absolute bottom-6 right-6 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center hover:scale-110 transition-all">
+                  <Plus className="h-5 w-5 text-gray-700" />
+                </button>
+              </div>
             </div>
+          ))}
+        </div>
+
+        {/* Dots Navigation */}
+        <div className="container">
+          <div className="flex justify-center gap-2 mt-6">
+            {signatureFeatures.map((_, index) => (
+              <button 
+                key={index}
+                className={`w-2.5 h-2.5 rounded-full transition-colors ${index === 0 ? 'bg-brand-navy' : 'bg-gray-300'}`}
+              />
+            ))}
           </div>
         </div>
       </section>
