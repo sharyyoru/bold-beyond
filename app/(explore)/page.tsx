@@ -36,6 +36,7 @@ const pillars = [
   {
     name: "Mind",
     icon: Brain,
+    video: "/updated-assets/Psychotherapy.mp4",
     color: "from-blue-500 to-indigo-600",
     bgColor: "bg-blue-50",
     textColor: "text-blue-600",
@@ -45,6 +46,7 @@ const pillars = [
   {
     name: "Emotion",
     icon: Heart,
+    video: "/updated-assets/couplestherapy.mp4",
     color: "from-rose-500 to-pink-600",
     bgColor: "bg-rose-50",
     textColor: "text-rose-600",
@@ -54,6 +56,7 @@ const pillars = [
   {
     name: "Energy",
     icon: Zap,
+    video: "/updated-assets/Lifecoaching.mp4",
     color: "from-amber-500 to-orange-600",
     bgColor: "bg-amber-50",
     textColor: "text-amber-600",
@@ -63,6 +66,7 @@ const pillars = [
   {
     name: "Purpose",
     icon: Target,
+    video: "/updated-assets/groupsessions.mp4",
     color: "from-teal-500 to-emerald-600",
     bgColor: "bg-teal-50",
     textColor: "text-teal-600",
@@ -224,10 +228,19 @@ export default function HomePage() {
             {pillars.map((pillar, index) => (
               <ScrollReveal key={pillar.name}>
                 <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-shadow group overflow-hidden">
+                  {/* Video thumbnail */}
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <video
+                      src={pillar.video}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-t ${pillar.color} opacity-20`} />
+                  </div>
                   <CardContent className="p-6">
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${pillar.color} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}>
-                      <pillar.icon className="h-7 w-7 text-white" />
-                    </div>
                     <h3 className="text-xl font-bold text-gray-900 mb-2">{pillar.name}</h3>
                     <p className="text-gray-600 text-sm mb-4">{pillar.description}</p>
                     <ul className="space-y-2">
