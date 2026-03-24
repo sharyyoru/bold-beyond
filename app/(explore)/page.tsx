@@ -356,7 +356,12 @@ export default function HomePage() {
 
             <ScrollReveal>
               <div className="relative">
-                <div className="bg-gradient-to-br from-palette-sea/20 to-palette-sand/20 rounded-3xl p-8">
+                {/* Meditating Lottie behind the card */}
+                <div className="absolute -right-8 -bottom-8 w-80 h-80 opacity-60 z-0">
+                  <ModuleLottie animationPath="/animations/Yoga.json" />
+                </div>
+                
+                <div className="relative z-10 bg-gradient-to-br from-palette-sea/20 to-palette-sand/20 rounded-3xl p-8">
                   <div className="bg-white rounded-2xl shadow-xl p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-10 h-10 rounded-full bg-palette-sea flex items-center justify-center">
@@ -388,8 +393,20 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA - Download Section */}
-      <section className="py-20 lg:py-32 bg-gradient-to-br from-palette-sand/50 to-white">
-        <div className="container">
+      <section className="relative py-20 lg:py-32 bg-gradient-to-br from-palette-sand/50 to-white overflow-hidden">
+        {/* Animated Mandala Background */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-[600px] h-[600px] opacity-10 animate-spin-slow">
+            <Image
+              src="/assets/mandala-outline.svg"
+              alt=""
+              fill
+              className="object-contain"
+            />
+          </div>
+        </div>
+        
+        <div className="container relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <ScrollReveal>
               <h2 className="font-display text-4xl lg:text-5xl font-bold text-brand-navy mb-6">
