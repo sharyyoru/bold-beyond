@@ -100,8 +100,8 @@ export function MegaHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full" ref={headerRef}>
-      {/* Main Navigation - Black background like Oura */}
-      <nav className="bg-black">
+      {/* Main Navigation - Dark Blue background */}
+      <nav className="bg-brand-navy">
         <div className="container flex h-16 items-center justify-between">
           {/* Logo - White version */}
           <Link href="/" className="flex items-center">
@@ -160,7 +160,7 @@ export function MegaHeader() {
           <div className="hidden lg:flex items-center gap-3">
             <Button 
               size="sm" 
-              className="bg-white text-black hover:bg-white/90 gap-2 rounded-full px-5"
+              className="bg-white text-brand-navy hover:bg-white/90 gap-2 rounded-full px-5"
               asChild
             >
               <Link href="/download">
@@ -310,7 +310,7 @@ export function MegaHeader() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-black border-t border-white/10">
+        <div className="lg:hidden bg-brand-navy border-t border-white/10">
           <div className="space-y-1 px-4 py-4">
             {navigation.map((item) => (
               <div key={item.name}>
@@ -375,7 +375,7 @@ export function MegaHeader() {
 
             {/* Mobile Download Buttons */}
             <div className="flex gap-2 pt-4 border-t border-white/10 mt-4">
-              <Button size="sm" className="flex-1 bg-white text-black gap-2 rounded-full" asChild>
+              <Button size="sm" className="flex-1 bg-white text-brand-navy gap-2 rounded-full" asChild>
                 <Link href="/download" onClick={() => setMobileMenuOpen(false)}>
                   <Apple className="h-4 w-4" />
                   App Store

@@ -231,7 +231,7 @@ export default function HomePage() {
         <div className="container">
           <ScrollReveal>
             <div className="mb-12">
-              <h2 className="font-display text-4xl lg:text-5xl font-bold text-gray-900">
+              <h2 className="font-display text-4xl lg:text-5xl font-bold text-brand-navy">
                 The 4 Pillars. <span className="text-gray-500">Your alignment dimensions.</span>
               </h2>
             </div>
@@ -356,7 +356,7 @@ export default function HomePage() {
               {/* Content */}
               <div className="relative h-full flex flex-col p-6">
                 {/* Title at top */}
-                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-auto">
+                <h3 className="text-xl lg:text-2xl font-bold text-brand-navy leading-tight mb-auto">
                   {feature.title}
                 </h3>
 
@@ -392,7 +392,7 @@ export default function HomePage() {
         <div className="container">
           <ScrollReveal>
             <div className="mb-12">
-              <h2 className="font-display text-4xl lg:text-5xl font-bold text-gray-900">
+              <h2 className="font-display text-4xl lg:text-5xl font-bold text-brand-navy">
                 AI Coach That Gets It. <span className="text-gray-500">Your personal breakthrough partner.</span>
               </h2>
             </div>
@@ -440,7 +440,7 @@ export default function HomePage() {
                   <div className="w-12 h-12 rounded-2xl bg-palette-sea/10 flex items-center justify-center mb-4">
                     <Brain className="h-6 w-6 text-palette-sea" />
                   </div>
-                  <p className="text-gray-900 font-medium mb-1">
+                  <p className="text-brand-navy font-medium mb-1">
                     <span className="text-palette-sea">Identity</span> challenges that unlock growth.
                   </p>
                   <p className="text-sm text-gray-500 italic mt-3">
@@ -454,7 +454,7 @@ export default function HomePage() {
                   <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center mb-4">
                     <Heart className="h-6 w-6 text-rose-500" />
                   </div>
-                  <p className="text-gray-900 font-medium mb-1">
+                  <p className="text-brand-navy font-medium mb-1">
                     <span className="text-rose-500">Emotional</span> patterns decoded.
                   </p>
                   <p className="text-sm text-gray-500 italic mt-3">
@@ -468,7 +468,7 @@ export default function HomePage() {
                   <div className="w-12 h-12 rounded-2xl bg-palette-sky/10 flex items-center justify-center mb-4">
                     <TrendingUp className="h-6 w-6 text-palette-sky" />
                   </div>
-                  <p className="text-gray-900 font-medium mb-1">
+                  <p className="text-brand-navy font-medium mb-1">
                     <span className="text-palette-sky">Track</span> your alignment score over time.
                   </p>
                   <div className="mt-4">
@@ -487,7 +487,7 @@ export default function HomePage() {
                   <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mb-4">
                     <Lightbulb className="h-6 w-6 text-emerald-600" />
                   </div>
-                  <p className="text-gray-900 font-medium mb-1">
+                  <p className="text-brand-navy font-medium mb-1">
                     <span className="text-emerald-600">Insights</span> based on your actual patterns.
                   </p>
                   <p className="text-sm text-gray-500 mt-3">
@@ -530,7 +530,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <Button 
                   size="xl" 
-                  className="bg-black text-white hover:bg-gray-900 rounded-full px-10 gap-3 shadow-xl"
+                  className="bg-brand-navy text-white hover:bg-brand-navy/90 rounded-full px-10 gap-3 shadow-xl"
                   asChild
                 >
                   <Link href="/download">
