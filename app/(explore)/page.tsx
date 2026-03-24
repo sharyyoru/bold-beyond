@@ -307,11 +307,16 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Scrollable Cards - Outside container for full width */}
+        {/* Scrollable Cards - Container aligned start, overflow to edge */}
         <div 
           id="features-slider"
-          className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide pl-4 lg:pl-[max(1rem,calc((100vw-1280px)/2+1rem))] pr-8"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide"
+          style={{ 
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none',
+            paddingLeft: 'max(1rem, calc((100vw - 1280px) / 2 + 1rem))',
+            paddingRight: '2rem',
+          }}
           onScroll={handleSliderScroll}
         >
           {signatureFeatures.map((feature, index) => (
