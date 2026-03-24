@@ -212,50 +212,57 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* The 4 Pillars Section */}
-      <section className="py-20 lg:py-32 bg-white">
+      {/* The 4 Pillars Section - Apple Style Bold Cards */}
+      <section className="py-20 lg:py-32 bg-[#f5f5f7]">
         <div className="container">
           <ScrollReveal>
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="inline-flex items-center gap-2 bg-palette-sand/30 text-brand-navy px-4 py-2 rounded-full mb-6 text-sm font-medium">
-                Your Unfair Advantage
-              </span>
-              <h2 className="font-display text-4xl lg:text-5xl font-bold text-brand-navy mb-6">
-                The 4 Pillars of Human Alignment
+            <div className="mb-12">
+              <h2 className="font-display text-4xl lg:text-5xl font-bold text-gray-900">
+                The 4 Pillars. <span className="text-gray-500">Your alignment dimensions.</span>
               </h2>
-              <p className="text-lg text-gray-600">
-                These are not generic wellness metrics. These are the dimensions that actually determine how aligned you are as a human.
-              </p>
             </div>
           </ScrollReveal>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {pillars.map((pillar, index) => (
               <ScrollReveal key={pillar.name}>
-                <div className="h-full bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-2xl hover:shadow-xl transition-all group overflow-hidden">
-                  {/* Video thumbnail */}
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-t-2xl">
+                <div className={`relative h-[500px] rounded-3xl overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02] ${
+                  index === 0 ? 'bg-gradient-to-br from-blue-600 to-indigo-800' :
+                  index === 1 ? 'bg-gradient-to-br from-rose-500 to-pink-700' :
+                  index === 2 ? 'bg-gradient-to-br from-amber-500 to-orange-700' :
+                  'bg-gradient-to-br from-teal-500 to-emerald-700'
+                }`}>
+                  {/* Video Background */}
+                  <div className="absolute inset-0 opacity-60">
                     <video
                       src={pillar.video}
                       autoPlay
                       loop
                       muted
                       playsInline
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-palette-sky/30 to-transparent" />
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{pillar.name}</h3>
-                    <p className="text-gray-600 text-sm mb-4">{pillar.description}</p>
-                    <ul className="space-y-2">
+                  
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  
+                  {/* Content */}
+                  <div className="absolute inset-0 p-8 flex flex-col justify-between text-white">
+                    <div>
+                      <pillar.icon className="h-10 w-10 mb-4 opacity-90" />
+                      <h3 className="text-3xl font-bold mb-2">{pillar.name}</h3>
+                      <p className="text-white/80 text-sm">{pillar.description}</p>
+                    </div>
+                    
+                    <div className="space-y-2">
                       {pillar.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-2 text-sm text-gray-500">
-                          <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0 text-palette-sky" />
+                        <div key={feature} className="flex items-center gap-2 text-sm text-white/90">
+                          <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
                           {feature}
-                        </li>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 </div>
               </ScrollReveal>
@@ -265,7 +272,7 @@ export default function HomePage() {
       </section>
 
       {/* Signature Features Section - WHOOP Style Slider */}
-      <section className="py-20 lg:py-32 bg-gradient-to-b from-palette-sky/10 to-white">
+      <section className="py-20 lg:py-32 bg-gradient-to-b from-palette-sky/10 to-white overflow-hidden">
         <div className="container">
           <ScrollReveal>
             <div className="max-w-3xl mb-12">
@@ -278,47 +285,48 @@ export default function HomePage() {
               </p>
             </div>
           </ScrollReveal>
-
-          {/* Slider Container - Full width overflow */}
-          <div className="relative">
-            {/* Navigation Arrow - Left (only shows after scroll) */}
-            {showLeftArrow && (
-              <button 
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center hover:scale-105 transition-all hidden lg:flex"
-                onClick={() => {
-                  const slider = document.getElementById('features-slider');
-                  if (slider) slider.scrollBy({ left: -400, behavior: 'smooth' });
-                }}
-              >
-                <ChevronLeft className="h-6 w-6 text-gray-700" />
-              </button>
-            )}
-
-            {/* Navigation Arrow - Right */}
-            <button 
-              className="absolute -right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center hover:scale-105 transition-all hidden lg:flex"
-              onClick={() => {
-                const slider = document.getElementById('features-slider');
-                if (slider) slider.scrollBy({ left: 400, behavior: 'smooth' });
-              }}
-            >
-              <ChevronRight className="h-6 w-6 text-gray-700" />
-            </button>
-          </div>
         </div>
 
-        {/* Scrollable Cards - Aligned with container text, overflow to right edge */}
-        <div 
-          id="features-slider"
-          className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide"
-          style={{ 
-            scrollbarWidth: 'none', 
-            msOverflowStyle: 'none',
-            paddingLeft: 'max(2rem, calc((100vw - 1400px) / 2 + 2rem))',
-            paddingRight: '2rem',
-          }}
-          onScroll={handleSliderScroll}
-        >
+        {/* Slider with proper container alignment */}
+        <div className="relative">
+          {/* Navigation Arrows - positioned relative to container */}
+          <div className="container">
+            <div className="relative">
+              {showLeftArrow && (
+                <button 
+                  className="absolute -left-6 top-[240px] z-20 w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center hover:scale-105 transition-all hidden lg:flex"
+                  onClick={() => {
+                    const slider = document.getElementById('features-slider');
+                    if (slider) slider.scrollBy({ left: -400, behavior: 'smooth' });
+                  }}
+                >
+                  <ChevronLeft className="h-6 w-6 text-gray-700" />
+                </button>
+              )}
+              <button 
+                className="absolute -right-6 top-[240px] z-20 w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center hover:scale-105 transition-all hidden lg:flex"
+                onClick={() => {
+                  const slider = document.getElementById('features-slider');
+                  if (slider) slider.scrollBy({ left: 400, behavior: 'smooth' });
+                }}
+              >
+                <ChevronRight className="h-6 w-6 text-gray-700" />
+              </button>
+            </div>
+          </div>
+
+          {/* Scrollable Cards - starts at container edge, overflows right */}
+          <div 
+            id="features-slider"
+            className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide"
+            style={{ 
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none',
+              paddingLeft: 'max(2rem, calc((100vw - min(100vw - 4rem, 1400px)) / 2))',
+              paddingRight: '2rem',
+            }}
+            onScroll={handleSliderScroll}
+          >
           {signatureFeatures.map((feature, index) => (
             <div 
               key={feature.title}
@@ -358,6 +366,7 @@ export default function HomePage() {
               </div>
             </div>
           ))}
+          </div>
         </div>
 
         {/* Dots Navigation */}
@@ -373,45 +382,41 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* AI Coach Section */}
-      <section className="py-20 lg:py-32 bg-brand-navy text-white">
+      {/* AI Coach Section - Apple Store Difference Style */}
+      <section className="py-20 lg:py-32 bg-[#f5f5f7]">
         <div className="container">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <ScrollReveal>
-              <div>
-                <span className="inline-flex items-center gap-2 bg-white/10 text-palette-sand px-4 py-2 rounded-full mb-6 text-sm font-medium">
-                  🧠 Your Secret Weapon
-                </span>
-                <h2 className="font-display text-4xl lg:text-5xl font-bold mb-6">
-                  AI Coach That Gets It
-                </h2>
-                <p className="text-xl text-white/70 mb-8">
-                  Not generic. <span className="text-white font-semibold">Deep, personalized, slightly confronting.</span>
-                </p>
+          <ScrollReveal>
+            <div className="mb-12">
+              <h2 className="font-display text-4xl lg:text-5xl font-bold text-gray-900">
+                AI Coach That Gets It. <span className="text-gray-500">Your personal breakthrough partner.</span>
+              </h2>
+            </div>
+          </ScrollReveal>
 
-                <div className="space-y-6">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-                    <p className="text-white/90 italic mb-2">
-                      "You're avoiding this, not because it's hard... but because it challenges your identity."
-                    </p>
-                    <p className="text-sm text-palette-sand">— Your AI Coach</p>
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-                    <p className="text-white/90 italic mb-2">
-                      "Your exhaustion is not physical. It's emotional suppression."
-                    </p>
-                    <p className="text-sm text-palette-sand">— Your AI Coach</p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Large Lottie Card - Left */}
+            <ScrollReveal>
+              <div className="lg:col-span-1 lg:row-span-2 bg-white rounded-3xl p-8 h-full min-h-[400px] relative overflow-hidden group hover:shadow-xl transition-shadow">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-full h-full opacity-80 animate-float-slow">
+                    <ModuleLottie animationPath="/animations/Yoga.json" />
                   </div>
                 </div>
-
-                <div className="mt-10">
+                <div className="relative z-10">
+                  <span className="inline-flex items-center gap-2 bg-palette-sand/30 text-brand-navy px-3 py-1 rounded-full text-xs font-medium mb-4">
+                    🧠 YOUR SECRET WEAPON
+                  </span>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Deep, personalized insights</h3>
+                  <p className="text-gray-600 text-sm">Not generic advice. Confronting truths that actually move you forward.</p>
+                </div>
+                <div className="absolute bottom-8 left-8 right-8 z-10">
                   <Button 
                     size="lg" 
-                    className="bg-palette-sand text-brand-navy hover:bg-palette-sand/90 rounded-full px-8"
+                    className="bg-brand-navy text-white hover:bg-brand-navy/90 rounded-full px-6 w-full"
                     asChild
                   >
                     <Link href="/download">
-                      Experience the AI Coach
+                      Experience AI Coach
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </Button>
@@ -419,38 +424,66 @@ export default function HomePage() {
               </div>
             </ScrollReveal>
 
+            {/* Top Right Cards */}
             <ScrollReveal>
-              <div className="relative">
-                {/* Meditating Lottie behind the card - 3x bigger with parallax float */}
-                <div className="absolute -right-32 -bottom-32 w-[600px] h-[600px] opacity-40 z-0 animate-float-slow">
-                  <ModuleLottie animationPath="/animations/Yoga.json" />
+              <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow">
+                <div className="w-12 h-12 rounded-2xl bg-palette-sea/10 flex items-center justify-center mb-4">
+                  <Brain className="h-6 w-6 text-palette-sea" />
                 </div>
-                
-                <div className="relative z-10 bg-gradient-to-br from-palette-sea/20 to-palette-sand/20 rounded-3xl p-8">
-                  <div className="bg-white rounded-2xl shadow-xl p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-full bg-palette-sea flex items-center justify-center">
-                        <Lightbulb className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-900">Alignment Insight</p>
-                        <p className="text-xs text-gray-500">Based on your patterns</p>
-                      </div>
+                <p className="text-gray-900 font-medium mb-1">
+                  <span className="text-palette-sea">Identity</span> challenges that unlock growth.
+                </p>
+                <p className="text-sm text-gray-500 italic mt-3">
+                  "You're avoiding this, not because it's hard... but because it challenges your identity."
+                </p>
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal>
+              <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow">
+                <div className="w-12 h-12 rounded-2xl bg-palette-sand/30 flex items-center justify-center mb-4">
+                  <Heart className="h-6 w-6 text-palette-sand" />
+                </div>
+                <p className="text-gray-900 font-medium mb-1">
+                  <span className="text-rose-500">Emotional</span> patterns decoded.
+                </p>
+                <p className="text-sm text-gray-500 italic mt-3">
+                  "Your exhaustion is not physical. It's emotional suppression."
+                </p>
+              </div>
+            </ScrollReveal>
+
+            {/* Bottom Right Cards */}
+            <ScrollReveal>
+              <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow">
+                <div className="w-12 h-12 rounded-2xl bg-palette-sky/10 flex items-center justify-center mb-4">
+                  <TrendingUp className="h-6 w-6 text-palette-sky" />
+                </div>
+                <p className="text-gray-900 font-medium mb-1">
+                  <span className="text-palette-sky">Track</span> your alignment score over time.
+                </p>
+                <div className="mt-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full w-[73%] bg-gradient-to-r from-palette-sea to-palette-sky rounded-full" />
                     </div>
-                    <p className="text-gray-700 text-sm leading-relaxed">
-                      You're 73% aligned with your stated values, but there's a 27% gap between what you say matters and how you spend your time. This isn't failure—it's data.
-                    </p>
-                    <div className="mt-4 pt-4 border-t">
-                      <p className="text-xs text-gray-500 mb-2">Your Alignment Score</p>
-                      <div className="flex items-center gap-3">
-                        <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                          <div className="h-full w-[73%] bg-gradient-to-r from-palette-sea to-palette-sky rounded-full" />
-                        </div>
-                        <span className="font-bold text-palette-sea">73%</span>
-                      </div>
-                    </div>
+                    <span className="font-bold text-palette-sea text-sm">73%</span>
                   </div>
                 </div>
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal>
+              <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mb-4">
+                  <Lightbulb className="h-6 w-6 text-emerald-600" />
+                </div>
+                <p className="text-gray-900 font-medium mb-1">
+                  <span className="text-emerald-600">Insights</span> based on your actual patterns.
+                </p>
+                <p className="text-sm text-gray-500 mt-3">
+                  Not surface-level metrics. Deep understanding of who you really are.
+                </p>
               </div>
             </ScrollReveal>
           </div>
