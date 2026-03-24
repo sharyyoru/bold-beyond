@@ -149,23 +149,23 @@ export default function HomePage() {
                 <span className="text-sm text-white/90">Human Alignment System™</span>
               </div>
 
-              {/* Main headline - WHOOP style */}
+              {/* Main headline */}
               <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
-                The system that transforms you
-                <span className="block text-palette-sand">from inside → out</span>
+                The Inside-out
+                <span className="block text-palette-sand">Transformation System</span>
               </h1>
 
               {/* Subheadline */}
-              <p className="text-xl text-white/70 max-w-xl mx-auto lg:mx-0 mb-8">
+              <p className="text-xl text-white/70 max-w-xl mx-auto lg:mx-0 mb-10">
                 Not a fitness app. Not a wellness tracker. Not a coaching platform. 
-                <span className="text-white font-medium"> A system that tracks, understands, and aligns the human.</span>
+                <span className="text-white font-medium"> A system that tracks, understands, and aligns the human within.</span>
               </p>
 
-              {/* CTA Buttons - Prominent download */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
+              {/* CTA Buttons - Glassmorphism */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button 
                   size="xl" 
-                  className="bg-white text-brand-navy hover:bg-white/90 rounded-full px-8 gap-3 shadow-lg"
+                  className="bg-white/20 backdrop-blur-xl border border-white/30 text-white hover:bg-white/30 rounded-full px-8 gap-3 shadow-lg"
                   asChild
                 >
                   <Link href="/download">
@@ -175,7 +175,7 @@ export default function HomePage() {
                 </Button>
                 <Button 
                   size="xl" 
-                  className="bg-palette-sea text-white hover:bg-palette-sea-dark rounded-full px-8 gap-3"
+                  className="bg-palette-sea/80 backdrop-blur-xl border border-palette-sea/50 text-white hover:bg-palette-sea rounded-full px-8 gap-3"
                   asChild
                 >
                   <Link href="/download">
@@ -183,19 +183,6 @@ export default function HomePage() {
                     Get on Google Play
                   </Link>
                 </Button>
-              </div>
-
-              {/* What we're NOT */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm text-white/50">
-                <span className="flex items-center gap-2">
-                  <span className="text-red-400">✗</span> Fitness app
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="text-red-400">✗</span> Wellness tracker
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="text-red-400">✗</span> Coaching platform
-                </span>
               </div>
             </div>
 
