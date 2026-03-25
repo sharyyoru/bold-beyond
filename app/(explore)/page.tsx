@@ -212,16 +212,17 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right - 3D Rotating Band */}
-            <div className="hidden lg:flex justify-center items-center">
-              <Hero3DBand />
-            </div>
           </div>
+        </div>
 
-          {/* Scroll indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-            <ChevronDown className="h-8 w-8 text-white/40" />
-          </div>
+        {/* 3D Smartwatch - Free flowing across hero */}
+        <div className="hidden lg:block absolute inset-0 z-5">
+          <Hero3DBand />
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-20">
+          <ChevronDown className="h-8 w-8 text-white/40" />
         </div>
       </section>
 
@@ -253,8 +254,8 @@ export default function HomePage() {
                     />
                   </div>
                   
-                  {/* Sand Color Overlay - consistent across all cards */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-palette-sand/90 via-palette-sand/40 to-palette-sand/20" />
+                  {/* Sand Color Overlay - stronger for better text visibility */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-palette-sand/95 via-palette-sand/70 to-palette-sand/50" />
                   
                   {/* Content */}
                   <div className="absolute inset-0 p-8 flex flex-col justify-between text-white">
