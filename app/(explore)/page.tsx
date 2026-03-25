@@ -47,7 +47,7 @@ const pillars = [
   {
     name: "Mind",
     icon: Brain,
-    video: "/updated-assets/Psychotherapy.mp4#t=0.1",
+    video: "/smart-assets/Mind.mov#t=0.1",
     color: "from-blue-500 to-indigo-600",
     bgColor: "bg-blue-50",
     textColor: "text-blue-600",
@@ -57,7 +57,7 @@ const pillars = [
   {
     name: "Emotion",
     icon: Heart,
-    video: "/updated-assets/couplestherapy.mp4#t=0.1",
+    video: "/smart-assets/Emotion.mov#t=0.1",
     color: "from-rose-500 to-pink-600",
     bgColor: "bg-rose-50",
     textColor: "text-rose-600",
@@ -67,7 +67,7 @@ const pillars = [
   {
     name: "Energy",
     icon: Zap,
-    video: "/updated-assets/Lifecoaching.mp4#t=0.1",
+    video: "/smart-assets/Energy.mov#t=0.1",
     color: "from-amber-500 to-orange-600",
     bgColor: "bg-amber-50",
     textColor: "text-amber-600",
@@ -77,7 +77,7 @@ const pillars = [
   {
     name: "Purpose",
     icon: Target,
-    video: "/updated-assets/groupsessions.mp4#t=0.1",
+    video: "/smart-assets/Purpose.mov#t=0.1",
     color: "from-teal-500 to-emerald-600",
     bgColor: "bg-teal-50",
     textColor: "text-teal-600",
