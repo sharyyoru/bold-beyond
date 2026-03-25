@@ -24,10 +24,10 @@ import {
   CheckCircle2
 } from "lucide-react";
 
-const HeroAnimation = dynamic(() => import("@/components/home/HeroAnimation"), {
+const Hero3DBand = dynamic(() => import("@/components/home/Hero3DBand"), {
   ssr: false,
   loading: () => (
-    <div className="w-full max-w-lg aspect-square bg-white/10 rounded-3xl animate-pulse" />
+    <div className="w-full h-[500px] lg:h-[600px] bg-white/10 rounded-3xl animate-pulse" />
   ),
 });
 
@@ -173,18 +173,18 @@ export default function HomePage() {
               {/* Category badge */}
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8">
                 <Sparkles className="h-4 w-4 text-palette-sand" />
-                <span className="text-sm text-white/90">Human Alignment System™</span>
+                <span className="text-sm text-white/90">HUMAN ALIGNMENT SYSTEM™</span>
               </div>
 
               {/* Main headline */}
               <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6 px-4 sm:px-0">
-                The Inside-out <span className="text-palette-sand">Transformation System</span>
+                Upgrade your <span className="text-palette-sand">Human OS.</span>
+                <span className="block mt-2">Take control of your life.</span>
               </h1>
 
               {/* Subheadline */}
               <p className="text-xl text-white/70 max-w-xl mx-auto lg:mx-0 mb-10 px-4 sm:px-0">
-                Not a fitness app. Not a wellness tracker. Not a coaching platform. 
-                <span className="text-white font-medium"> A system that tracks, understands, and aligns the human within.</span>
+                Understand what's driving your thoughts, emotions, and decisions — so stress, overthinking, and confusion stop controlling you.
               </p>
 
               {/* CTA Buttons - Glassmorphism */}
@@ -212,9 +212,9 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right - Animation/Visual */}
-            <div className="hidden lg:flex justify-center">
-              <HeroAnimation />
+            {/* Right - 3D Rotating Band */}
+            <div className="hidden lg:flex justify-center items-center">
+              <Hero3DBand />
             </div>
           </div>
 
