@@ -22,7 +22,7 @@ function WatchScreen() {
       <planeGeometry args={[0.85, 1.1]} />
       <meshBasicMaterial color="#111111" />
       <mesh position={[0, 0, 0.001]}>
-        <planeGeometry args={[0.4, 0.4]} />
+        <planeGeometry args={[0.65, 0.18]} />
         <meshBasicMaterial map={logoTexture} transparent />
       </mesh>
     </mesh>
