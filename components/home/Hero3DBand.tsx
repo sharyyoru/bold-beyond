@@ -2,7 +2,7 @@
 
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, RoundedBox } from "@react-three/drei";
+import { OrbitControls, RoundedBox, useTexture } from "@react-three/drei";
 
 // Brand colors
 const COLORS = {
@@ -13,6 +13,21 @@ const COLORS = {
   sky: "#6B9BC3",
   skyDark: "#5A8AB2",
 };
+
+function WatchScreen() {
+  const logoTexture = useTexture("/new-assets/bnb-white.png");
+  
+  return (
+    <mesh position={[0, 0, 0.111]}>
+      <planeGeometry args={[0.85, 1.1]} />
+      <meshBasicMaterial color="#111111" />
+      <mesh position={[0, 0, 0.001]}>
+        <planeGeometry args={[0.4, 0.4]} />
+        <meshBasicMaterial map={logoTexture} transparent />
+      </mesh>
+    </mesh>
+  );
+}
 
 function SmartWatch() {
   return (
@@ -39,21 +54,8 @@ function SmartWatch() {
         />
       </RoundedBox>
 
-      {/* Screen Display - Solid sky color, no animation */}
-      <mesh position={[0, 0, 0.11]}>
-        <planeGeometry args={[0.85, 1.1]} />
-        <meshBasicMaterial color={COLORS.sky} />
-      </mesh>
-
-      {/* Bold & Beyond Logo - Simple centered circle */}
-      <mesh position={[0, 0, 0.12]}>
-        <circleGeometry args={[0.2, 32]} />
-        <meshBasicMaterial color={COLORS.sand} />
-      </mesh>
-      <mesh position={[0, 0, 0.121]}>
-        <ringGeometry args={[0.22, 0.28, 32]} />
-        <meshBasicMaterial color={COLORS.seaDark} />
-      </mesh>
+      {/* Screen with Logo */}
+      <WatchScreen />
 
       {/* Digital Crown - Sand accent */}
       <mesh position={[0.62, 0.2, 0]} rotation={[0, 0, Math.PI / 2]}>
