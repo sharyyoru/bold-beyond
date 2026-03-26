@@ -17,9 +17,9 @@ const COLORS = {
 function SmartWatch() {
   return (
     <group 
-      scale={1.6}
-      position={[2.5, 0, 0]}
-      rotation={[0.15, -0.4, 0]}
+      scale={1.8}
+      position={[0, 0, 0]}
+      rotation={[0.1, -0.3, 0]}
     >
       {/* Watch Case - Sea color */}
       <RoundedBox args={[1.1, 1.4, 0.18]} radius={0.15} smoothness={4} position={[0, 0, 0]}>
@@ -120,10 +120,9 @@ function Scene() {
       <OrbitControls 
         enableZoom={false}
         enablePan={false}
-        minPolarAngle={Math.PI / 4}
+        minPolarAngle={Math.PI / 3}
         maxPolarAngle={Math.PI / 1.5}
         autoRotate={false}
-        target={[2.5, 0, 0]}
       />
     </>
   );
@@ -131,21 +130,20 @@ function Scene() {
 
 export default function Hero3DBand() {
   return (
-    <div className="absolute inset-0 w-full h-full pointer-events-auto">
+    <div className="w-full h-full cursor-grab active:cursor-grabbing">
       <Canvas
-        camera={{ position: [0, 0, 7], fov: 35 }}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-        style={{ background: "transparent" }}
-        dpr={[1, 1.5]}
+        camera={{ position: [0, 0, 6], fov: 40 }}
+        gl={{ antialias: true, alpha: true }}
+        style={{ background: "transparent", touchAction: "none" }}
       >
         <Suspense fallback={null}>
           <Scene />
         </Suspense>
       </Canvas>
       {/* Interaction hint */}
-      <div className="absolute bottom-8 right-8 text-white/40 text-sm flex items-center gap-2 pointer-events-none">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 text-sm flex items-center gap-2 pointer-events-none">
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
         </svg>
         <span>Drag to rotate</span>
       </div>

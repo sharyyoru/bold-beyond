@@ -215,8 +215,8 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 3D Smartwatch - Free flowing across hero */}
-        <div className="hidden lg:block absolute inset-0 z-5">
+        {/* 3D Smartwatch - Right side of hero */}
+        <div className="hidden lg:block absolute top-0 right-0 w-1/2 h-full z-10">
           <Hero3DBand />
         </div>
 
