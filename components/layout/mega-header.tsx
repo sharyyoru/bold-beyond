@@ -158,26 +158,24 @@ export function MegaHeader() {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button 
-              size="sm" 
-              className="bg-white text-brand-navy hover:bg-white/90 gap-2 rounded-full px-5"
-              asChild
-            >
-              <Link href="/download">
-                <Apple className="h-4 w-4" />
-                <span>App Store</span>
-              </Link>
-            </Button>
-            <Button 
-              size="sm" 
-              className="bg-palette-sea text-white hover:bg-palette-sea-dark gap-2 rounded-full px-5"
-              asChild
-            >
-              <Link href="/download">
-                <Play className="h-4 w-4 fill-current" />
-                <span>Google Play</span>
-              </Link>
-            </Button>
+            <Link href="/download" className="hover:opacity-80 transition-opacity">
+              <Image 
+                src="/apple-store-btn.svg" 
+                alt="Download on App Store" 
+                width={120} 
+                height={40}
+                className="h-auto"
+              />
+            </Link>
+            <Link href="/download" className="hover:opacity-80 transition-opacity">
+              <Image 
+                src="/google-play-btn.svg" 
+                alt="Get on Google Play" 
+                width={120} 
+                height={40}
+                className="h-auto"
+              />
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -375,18 +373,24 @@ export function MegaHeader() {
 
             {/* Mobile Download Buttons */}
             <div className="flex gap-2 pt-4 border-t border-white/10 mt-4">
-              <Button size="sm" className="flex-1 bg-white text-brand-navy gap-2 rounded-full" asChild>
-                <Link href="/download" onClick={() => setMobileMenuOpen(false)}>
-                  <Apple className="h-4 w-4" />
-                  App Store
-                </Link>
-              </Button>
-              <Button size="sm" className="flex-1 bg-palette-sea text-white gap-2 rounded-full" asChild>
-                <Link href="/download" onClick={() => setMobileMenuOpen(false)}>
-                  <Play className="h-4 w-4 fill-current" />
-                  Google Play
-                </Link>
-              </Button>
+              <Link href="/download" onClick={() => setMobileMenuOpen(false)} className="flex-1 hover:opacity-80 transition-opacity">
+                <Image 
+                  src="/apple-store-btn.svg" 
+                  alt="Download on App Store" 
+                  width={120} 
+                  height={40}
+                  className="h-auto w-full"
+                />
+              </Link>
+              <Link href="/download" onClick={() => setMobileMenuOpen(false)} className="flex-1 hover:opacity-80 transition-opacity">
+                <Image 
+                  src="/google-play-btn.svg" 
+                  alt="Get on Google Play" 
+                  width={120} 
+                  height={40}
+                  className="h-auto w-full"
+                />
+              </Link>
             </div>
           </div>
         </div>

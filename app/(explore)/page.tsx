@@ -49,6 +49,7 @@ const pillars = [
     icon: Brain,
     video: "/smart-assets/Mind.mov#t=0.1",
     color: "from-blue-500 to-indigo-600",
+    topBgColor: "bg-brand-navy",
     bgColor: "bg-blue-50",
     textColor: "text-blue-600",
     description: "Thought patterns, belief systems & cognitive reframing",
@@ -59,6 +60,7 @@ const pillars = [
     icon: Heart,
     video: "/smart-assets/Emotion.mov#t=0.1",
     color: "from-rose-500 to-pink-600",
+    topBgColor: "bg-brand-navy-light",
     bgColor: "bg-rose-50",
     textColor: "text-rose-600",
     description: "Emotional states tracking, triggers & body awareness",
@@ -69,6 +71,7 @@ const pillars = [
     icon: Zap,
     video: "/smart-assets/Energy.mov#t=0.1",
     color: "from-amber-500 to-orange-600",
+    topBgColor: "bg-palette-sky-dark",
     bgColor: "bg-amber-50",
     textColor: "text-amber-600",
     description: "Nervous system state, stress vs flow & recovery",
@@ -79,6 +82,7 @@ const pillars = [
     icon: Target,
     video: "/smart-assets/Purpose.mov#t=0.1",
     color: "from-teal-500 to-emerald-600",
+    topBgColor: "bg-palette-sea-dark",
     bgColor: "bg-teal-50",
     textColor: "text-teal-600",
     description: "Alignment with life direction, meaning & identity",
@@ -91,35 +95,35 @@ const signatureFeatures = [
     title: "Emotional Pattern Mapping",
     description: "Track recurring emotions, triggers, and behaviors. See patterns over time.",
     example: '"You feel anxious every Sunday night → work anticipation"',
-    lottie: "/animations/modules/PersonalHistory.json",
+    lottie: "/emotions.json",
     bgColor: "bg-palette-sand/30",
   },
   {
     title: "Thought Reframe Engine",
     description: "CBT + NLP powered reframing. Input your thought, get a new perspective.",
     example: '"I\'m not good enough" → "You\'re interpreting uncertainty as failure"',
-    lottie: "/animations/modules/DrivingQuestion.json",
+    lottie: "/thoughts.json",
     bgColor: "bg-palette-sky/20",
   },
   {
     title: "Nervous System Tracker",
     description: "Not just HRV. Detect sympathetic vs parasympathetic states.",
     example: "Detects: fight/flight, freeze, flow",
-    lottie: "/animations/modules/Vagal.json",
+    lottie: "/tracker.json",
     bgColor: "bg-amber-100/50",
   },
   {
     title: "Alignment Actions",
     description: "Instead of 'walk 10,000 steps', get actions that actually matter.",
     example: '"Have a difficult conversation" • "Rest without guilt" • "Say no today"',
-    lottie: "/animations/modules/SetOutcomes.json",
+    lottie: "/hobby.json",
     bgColor: "bg-palette-sea/20",
   },
   {
     title: "Identity Shift Engine",
     description: "Track old patterns vs new patterns. See your growth over time.",
     example: '"You reacted differently today. This is growth."',
-    lottie: "/animations/modules/ElicitValues.json",
+    lottie: "/growth1.json",
     bgColor: "bg-purple-100/50",
   },
 ];
@@ -187,28 +191,26 @@ export default function HomePage() {
                 Understand what's driving your thoughts, emotions, and decisions — so stress, overthinking, and confusion stop controlling you.
               </p>
 
-              {/* CTA Buttons - Glassmorphism */}
+              {/* CTA Buttons - SVG Images */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button 
-                  size="xl" 
-                  className="bg-white/20 backdrop-blur-xl border border-white/30 text-white hover:bg-white/30 rounded-full px-8 gap-3 shadow-lg"
-                  asChild
-                >
-                  <Link href="/download">
-                    <Apple className="h-5 w-5" />
-                    Download on App Store
-                  </Link>
-                </Button>
-                <Button 
-                  size="xl" 
-                  className="bg-palette-sea/80 backdrop-blur-xl border border-palette-sea/50 text-white hover:bg-palette-sea rounded-full px-8 gap-3"
-                  asChild
-                >
-                  <Link href="/download">
-                    <Play className="h-5 w-5 fill-current" />
-                    Get on Google Play
-                  </Link>
-                </Button>
+                <Link href="/download" className="hover:opacity-80 transition-opacity">
+                  <Image 
+                    src="/apple-store-btn.svg" 
+                    alt="Download on App Store" 
+                    width={180} 
+                    height={60}
+                    className="h-auto max-w-[200px]"
+                  />
+                </Link>
+                <Link href="/download" className="hover:opacity-80 transition-opacity">
+                  <Image 
+                    src="/google-play-btn.svg" 
+                    alt="Get on Google Play" 
+                    width={180} 
+                    height={60}
+                    className="h-auto max-w-[200px]"
+                  />
+                </Link>
               </div>
             </div>
 
@@ -238,11 +240,20 @@ export default function HomePage() {
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {pillars.map((pillar, index) => (
+            {pillars.map((pillar) => (
               <ScrollReveal key={pillar.name}>
-                <div className="relative h-[500px] rounded-3xl overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02]">
-                  {/* Video Background with sand fallback */}
-                  <div className="absolute inset-0 bg-palette-sand">
+                <div className="relative h-[500px] rounded-3xl overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02] text-white">
+                  {/* Top content area - fully solid */}
+                  <div className={`h-[45%] p-8 ${pillar.topBgColor}`}>
+                    <div>
+                      <pillar.icon className="h-10 w-10 mb-4 opacity-90" />
+                      <h3 className="text-3xl font-bold mb-2">{pillar.name}</h3>
+                      <p className="text-white/80 text-sm">{pillar.description}</p>
+                    </div>
+                  </div>
+
+                  {/* Bottom video area */}
+                  <div className="relative h-[55%]">
                     <video
                       src={pillar.video}
                       autoPlay
@@ -250,28 +261,21 @@ export default function HomePage() {
                       muted
                       playsInline
                       preload="auto"
-                      className="w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
-                  </div>
-                  
-                  {/* Sand Color Overlay - stronger for better text visibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-palette-sand/95 via-palette-sand/70 to-palette-sand/50" />
-                  
-                  {/* Content */}
-                  <div className="absolute inset-0 p-8 flex flex-col justify-between text-white">
-                    <div>
-                      <pillar.icon className="h-10 w-10 mb-4 opacity-90" />
-                      <h3 className="text-3xl font-bold mb-2">{pillar.name}</h3>
-                      <p className="text-white/80 text-sm">{pillar.description}</p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      {pillar.features.map((feature) => (
-                        <div key={feature} className="flex items-center gap-2 text-sm text-white/90">
-                          <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
-                          {feature}
-                        </div>
-                      ))}
+
+                    {/* Subtle bottom gradient for feature list readability over video */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" />
+
+                    <div className="relative z-10 h-full p-8 flex items-end">
+                      <div className="space-y-2">
+                        {pillar.features.map((feature) => (
+                          <div key={feature} className="flex items-center gap-2 text-sm text-white/90">
+                            <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+                            {feature}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -340,19 +344,14 @@ export default function HomePage() {
           {signatureFeatures.map((feature, index) => (
             <div 
               key={feature.title}
-              className="flex-shrink-0 w-[400px] lg:w-[500px] h-[520px] rounded-3xl overflow-hidden relative group snap-start"
+              className={`flex-shrink-0 w-[400px] lg:w-[500px] h-[520px] rounded-3xl overflow-hidden relative group snap-start ${feature.bgColor}`}
             >
               {/* Lottie Background - Light on top */}
-              <div className="absolute inset-0 bg-gradient-to-b from-palette-sky/30 via-palette-sea/40 to-brand-navy/70">
-                <div className="absolute inset-0 flex items-center justify-center opacity-80">
-                  <div className="w-full h-full">
-                    <ModuleLottie animationPath={feature.lottie} />
-                  </div>
+              <div className="absolute inset-0 flex items-center justify-center opacity-80">
+                <div className="w-full h-full">
+                  <ModuleLottie animationPath={feature.lottie} />
                 </div>
               </div>
-
-              {/* Glassmorphism Overlay - dark at bottom */}
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white/90" />
 
               {/* Content */}
               <div className="relative h-full flex flex-col p-6">
@@ -403,19 +402,19 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Large Lottie Card - Full Height Left */}
             <ScrollReveal>
-              <div className="bg-brand-navy rounded-3xl p-8 h-full min-h-[500px] relative overflow-hidden group hover:shadow-xl transition-shadow flex flex-col">
+              <div className="bg-palette-sand/30 rounded-3xl p-8 h-full min-h-[500px] relative overflow-hidden group hover:shadow-xl transition-shadow flex flex-col">
                 <div className="relative z-10 mb-4">
-                  <span className="inline-flex items-center gap-2 bg-white/20 text-palette-sand px-3 py-1 rounded-full text-xs font-medium mb-4">
+                  <span className="inline-flex items-center gap-2 bg-brand-navy/20 text-brand-navy px-3 py-1 rounded-full text-xs font-medium mb-4">
                     🧠 YOUR SECRET WEAPON
                   </span>
-                  <h3 className="text-2xl font-bold text-white mb-2">Deep, personalized insights</h3>
-                  <p className="text-white/70 text-sm">Not generic advice. Confronting truths that actually move you forward.</p>
+                  <h3 className="text-2xl font-bold text-brand-navy mb-2">Deep, personalized insights</h3>
+                  <p className="text-gray-700 text-sm">Not generic advice. Confronting truths that actually move you forward.</p>
                 </div>
                 
                 {/* Lottie - centered and sized to fit */}
                 <div className="flex-1 flex items-center justify-center min-h-[250px]">
                   <div className="w-[280px] h-[280px] opacity-90 animate-float-slow">
-                    <ModuleLottie animationPath="/animations/Yoga.json" />
+                    <ModuleLottie animationPath="/therapist.json" />
                   </div>
                 </div>
                 
@@ -529,32 +528,24 @@ export default function HomePage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <Button 
-                  size="xl" 
-                  className="bg-brand-navy text-white hover:bg-brand-navy/90 rounded-full px-10 gap-3 shadow-xl"
-                  asChild
-                >
-                  <Link href="/download">
-                    <Apple className="h-6 w-6" />
-                    <div className="text-left">
-                      <span className="text-xs opacity-70 block">Download on the</span>
-                      <span className="font-semibold">App Store</span>
-                    </div>
-                  </Link>
-                </Button>
-                <Button 
-                  size="xl" 
-                  className="bg-palette-sea text-white hover:bg-palette-sea-dark rounded-full px-10 gap-3 shadow-xl"
-                  asChild
-                >
-                  <Link href="/download">
-                    <Play className="h-6 w-6 fill-current" />
-                    <div className="text-left">
-                      <span className="text-xs opacity-70 block">Get it on</span>
-                      <span className="font-semibold">Google Play</span>
-                    </div>
-                  </Link>
-                </Button>
+                <Link href="/download" className="hover:opacity-80 transition-opacity">
+                  <Image 
+                    src="/apple-store-btn.svg" 
+                    alt="Download on App Store" 
+                    width={180} 
+                    height={60}
+                    className="h-auto max-w-[200px]"
+                  />
+                </Link>
+                <Link href="/download" className="hover:opacity-80 transition-opacity">
+                  <Image 
+                    src="/google-play-btn.svg" 
+                    alt="Get on Google Play" 
+                    width={180} 
+                    height={60}
+                    className="h-auto max-w-[200px]"
+                  />
+                </Link>
               </div>
 
               <p className="text-sm text-gray-500">
