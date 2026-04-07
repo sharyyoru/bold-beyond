@@ -366,6 +366,12 @@ export default function HomePage() {
                   alt=""
                   className="absolute inset-0 w-full h-full object-cover"
                 />
+              ) : feature.title === "Identity Shift Engine" ? (
+                <img
+                  src="/f5.5.png"
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
               ) : (
                 <div className={`absolute inset-0 ${feature.bgColor ?? "bg-brand-navy/70"}`} />
               )}
