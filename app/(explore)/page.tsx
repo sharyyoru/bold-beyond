@@ -241,37 +241,36 @@ export default function HomePage() {
             {pillars.map((pillar, index) => (
               <ScrollReveal key={pillar.name}>
                 <div className="relative h-[500px] rounded-3xl overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02]">
-                  {/* Video Background with sand fallback */}
+                  {/* Image Background */}
                   <div className="absolute inset-0 bg-palette-sand">
-                    <video
-                      src={pillar.video}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="auto"
+                    <img
+                      src={
+                        pillar.name === "Emotion" ? "/emotion-2.png" :
+                        pillar.name === "Energy" ? "/energy.png" :
+                        pillar.name === "Purpose" ? "/purpose-2.png" :
+                        pillar.name === "Mind" ? "/mind-4.png" :
+                        "/mind-2.png"
+                      }
+                      alt=""
                       className="w-full h-full object-cover"
                     />
                   </div>
                   
-                  {/* Sand Color Overlay - stronger for better text visibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-palette-sand/95 via-palette-sand/70 to-palette-sand/50" />
-                  
                   {/* Content */}
-                  <div className="absolute inset-0 p-8 flex flex-col justify-between text-white">
+                  <div className="absolute inset-0 p-8 text-white">
                     <div>
                       <pillar.icon className="h-10 w-10 mb-4 opacity-90" />
                       <h3 className="text-3xl font-bold mb-2">{pillar.name}</h3>
                       <p className="text-white/80 text-sm">{pillar.description}</p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      {pillar.features.map((feature) => (
-                        <div key={feature} className="flex items-center gap-2 text-sm text-white/90">
-                          <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
-                          {feature}
-                        </div>
-                      ))}
+
+                      <div className="space-y-2 mt-4">
+                        {pillar.features.map((feature) => (
+                          <div key={feature} className="flex items-center gap-2 text-sm text-white/90">
+                            <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+                            {feature}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -337,39 +336,57 @@ export default function HomePage() {
             }}
             onScroll={handleSliderScroll}
           >
-          {signatureFeatures.map((feature, index) => (
+          {signatureFeatures.map((feature) => (
             <div 
               key={feature.title}
               className="flex-shrink-0 w-[400px] lg:w-[500px] h-[520px] rounded-3xl overflow-hidden relative group snap-start"
             >
-              {/* Lottie Background - Light on top */}
-              <div className="absolute inset-0 bg-gradient-to-b from-palette-sky/30 via-palette-sea/40 to-brand-navy/70">
-                <div className="absolute inset-0 flex items-center justify-center opacity-80">
-                  <div className="w-full h-full">
-                    <ModuleLottie animationPath={feature.lottie} />
-                  </div>
+              {/* Background base (ready for visual image replacement) */}
+              {feature.title === "Emotional Pattern Mapping" ? (
+                <img
+                  src="/f1-1.png"
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : feature.title === "Thought Reframe Engine" ? (
+                <img
+                  src="/f2-2.png"
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : feature.title === "Nervous System Tracker" ? (
+                <img
+                  src="/f3-4.png"
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : feature.title === "Alignment Actions" ? (
+                <img
+                  src="/f4.png"
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : feature.title === "Identity Shift Engine" ? (
+                <img
+                  src="/f5.5.png"
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : (
+                <div className={`absolute inset-0 ${feature.bgColor ?? "bg-brand-navy/70"}`} />
+              )}
+ 
+              {/* Content */}
+              <div className="relative h-full p-8">
+                <div className="max-w-[90%]">
+                  <h3 className="text-xl lg:text-3xl font-bold text-white leading-tight tracking-tight mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-white/90 text-sm leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
-
-              {/* Glassmorphism Overlay - dark at bottom */}
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white/90" />
-
-              {/* Content */}
-              <div className="relative h-full flex flex-col p-6">
-                {/* Title at top */}
-                <h3 className="text-xl lg:text-2xl font-bold text-brand-navy leading-tight mb-auto">
-                  {feature.title}
-                </h3>
-
-                {/* Description and example at bottom */}
-                <div className="mt-auto">
-                  <p className="text-gray-700 text-sm mb-4">{feature.description}</p>
-                  <div className="bg-white/70 backdrop-blur-sm rounded-xl p-3 border border-white/50">
-                    <p className="text-xs text-gray-600 italic">{feature.example}</p>
-                  </div>
-                </div>
-
-                              </div>
             </div>
           ))}
           </div>
