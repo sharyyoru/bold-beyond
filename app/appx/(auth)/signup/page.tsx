@@ -18,6 +18,8 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showExistingAccountOptions, setShowExistingAccountOptions] = useState(false);
+  const [isResendingEmail, setIsResendingEmail] = useState(false);
 
   const supabase = createAppClient();
 
@@ -48,11 +50,32 @@ export default function SignupPage() {
       });
 
       if (error) {
+        // Handle specific error cases
+        if (error.message.includes("already registered") || error.message.includes("already exists")) {
+          toast({
+            title: "Account already exists",
+            description: "This email is already registered. Please sign in or reset your password.",
+            variant: "destructive",
+          });
+          setShowExistingAccountOptions(true);
+        } else {
+          toast({
+            title: "Signup failed",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+        return;
+      }
+      
+      // Check if user exists but wasn't created (fake signup for existing user)
+      if (data.user && !data.session && data.user.identities?.length === 0) {
         toast({
-          title: "Signup failed",
-          description: error.message,
+          title: "Account already exists",
+          description: "This email is already registered. Please sign in or reset your password.",
           variant: "destructive",
         });
+        setShowExistingAccountOptions(true);
         return;
       }
 
@@ -100,12 +123,94 @@ export default function SignupPage() {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsResendingEmail(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/appx/login`,
+      });
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Password reset email sent",
+          description: "Check your inbox for a link to reset your password.",
+        });
+        setShowExistingAccountOptions(false);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResendingEmail(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsResendingEmail(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email,
+      });
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Verification email sent",
+          description: "Check your inbox for a verification link.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResendingEmail(false);
+    }
+  };
+
   const handleSocialSignup = async (provider: "google" | "facebook" | "apple") => {
     try {
+      // Use production URL or fallback to current origin
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${appUrl}/auth/callback`,
         },
       });
 
@@ -214,6 +319,53 @@ export default function SignupPage() {
             ) : null}
             Create Account
           </Button>
+
+          {/* Existing Account Options */}
+          {showExistingAccountOptions && (
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-3">
+              <p className="text-sm text-amber-800 text-center">
+                This email is already registered. What would you like to do?
+              </p>
+              <div className="flex flex-col gap-2">
+                <Link href="/appx/login">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    className="w-full"
+                  >
+                    Sign in instead
+                  </Button>
+                </Link>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="lg"
+                  className="w-full text-brand-teal"
+                  onClick={handleForgotPassword}
+                  disabled={isResendingEmail}
+                >
+                  {isResendingEmail ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  Reset password
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="lg"
+                  className="w-full text-gray-500"
+                  onClick={handleResendVerification}
+                  disabled={isResendingEmail}
+                >
+                  {isResendingEmail ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  Resend verification email
+                </Button>
+              </div>
+            </div>
+          )}
         </form>
 
         {/* Social Login */}
