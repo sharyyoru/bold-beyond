@@ -135,8 +135,9 @@ export default function SignupPage() {
 
     setIsResendingEmail(true);
     try {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/appx/login`,
+        redirectTo: `${appUrl}/appx/login`,
       });
 
       if (error) {

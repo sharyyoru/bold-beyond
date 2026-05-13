@@ -94,10 +94,11 @@ export default function SignupPage() {
 
   const handleSocialSignup = async (provider: "google" | "facebook" | "apple") => {
     try {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${appUrl}/auth/callback`,
         },
       });
 
