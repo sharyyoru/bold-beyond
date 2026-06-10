@@ -965,21 +965,6 @@ export default function BusinessPlanPage() {
           ))}
         </div>
 
-        {/* Government Partnership CTA */}
-        <GlassCard className="mt-8 p-8 text-center">
-          <Landmark className="h-12 w-12 text-palette-sea mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-brand-navy mb-2">
-            Government Partnership Opportunities
-          </h3>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-            We are actively seeking partnerships with UAE government entities for 
-            employee wellness programs, public health initiatives, and smart city integrations. 
-            Contact our government relations team to explore collaboration opportunities.
-          </p>
-          <button className="bg-brand-navy text-white px-8 py-3 rounded-full font-medium hover:bg-brand-navy/90 transition-all">
-            Schedule a Meeting
-          </button>
-        </GlassCard>
       </section>
 
       {/* Technical Architecture */}
