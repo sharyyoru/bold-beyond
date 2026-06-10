@@ -12,7 +12,8 @@ const appxPublicPages = ["/appx/order/success", "/appx/order/failed", "/appx/boo
 
 // Admin and Partner routes handle their own authentication internally
 // DO NOT protect these in middleware - they have separate session handling
-const selfAuthRoutes = ["/admin", "/partners"];
+// Also skip /bp (business plan) - it's a public static page
+const selfAuthRoutes = ["/admin", "/partners", "/bp"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
