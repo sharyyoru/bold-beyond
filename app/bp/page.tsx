@@ -28,6 +28,10 @@ import {
   Droplets,
   Sun,
   Moon,
+  Package,
+  Factory,
+  Truck,
+  BadgeCheck,
 } from "lucide-react";
 import { GlassCard, GlassContainer } from "@/components/ui/glass-card";
 import { cn } from "@/lib/utils";
@@ -291,6 +295,93 @@ const codeArchitecture = [
     ],
   },
 ];
+
+// Alibaba Supplier Product Lines
+const supplierProductLines = [
+  {
+    id: "AMOLED-SB-001",
+    name: "Custom Elegant Android AMOLED Smart Band",
+    supplier: "Shenzhen Ruiyi Technology Co., Ltd.",
+    category: "Premium AMOLED Band",
+    url: "https://www.alibaba.com/product-detail/Custom-Elegant-Android-AMOLED-Smart-Band_1601653512117.html",
+    specifications: [
+      "1.47\" AMOLED full-color display",
+      "Heart rate monitoring (24/7)",
+      "Blood oxygen (SpO2) tracking",
+      "IP68 waterproof rating",
+      "Sleep monitoring with REM detection",
+      "7-14 day battery life",
+      "Bluetooth 5.0 BLE",
+      "Custom watch faces support",
+    ],
+    pricing: {
+      moq: 500,
+      price_500: "$8.50 - $12.00",
+      price_1000: "$7.00 - $10.00",
+      price_5000: "$5.50 - $8.00",
+      price_10000: "$4.50 - $6.50",
+    },
+    leadTime: "25-35 days",
+    customization: [
+      "Logo printing",
+      "Custom packaging",
+      "Firmware customization",
+      "App white-labeling",
+      "Custom band colors/materials",
+    ],
+    targetProduct: "Bold Band Essential",
+  },
+  {
+    id: "HRM-IP68-002",
+    name: "Customized Android IP68 Heart Rate Monitor Smart Band",
+    supplier: "Shenzhen Ruiyi Technology Co., Ltd.",
+    category: "Advanced Health Band",
+    url: "https://www.alibaba.com/product-detail/Customized-Android-IP68-Heart-Rate-Monitor_1601800213557.html",
+    specifications: [
+      "1.69\" HD IPS/AMOLED display",
+      "ECG + PPG heart rate monitoring",
+      "Blood pressure monitoring",
+      "Blood oxygen saturation (SpO2)",
+      "Body temperature sensor",
+      "IP68 waterproof (swimming)",
+      "GPS tracking (optional)",
+      "14-21 day battery life",
+      "Multi-sport modes (100+)",
+    ],
+    pricing: {
+      moq: 300,
+      price_500: "$15.00 - $22.00",
+      price_1000: "$12.00 - $18.00",
+      price_5000: "$9.00 - $14.00",
+      price_10000: "$7.50 - $11.00",
+    },
+    leadTime: "30-45 days",
+    customization: [
+      "Logo printing & engraving",
+      "Premium packaging design",
+      "Full firmware customization",
+      "SDK & API access",
+      "Custom health algorithms",
+      "Metal/ceramic band options",
+    ],
+    targetProduct: "Bold Band Pro / Ultra",
+  },
+];
+
+// Manufacturing Cost Analysis
+const manufacturingAnalysis = {
+  unitCosts: [
+    { product: "Bold Band Essential", manufacturing: "$6.50", packaging: "$1.50", shipping: "$0.80", total: "$8.80", retail: "AED 399", margin: "69%" },
+    { product: "Bold Band Pro", manufacturing: "$14.00", packaging: "$2.50", shipping: "$1.00", total: "$17.50", retail: "AED 799", margin: "72%" },
+    { product: "Bold Band Ultra", manufacturing: "$22.00", packaging: "$4.00", shipping: "$1.20", total: "$27.20", retail: "AED 1,299", margin: "76%" },
+  ],
+  orderPlan: [
+    { phase: "Pilot Batch", quantity: 1000, timeline: "Q3 2025", investment: "AED 75,000" },
+    { phase: "Initial Launch", quantity: 5000, timeline: "Q4 2025", investment: "AED 320,000" },
+    { phase: "Scale Production", quantity: 25000, timeline: "Q1-Q2 2026", investment: "AED 1,400,000" },
+    { phase: "Mass Production", quantity: 100000, timeline: "Q3-Q4 2026", investment: "AED 4,800,000" },
+  ],
+};
 
 // Financial Projections
 const financialProjections = [
@@ -1020,6 +1111,202 @@ export class HealthSyncService {
               </pre>
             </motion.div>
           )}
+        </GlassCard>
+      </section>
+
+      {/* Manufacturing & Suppliers Section */}
+      <section id="manufacturing" className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-brand-navy mb-4">
+            Manufacturing & Supply Chain
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Strategic partnerships with verified Alibaba OEM suppliers for cost-effective production
+          </p>
+        </div>
+
+        {/* Supplier Product Lines */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-12">
+          {supplierProductLines.map((product, index) => (
+            <motion.div
+              key={product.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <GlassCard className="p-6 h-full">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-palette-sea to-palette-sky flex items-center justify-center">
+                      <Factory className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-medium text-palette-sea bg-palette-sea/10 px-2 py-1 rounded-full">
+                        {product.category}
+                      </span>
+                      <h3 className="font-bold text-brand-navy mt-1 leading-tight">
+                        {product.name}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <p className="text-sm text-gray-600 mb-1">
+                    <span className="font-medium">Supplier:</span> {product.supplier}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium">Maps to:</span>{" "}
+                    <span className="text-palette-sea font-medium">{product.targetProduct}</span>
+                  </p>
+                </div>
+
+                {/* Specifications */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-bold text-brand-navy mb-2 flex items-center gap-2">
+                    <BadgeCheck className="h-4 w-4 text-palette-sea" />
+                    Key Specifications
+                  </h4>
+                  <div className="grid grid-cols-2 gap-1">
+                    {product.specifications.map((spec, i) => (
+                      <p key={i} className="text-xs text-gray-600 flex items-start gap-1">
+                        <span className="text-palette-sea mt-1">•</span> {spec}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Pricing Tiers */}
+                <div className="mb-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4">
+                  <h4 className="text-sm font-bold text-brand-navy mb-3 flex items-center gap-2">
+                    <DollarSign className="h-4 w-4 text-green-600" />
+                    Volume Pricing (USD per unit)
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="text-center bg-white rounded-lg p-2">
+                      <p className="text-xs text-gray-500">MOQ: {product.pricing.moq}</p>
+                      <p className="text-sm font-bold text-green-600">{product.pricing.price_500}</p>
+                    </div>
+                    <div className="text-center bg-white rounded-lg p-2">
+                      <p className="text-xs text-gray-500">1,000+ units</p>
+                      <p className="text-sm font-bold text-green-600">{product.pricing.price_1000}</p>
+                    </div>
+                    <div className="text-center bg-white rounded-lg p-2">
+                      <p className="text-xs text-gray-500">5,000+ units</p>
+                      <p className="text-sm font-bold text-green-600">{product.pricing.price_5000}</p>
+                    </div>
+                    <div className="text-center bg-white rounded-lg p-2">
+                      <p className="text-xs text-gray-500">10,000+ units</p>
+                      <p className="text-sm font-bold text-green-600">{product.pricing.price_10000}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Lead Time & Customization */}
+                <div className="flex flex-wrap gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Truck className="h-4 w-4 text-palette-sea" />
+                    <span className="text-gray-600">Lead: <span className="font-medium">{product.leadTime}</span></span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Package className="h-4 w-4 text-palette-sea" />
+                    <span className="text-gray-600">{product.customization.length} customization options</span>
+                  </div>
+                </div>
+
+                {/* Customization Tags */}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {product.customization.slice(0, 3).map((opt, i) => (
+                    <span key={i} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                      {opt}
+                    </span>
+                  ))}
+                  {product.customization.length > 3 && (
+                    <span className="text-xs bg-palette-sea/10 text-palette-sea px-2 py-1 rounded-full">
+                      +{product.customization.length - 3} more
+                    </span>
+                  )}
+                </div>
+              </GlassCard>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Manufacturing Cost Analysis */}
+        <GlassCard className="p-6 md:p-8 mb-8">
+          <h3 className="text-xl font-bold text-brand-navy mb-6 flex items-center gap-3">
+            <DollarSign className="h-6 w-6 text-palette-sea" />
+            Unit Cost Analysis & Profit Margins
+          </h3>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-3 px-4 text-sm font-bold text-brand-navy">Product</th>
+                  <th className="text-center py-3 px-4 text-sm font-bold text-brand-navy">Manufacturing</th>
+                  <th className="text-center py-3 px-4 text-sm font-bold text-brand-navy">Packaging</th>
+                  <th className="text-center py-3 px-4 text-sm font-bold text-brand-navy">Shipping</th>
+                  <th className="text-center py-3 px-4 text-sm font-bold text-brand-navy">Total Cost</th>
+                  <th className="text-center py-3 px-4 text-sm font-bold text-brand-navy">Retail Price</th>
+                  <th className="text-center py-3 px-4 text-sm font-bold text-green-600">Margin</th>
+                </tr>
+              </thead>
+              <tbody>
+                {manufacturingAnalysis.unitCosts.map((item, index) => (
+                  <tr key={index} className="border-b border-gray-100 hover:bg-white/50 transition-colors">
+                    <td className="py-3 px-4 text-sm font-medium text-brand-navy">{item.product}</td>
+                    <td className="py-3 px-4 text-sm text-center text-gray-600">{item.manufacturing}</td>
+                    <td className="py-3 px-4 text-sm text-center text-gray-600">{item.packaging}</td>
+                    <td className="py-3 px-4 text-sm text-center text-gray-600">{item.shipping}</td>
+                    <td className="py-3 px-4 text-sm text-center font-medium text-brand-navy">{item.total}</td>
+                    <td className="py-3 px-4 text-sm text-center font-bold text-palette-sea">{item.retail}</td>
+                    <td className="py-3 px-4 text-sm text-center font-bold text-green-600">{item.margin}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </GlassCard>
+
+        {/* Order Plan Timeline */}
+        <GlassCard className="p-6 md:p-8">
+          <h3 className="text-xl font-bold text-brand-navy mb-6 flex items-center gap-3">
+            <Truck className="h-6 w-6 text-palette-sea" />
+            Production Order Plan
+          </h3>
+          
+          <div className="grid md:grid-cols-4 gap-4">
+            {manufacturingAnalysis.orderPlan.map((phase, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="relative"
+              >
+                <div className="bg-white/60 rounded-2xl p-5 text-center border-2 border-transparent hover:border-palette-sea/30 transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-palette-sea/20 flex items-center justify-center mx-auto mb-3">
+                    <span className="text-lg font-bold text-palette-sea">{index + 1}</span>
+                  </div>
+                  <h4 className="font-bold text-brand-navy mb-1">{phase.phase}</h4>
+                  <p className="text-xs text-palette-sea font-medium mb-2">{phase.timeline}</p>
+                  <p className="text-2xl font-bold text-brand-navy mb-1">
+                    {phase.quantity.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-gray-500">units</p>
+                  <p className="mt-3 text-sm font-medium text-green-600">{phase.investment}</p>
+                </div>
+                {index < manufacturingAnalysis.orderPlan.length - 1 && (
+                  <div className="hidden md:block absolute top-1/2 -right-2 transform -translate-y-1/2">
+                    <ChevronRight className="h-4 w-4 text-gray-300" />
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
         </GlassCard>
       </section>
 
