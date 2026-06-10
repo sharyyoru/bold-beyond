@@ -434,11 +434,11 @@ const teamStructure = {
     {
       phase: "Phase 1: Foundation (2025)",
       headcount: 4,
-      monthlyBurn: "AED 45,000",
-      annualCost: "AED 540,000",
+      monthlyBurn: "AED 27,000",
+      annualCost: "AED 324,000",
       roles: [
         { role: "Founder (You)", count: 1, salary: "AED 0" },
-        { role: "Technical Co-founder / Dev (Remote)", count: 1, salary: "AED 18,000" },
+        { role: "Technical Co-founder", count: 1, salary: "AED 0" },
         { role: "Freelance UI/UX Designer", count: 1, salary: "AED 12,000" },
         { role: "Social Media & Partnerships Manager", count: 1, salary: "AED 15,000" },
       ],
@@ -446,11 +446,12 @@ const teamStructure = {
     {
       phase: "Phase 2: Launch (2026)",
       headcount: 6,
-      monthlyBurn: "AED 85,000",
-      annualCost: "AED 1,020,000",
+      monthlyBurn: "AED 67,000",
+      annualCost: "AED 804,000",
       roles: [
         { role: "Founder (You)", count: 1, salary: "AED 0" },
-        { role: "Remote Dev Team", count: 2, salary: "AED 18,000" },
+        { role: "Technical Co-founder", count: 1, salary: "AED 0" },
+        { role: "Remote Dev (Contract)", count: 1, salary: "AED 18,000" },
         { role: "Social Media & Partnerships Manager", count: 1, salary: "AED 15,000" },
         { role: "Remote Call Center (Outsourced)", count: 1, salary: "AED 22,000" },
         { role: "Freelance Content Creator", count: 1, salary: "AED 12,000" },
@@ -459,11 +460,12 @@ const teamStructure = {
     {
       phase: "Phase 3: Scale (2027-2028)",
       headcount: 10,
-      monthlyBurn: "AED 145,000",
-      annualCost: "AED 1,740,000",
+      monthlyBurn: "AED 125,000",
+      annualCost: "AED 1,500,000",
       roles: [
         { role: "Founder (You)", count: 1, salary: "AED 0" },
-        { role: "Remote Dev Team", count: 3, salary: "AED 20,000" },
+        { role: "Technical Co-founder", count: 1, salary: "AED 0" },
+        { role: "Remote Dev Team (Contract)", count: 2, salary: "AED 20,000" },
         { role: "Social Media & Partnerships Manager", count: 1, salary: "AED 18,000" },
         { role: "Remote Call Center (Outsourced)", count: 1, salary: "AED 35,000" },
         { role: "Freelance Contractors (Design/Content)", count: 2, salary: "AED 14,000" },
