@@ -32,6 +32,13 @@ import {
   Factory,
   Truck,
   BadgeCheck,
+  Megaphone,
+  UsersRound,
+  Headphones,
+  ShoppingCart,
+  BarChart3,
+  Clock,
+  MessageSquare,
 } from "lucide-react";
 import { GlassCard, GlassContainer } from "@/components/ui/glass-card";
 import { cn } from "@/lib/utils";
@@ -380,6 +387,120 @@ const manufacturingAnalysis = {
     { phase: "Initial Launch", quantity: 5000, timeline: "Q4 2025", investment: "AED 320,000" },
     { phase: "Scale Production", quantity: 25000, timeline: "Q1-Q2 2026", investment: "AED 1,400,000" },
     { phase: "Mass Production", quantity: 100000, timeline: "Q3-Q4 2026", investment: "AED 4,800,000" },
+  ],
+};
+
+// Marketing Budget
+const marketingBudget = {
+  phases: [
+    {
+      phase: "Pre-Launch (Q1-Q2 2026)",
+      budget: "AED 800,000",
+      activities: [
+        { item: "Brand Identity & Design", cost: "AED 120,000" },
+        { item: "Website & Landing Pages", cost: "AED 80,000" },
+        { item: "Social Media Setup & Content", cost: "AED 150,000" },
+        { item: "Influencer Partnerships", cost: "AED 200,000" },
+        { item: "PR & Media Relations", cost: "AED 150,000" },
+        { item: "Launch Event Planning", cost: "AED 100,000" },
+      ],
+    },
+    {
+      phase: "Launch (Q3-Q4 2026)",
+      budget: "AED 1,500,000",
+      activities: [
+        { item: "Digital Advertising (Meta, Google, TikTok)", cost: "AED 500,000" },
+        { item: "Launch Event & Activations", cost: "AED 250,000" },
+        { item: "Influencer Campaigns", cost: "AED 300,000" },
+        { item: "Mall & Retail Promotions", cost: "AED 200,000" },
+        { item: "Content Production (Video/Photo)", cost: "AED 150,000" },
+        { item: "PR & Press Coverage", cost: "AED 100,000" },
+      ],
+    },
+    {
+      phase: "Growth (2027)",
+      budget: "AED 2,500,000",
+      activities: [
+        { item: "Performance Marketing", cost: "AED 1,000,000" },
+        { item: "Brand Campaigns", cost: "AED 500,000" },
+        { item: "Partnerships & Sponsorships", cost: "AED 400,000" },
+        { item: "Content & Community", cost: "AED 300,000" },
+        { item: "Retention Marketing", cost: "AED 200,000" },
+        { item: "Market Research", cost: "AED 100,000" },
+      ],
+    },
+  ],
+  totalBudget: "AED 4,800,000",
+};
+
+// Team & Manpower Costs
+const teamStructure = {
+  phases: [
+    {
+      phase: "Phase 1: Foundation (2025)",
+      headcount: 8,
+      monthlyBurn: "AED 180,000",
+      annualCost: "AED 2,160,000",
+      roles: [
+        { role: "CEO / Founder", count: 1, salary: "AED 35,000" },
+        { role: "CTO / Technical Lead", count: 1, salary: "AED 30,000" },
+        { role: "Product Manager", count: 1, salary: "AED 25,000" },
+        { role: "Hardware Engineer", count: 2, salary: "AED 22,000" },
+        { role: "Mobile Developer", count: 2, salary: "AED 20,000" },
+        { role: "UI/UX Designer", count: 1, salary: "AED 18,000" },
+      ],
+    },
+    {
+      phase: "Phase 2: Launch (2026)",
+      headcount: 22,
+      monthlyBurn: "AED 480,000",
+      annualCost: "AED 5,760,000",
+      roles: [
+        { role: "Leadership Team", count: 3, salary: "AED 32,000" },
+        { role: "Engineering Team", count: 6, salary: "AED 22,000" },
+        { role: "Product & Design", count: 3, salary: "AED 20,000" },
+        { role: "Marketing Team", count: 4, salary: "AED 18,000" },
+        { role: "Sales Team", count: 4, salary: "AED 15,000" },
+        { role: "Customer Support", count: 2, salary: "AED 12,000" },
+      ],
+    },
+    {
+      phase: "Phase 3: Scale (2027-2028)",
+      headcount: 45,
+      monthlyBurn: "AED 950,000",
+      annualCost: "AED 11,400,000",
+      roles: [
+        { role: "Leadership & Management", count: 6, salary: "AED 35,000" },
+        { role: "Engineering Team", count: 12, salary: "AED 23,000" },
+        { role: "Product & Design", count: 5, salary: "AED 21,000" },
+        { role: "Marketing Team", count: 8, salary: "AED 18,000" },
+        { role: "Sales Team", count: 8, salary: "AED 16,000" },
+        { role: "Customer Support", count: 6, salary: "AED 13,000" },
+      ],
+    },
+  ],
+};
+
+// Sales & Support Structure
+const salesSupport = {
+  salesChannels: [
+    { channel: "Direct Online (boldandbeyond.com)", commission: "0%", target: "40%" },
+    { channel: "Noon / Amazon UAE", commission: "15%", target: "25%" },
+    { channel: "Retail Partners (Virgin, Sharaf DG)", commission: "20%", target: "20%" },
+    { channel: "Telecom Bundles (du, Etisalat)", commission: "25%", target: "10%" },
+    { channel: "Corporate B2B", commission: "10%", target: "5%" },
+  ],
+  supportStructure: [
+    { tier: "Tier 1 - Chat & Email", response: "< 2 hours", staff: 4, cost: "AED 48,000/mo" },
+    { tier: "Tier 2 - Phone Support", response: "< 30 min", staff: 3, cost: "AED 45,000/mo" },
+    { tier: "Tier 3 - Technical Escalation", response: "< 4 hours", staff: 2, cost: "AED 40,000/mo" },
+  ],
+  supportTools: ["Zendesk", "Intercom Chat", "WhatsApp Business", "Phone Hotline"],
+  kpis: [
+    { metric: "First Response Time", target: "< 2 hours" },
+    { metric: "Resolution Time", target: "< 24 hours" },
+    { metric: "Customer Satisfaction", target: "> 90%" },
+    { metric: "Return Rate", target: "< 3%" },
   ],
 };
 
@@ -1293,6 +1414,224 @@ export class HealthSyncService {
             ))}
           </div>
         </GlassCard>
+      </section>
+
+      {/* Marketing Budget Section */}
+      <section id="marketing" className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-brand-navy mb-4">
+            Marketing Budget
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Strategic marketing investment across pre-launch, launch, and growth phases
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-6 mb-8">
+          {marketingBudget.phases.map((phase, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <GlassCard className="p-6 h-full">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <Megaphone className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-brand-navy">{phase.phase}</h3>
+                    <p className="text-lg font-bold text-purple-600">{phase.budget}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  {phase.activities.map((activity, i) => (
+                    <div key={i} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                      <span className="text-sm text-gray-600">{activity.item}</span>
+                      <span className="text-sm font-medium text-brand-navy">{activity.cost}</span>
+                    </div>
+                  ))}
+                </div>
+              </GlassCard>
+            </motion.div>
+          ))}
+        </div>
+
+        <GlassCard className="p-6 text-center bg-gradient-to-r from-purple-50 to-pink-50">
+          <p className="text-gray-600 mb-2">Total Marketing Investment (2025-2027)</p>
+          <p className="text-3xl font-bold text-purple-600">{marketingBudget.totalBudget}</p>
+        </GlassCard>
+      </section>
+
+      {/* Team & Manpower Section */}
+      <section id="team" className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-brand-navy mb-4">
+            Team & Manpower
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Scaling our team from foundation to growth phase
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-6">
+          {teamStructure.phases.map((phase, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <GlassCard className="p-6 h-full">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                    <UsersRound className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-brand-navy text-sm">{phase.phase}</h3>
+                    <p className="text-2xl font-bold text-blue-600">{phase.headcount} <span className="text-sm font-normal text-gray-500">people</span></p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mb-4 p-3 bg-blue-50 rounded-xl">
+                  <div className="text-center">
+                    <p className="text-xs text-gray-500">Monthly Burn</p>
+                    <p className="text-sm font-bold text-brand-navy">{phase.monthlyBurn}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-gray-500">Annual Cost</p>
+                    <p className="text-sm font-bold text-blue-600">{phase.annualCost}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  {phase.roles.map((role, i) => (
+                    <div key={i} className="flex justify-between items-center py-1.5 border-b border-gray-100 last:border-0">
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs flex items-center justify-center font-medium">
+                          {role.count}
+                        </span>
+                        <span className="text-sm text-gray-600">{role.role}</span>
+                      </div>
+                      <span className="text-xs font-medium text-gray-500">{role.salary}/mo</span>
+                    </div>
+                  ))}
+                </div>
+              </GlassCard>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Sales & Support Section */}
+      <section id="sales-support" className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-brand-navy mb-4">
+            Sales & Support
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Multi-channel sales strategy and customer support infrastructure
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Sales Channels */}
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-bold text-brand-navy mb-6 flex items-center gap-3">
+              <ShoppingCart className="h-6 w-6 text-palette-sea" />
+              Sales Channels
+            </h3>
+            
+            <div className="space-y-3">
+              {salesSupport.salesChannels.map((channel, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  className="flex items-center justify-between p-3 bg-white/60 rounded-xl"
+                >
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-brand-navy">{channel.channel}</p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-center">
+                      <p className="text-xs text-gray-500">Commission</p>
+                      <p className="text-sm font-bold text-orange-500">{channel.commission}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-gray-500">Target</p>
+                      <p className="text-sm font-bold text-palette-sea">{channel.target}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </GlassCard>
+
+          {/* Support Structure */}
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-bold text-brand-navy mb-6 flex items-center gap-3">
+              <Headphones className="h-6 w-6 text-palette-sea" />
+              Support Structure
+            </h3>
+            
+            <div className="space-y-3 mb-6">
+              {salesSupport.supportStructure.map((tier, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  className="p-3 bg-white/60 rounded-xl"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium text-brand-navy">{tier.tier}</p>
+                    <span className="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full font-medium">
+                      {tier.staff} staff
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="flex items-center gap-1 text-gray-500">
+                      <Clock className="h-3 w-3" /> Response: {tier.response}
+                    </span>
+                    <span className="font-medium text-brand-navy">{tier.cost}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Support Tools */}
+            <div className="mb-4">
+              <p className="text-sm font-medium text-gray-600 mb-2 flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" /> Support Channels
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {salesSupport.supportTools.map((tool, i) => (
+                  <span key={i} className="text-xs bg-palette-sea/10 text-palette-sea px-3 py-1.5 rounded-full font-medium">
+                    {tool}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* KPIs */}
+            <div className="grid grid-cols-2 gap-2 pt-4 border-t border-gray-200">
+              {salesSupport.kpis.map((kpi, i) => (
+                <div key={i} className="text-center p-2 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-500">{kpi.metric}</p>
+                  <p className="text-sm font-bold text-brand-navy">{kpi.target}</p>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        </div>
       </section>
 
       {/* Financial Projections */}
