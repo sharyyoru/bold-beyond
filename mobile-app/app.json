@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Bold & Beyond",
+    "slug": "bold-and-beyond",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1a5f4a"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.boldandbeyond.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "Bold & Beyond needs camera access for profile photos and wellness check-ins",
+        "NSPhotoLibraryUsageDescription": "Bold & Beyond needs photo library access to upload profile pictures",
+        "NSMicrophoneUsageDescription": "Bold & Beyond needs microphone access for video calls with therapists"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a5f4a"
+      },
+      "package": "com.boldandbeyond.app"
+    },
+    "extra": {
+      "eas": {
+        "projectId": ""
+      }
+    },
+    "owner": "sharyyoru"
+  }
+}
