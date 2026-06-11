@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.boldandbeyond.app",
-      "buildNumber": "1",
+      "buildNumber": "3",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "Bold & Beyond needs camera access for profile photos and wellness check-ins",
@@ -34,7 +34,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": ""
+        "projectId": "ad9755bc-992e-40e7-a99d-4195931f4acd"
       }
     },
     "owner": "sharyyoru"
