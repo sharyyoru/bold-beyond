@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Watch,
@@ -39,17 +39,17 @@ import {
   BarChart3,
   Clock,
   MessageSquare,
+  Download,
 } from "lucide-react";
 import { GlassCard, GlassContainer } from "@/components/ui/glass-card";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 
 // Timeline Data
 const developmentTimeline = [
   {
     phase: "Phase 1: Research & Concept",
-    duration: "Q1 2025 - Q2 2025",
-    status: "completed",
+    duration: "Jun 2026 - Sep 2026",
+    status: "in-progress",
     items: [
       "Market research and competitive analysis",
       "User persona development for UAE market",
@@ -60,8 +60,8 @@ const developmentTimeline = [
   },
   {
     phase: "Phase 2: Design & Prototyping",
-    duration: "Q3 2025 - Q4 2025",
-    status: "in-progress",
+    duration: "Oct 2026 - Jan 2027",
+    status: "upcoming",
     items: [
       "Industrial design finalization",
       "Hardware component selection and testing",
@@ -72,7 +72,7 @@ const developmentTimeline = [
   },
   {
     phase: "Phase 3: Development & Testing",
-    duration: "Q1 2026 - Q2 2026",
+    duration: "Feb 2027 - Jun 2027",
     status: "upcoming",
     items: [
       "Hardware manufacturing partnerships",
@@ -84,7 +84,7 @@ const developmentTimeline = [
   },
   {
     phase: "Phase 4: Production & Launch",
-    duration: "Q3 2026 - Q4 2026",
+    duration: "Jul 2027 - Dec 2027",
     status: "upcoming",
     items: [
       "Mass production initiation",
@@ -96,7 +96,7 @@ const developmentTimeline = [
   },
   {
     phase: "Phase 5: Scale & Expand",
-    duration: "2027 and Beyond",
+    duration: "2028 and Beyond",
     status: "upcoming",
     items: [
       "GCC market expansion",
@@ -383,10 +383,10 @@ const manufacturingAnalysis = {
     { product: "Bold Band Ultra", manufacturing: "$22.00", packaging: "$4.00", shipping: "$1.20", total: "$27.20", retail: "AED 1,299", margin: "76%" },
   ],
   orderPlan: [
-    { phase: "Pilot Batch", quantity: 1000, timeline: "Q3 2025", investment: "AED 75,000" },
-    { phase: "Initial Launch", quantity: 5000, timeline: "Q4 2025", investment: "AED 320,000" },
-    { phase: "Scale Production", quantity: 25000, timeline: "Q1-Q2 2026", investment: "AED 1,400,000" },
-    { phase: "Mass Production", quantity: 100000, timeline: "Q3-Q4 2026", investment: "AED 4,800,000" },
+    { phase: "Pilot Batch", quantity: 1000, timeline: "Q4 2026", investment: "AED 75,000" },
+    { phase: "Initial Launch", quantity: 5000, timeline: "Q1 2027", investment: "AED 320,000" },
+    { phase: "Scale Production", quantity: 25000, timeline: "Q2-Q3 2027", investment: "AED 1,400,000" },
+    { phase: "Mass Production", quantity: 100000, timeline: "Q4 2027 - Q1 2028", investment: "AED 4,800,000" },
   ],
 };
 
@@ -394,7 +394,7 @@ const manufacturingAnalysis = {
 const marketingBudget = {
   phases: [
     {
-      phase: "Pre-Launch (Q1-Q2 2026)",
+      phase: "Pre-Launch (Q1-Q2 2027)",
       budget: "AED 500,000",
       activities: [
         { item: "Social Media Setup & Content", cost: "AED 120,000" },
@@ -404,7 +404,7 @@ const marketingBudget = {
       ],
     },
     {
-      phase: "Launch (Q3-Q4 2026)",
+      phase: "Launch (Q3-Q4 2027)",
       budget: "AED 1,000,000",
       activities: [
         { item: "Digital Advertising (Meta, Google, TikTok)", cost: "AED 400,000" },
@@ -415,7 +415,7 @@ const marketingBudget = {
       ],
     },
     {
-      phase: "Growth (2027)",
+      phase: "Growth (2028)",
       budget: "AED 1,500,000",
       activities: [
         { item: "Performance Marketing", cost: "AED 700,000" },
@@ -432,7 +432,7 @@ const marketingBudget = {
 const teamStructure = {
   phases: [
     {
-      phase: "Phase 1: Foundation (2025)",
+      phase: "Phase 1: Foundation (2026)",
       headcount: 4,
       monthlyBurn: "AED 27,000",
       annualCost: "AED 324,000",
@@ -444,7 +444,7 @@ const teamStructure = {
       ],
     },
     {
-      phase: "Phase 2: Launch (2026)",
+      phase: "Phase 2: Launch (2027)",
       headcount: 6,
       monthlyBurn: "AED 67,000",
       annualCost: "AED 804,000",
@@ -458,7 +458,7 @@ const teamStructure = {
       ],
     },
     {
-      phase: "Phase 3: Scale (2027-2028)",
+      phase: "Phase 3: Scale (2028-2029)",
       headcount: 10,
       monthlyBurn: "AED 125,000",
       annualCost: "AED 1,500,000",
@@ -500,11 +500,11 @@ const salesSupport = {
 
 // Financial Projections
 const financialProjections = [
-  { year: "2025", revenue: 0, users: 0, investment: 5 },
-  { year: "2026", revenue: 8, users: 25000, investment: 15 },
-  { year: "2027", revenue: 45, users: 150000, investment: 10 },
-  { year: "2028", revenue: 120, users: 400000, investment: 5 },
-  { year: "2029", revenue: 250, users: 800000, investment: 0 },
+  { year: "2026", revenue: 0, users: 0, investment: 5 },
+  { year: "2027", revenue: 8, users: 25000, investment: 15 },
+  { year: "2028", revenue: 45, users: 150000, investment: 10 },
+  { year: "2029", revenue: 120, users: 400000, investment: 5 },
+  { year: "2030", revenue: 250, users: 800000, investment: 0 },
 ];
 
 export default function BusinessPlanPage() {
@@ -512,9 +512,690 @@ export default function BusinessPlanPage() {
   const [activeCompetitor, setActiveCompetitor] = useState<number | null>(null);
   const [expandedInitiative, setExpandedInitiative] = useState<number | null>(null);
   const [showCodeDetails, setShowCodeDetails] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const exportToPDF = useCallback(async () => {
+    setIsExporting(true);
+    try {
+      const { default: jsPDF } = await import("jspdf");
+      const { default: autoTable } = await import("jspdf-autotable");
+      
+      const doc = new jsPDF("p", "mm", "a4");
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const margin = 20;
+      const contentWidth = pageWidth - margin * 2;
+      
+      // Brand colors
+      const brandNavy: [number, number, number] = [15, 30, 55];
+      const brandSea: [number, number, number] = [91, 181, 176];
+      const brandGold: [number, number, number] = [212, 175, 55];
+      const white: [number, number, number] = [255, 255, 255];
+      const lightGray: [number, number, number] = [245, 247, 250];
+      const gray: [number, number, number] = [100, 116, 139];
+
+      // Load logo image
+      let logoDataUrl: string | null = null;
+      try {
+        const logoImg = new Image();
+        logoImg.crossOrigin = "anonymous";
+        await new Promise<void>((resolve, reject) => {
+          logoImg.onload = () => resolve();
+          logoImg.onerror = () => reject();
+          logoImg.src = "/new-assets/bnb-white.png";
+        });
+        const canvas = document.createElement("canvas");
+        canvas.width = logoImg.width;
+        canvas.height = logoImg.height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(logoImg, 0, 0);
+          logoDataUrl = canvas.toDataURL("image/png");
+        }
+      } catch (e) {
+        console.warn("Could not load logo for PDF");
+      }
+
+      // Helper to draw header on each page
+      const drawPageHeader = (pageNum: number) => {
+        // Top brand bar
+        doc.setFillColor(...brandNavy);
+        doc.rect(0, 0, pageWidth, 12, "F");
+        doc.setFillColor(...brandSea);
+        doc.rect(0, 12, pageWidth, 2, "F");
+        
+        // Logo in header
+        if (logoDataUrl) {
+          doc.addImage(logoDataUrl, "PNG", margin, 2, 8, 8);
+          doc.setFontSize(8);
+          doc.setTextColor(...white);
+          doc.text("BOLD & BEYOND", margin + 10, 8);
+        } else {
+          doc.setFontSize(8);
+          doc.setTextColor(...white);
+          doc.text("BOLD & BEYOND", margin, 8);
+        }
+        doc.setFontSize(8);
+        doc.setTextColor(...white);
+        doc.text("Confidential Business Plan", pageWidth - margin, 8, { align: "right" });
+        
+        // Footer
+        doc.setFillColor(...lightGray);
+        doc.rect(0, pageHeight - 12, pageWidth, 12, "F");
+        doc.setFontSize(7);
+        doc.setTextColor(...gray);
+        doc.text(`© 2026 Bold & Beyond. All rights reserved.`, margin, pageHeight - 5);
+        doc.text(`Page ${pageNum}`, pageWidth - margin, pageHeight - 5, { align: "right" });
+      };
+
+      let currentPage = 1;
+      
+      // ============ COVER PAGE ============
+      // Full navy background
+      doc.setFillColor(...brandNavy);
+      doc.rect(0, 0, pageWidth, pageHeight, "F");
+      
+      // Decorative sea accent
+      doc.setFillColor(...brandSea);
+      doc.rect(0, pageHeight * 0.65, pageWidth, 3, "F");
+      
+      // Gold accent line
+      doc.setFillColor(...brandGold);
+      doc.rect(margin, 60, 40, 1.5, "F");
+      
+      // Logo on cover page
+      if (logoDataUrl) {
+        doc.addImage(logoDataUrl, "PNG", margin, 30, 24, 24);
+      } else {
+        doc.setFontSize(10);
+        doc.setTextColor(...brandSea);
+        doc.text("BOLD & BEYOND", margin, 50);
+      }
+      
+      // Title
+      doc.setFontSize(42);
+      doc.setTextColor(...white);
+      doc.text("Business", margin, 85);
+      doc.text("Plan", margin, 103);
+      
+      // Subtitle with sea color
+      doc.setFontSize(18);
+      doc.setTextColor(...brandSea);
+      doc.text("Smart Wellness Wearables", margin, 120);
+      
+      // Year
+      doc.setFontSize(14);
+      doc.setTextColor(...brandGold);
+      doc.text("2026 — 2030", margin, 135);
+      
+      // Description
+      doc.setFontSize(11);
+      doc.setTextColor(180, 190, 210);
+      const coverDesc = doc.splitTextToSize(
+        "Pioneering the future of wellness technology in the UAE. Our smart bands combine cutting-edge health monitoring with the Bold & Beyond ecosystem to create a comprehensive wellness experience.",
+        contentWidth * 0.7
+      );
+      doc.text(coverDesc, margin, 155);
+      
+      // Bottom info
+      doc.setFontSize(9);
+      doc.setTextColor(140, 150, 170);
+      doc.text("Prepared by Bold & Beyond", margin, pageHeight - 40);
+      doc.text("United Arab Emirates", margin, pageHeight - 33);
+      doc.text("June 2026", margin, pageHeight - 26);
+      doc.text("CONFIDENTIAL", pageWidth - margin, pageHeight - 26, { align: "right" });
+
+      // ============ TABLE OF CONTENTS ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      let y = 25;
+      doc.setFontSize(24);
+      doc.setTextColor(...brandNavy);
+      doc.text("Table of Contents", margin, y);
+      y += 15;
+      
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y - 3, 30, 1, "F");
+      y += 10;
+      
+      const tocItems = [
+        { title: "Executive Summary", page: "3" },
+        { title: "Development Timeline", page: "4" },
+        { title: "Product Lineup & Pricing", page: "5" },
+        { title: "Competitive Landscape", page: "6" },
+        { title: "UAE Government Alignment", page: "7" },
+        { title: "Technical Architecture", page: "8" },
+        { title: "Manufacturing & Supply Chain", page: "9" },
+        { title: "Marketing Budget", page: "10" },
+        { title: "Team & Manpower", page: "11" },
+        { title: "Sales & Support", page: "12" },
+        { title: "Financial Projections", page: "13" },
+      ];
+      
+      tocItems.forEach((item, index) => {
+        doc.setFontSize(11);
+        doc.setTextColor(...brandNavy);
+        doc.text(`${(index + 1).toString().padStart(2, "0")}`, margin, y);
+        doc.text(item.title, margin + 12, y);
+        
+        // Dotted line
+        doc.setDrawColor(200, 200, 200);
+        doc.setLineDashPattern([1, 1], 0);
+        const textWidth = doc.getTextWidth(item.title);
+        doc.line(margin + 14 + textWidth, y - 1, pageWidth - margin - 10, y - 1);
+        doc.setLineDashPattern([], 0);
+        
+        doc.setTextColor(...brandSea);
+        doc.text(item.page, pageWidth - margin, y, { align: "right" });
+        y += 10;
+      });
+
+      // ============ EXECUTIVE SUMMARY ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("Executive Summary", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 12;
+      
+      doc.setFontSize(10);
+      doc.setTextColor(60, 60, 80);
+      const execSummary = doc.splitTextToSize(
+        "Bold & Beyond is expanding into the wearable technology market with a line of smart wellness bands designed specifically for the UAE and GCC markets. Our products integrate seamlessly with our existing wellness platform, providing users with a holistic approach to mental and physical health.",
+        contentWidth
+      );
+      doc.text(execSummary, margin, y);
+      y += execSummary.length * 5 + 5;
+      
+      const execSummary2 = doc.splitTextToSize(
+        "With the UAE's strong government support for healthtech initiatives and a tech-savvy population of 10+ million, we are positioned to capture significant market share in the growing AED 2.5 billion wearables market.",
+        contentWidth
+      );
+      doc.text(execSummary2, margin, y);
+      y += execSummary2.length * 5 + 15;
+      
+      // Key metrics boxes
+      const metrics = [
+        { label: "Target Market", value: "10M+ UAE residents" },
+        { label: "Market Growth", value: "18% CAGR" },
+        { label: "Year 1 Users", value: "25,000" },
+        { label: "Year 3 Revenue", value: "AED 120M" },
+      ];
+      
+      const boxWidth = (contentWidth - 15) / 4;
+      metrics.forEach((metric, i) => {
+        const x = margin + i * (boxWidth + 5);
+        doc.setFillColor(...lightGray);
+        doc.roundedRect(x, y, boxWidth, 25, 3, 3, "F");
+        doc.setFontSize(8);
+        doc.setTextColor(...gray);
+        doc.text(metric.label, x + boxWidth / 2, y + 9, { align: "center" });
+        doc.setFontSize(11);
+        doc.setTextColor(...brandNavy);
+        doc.text(metric.value, x + boxWidth / 2, y + 18, { align: "center" });
+      });
+
+      // ============ DEVELOPMENT TIMELINE ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("Development Timeline", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 15;
+      
+      developmentTimeline.forEach((phase, index) => {
+        // Phase card
+        doc.setFillColor(index === 0 ? 230 : 248, index === 0 ? 245 : 250, index === 0 ? 243 : 252);
+        doc.roundedRect(margin, y, contentWidth, 40, 3, 3, "F");
+        
+        // Status indicator
+        const statusColor: [number, number, number] = phase.status === "in-progress" ? brandSea : [200, 200, 200];
+        doc.setFillColor(...statusColor);
+        doc.circle(margin + 6, y + 8, 3, "F");
+        
+        doc.setFontSize(11);
+        doc.setTextColor(...brandNavy);
+        doc.text(phase.phase, margin + 14, y + 10);
+        
+        doc.setFontSize(9);
+        doc.setTextColor(...brandSea);
+        doc.text(phase.duration, margin + 14, y + 18);
+        
+        doc.setFontSize(8);
+        doc.setTextColor(...gray);
+        const itemsText = phase.items.slice(0, 3).join(" • ");
+        const wrappedItems = doc.splitTextToSize(itemsText, contentWidth - 20);
+        doc.text(wrappedItems, margin + 14, y + 26);
+        
+        y += 45;
+      });
+
+      // ============ PRODUCT LINEUP ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("Product Lineup & Pricing", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 15;
+      
+      const productColWidth = (contentWidth - 10) / 3;
+      products.forEach((product, index) => {
+        const x = margin + index * (productColWidth + 5);
+        
+        // Card background
+        doc.setFillColor(index === 1 ? 240 : 248, index === 1 ? 250 : 250, index === 1 ? 248 : 252);
+        doc.roundedRect(x, y, productColWidth, 100, 3, 3, "F");
+        
+        if (index === 1) {
+          doc.setFillColor(...brandSea);
+          doc.roundedRect(x, y, productColWidth, 4, 3, 3, "F");
+        }
+        
+        doc.setFontSize(10);
+        doc.setTextColor(...brandNavy);
+        doc.text(product.name, x + 5, y + 14);
+        
+        doc.setFontSize(8);
+        doc.setTextColor(...gray);
+        doc.text(product.tagline, x + 5, y + 22);
+        
+        doc.setFontSize(14);
+        doc.setTextColor(...brandNavy);
+        doc.text(product.price, x + 5, y + 35);
+        
+        doc.setFontSize(7);
+        doc.setTextColor(...gray);
+        product.features.slice(0, 6).forEach((feature, fi) => {
+          doc.text(`• ${feature}`, x + 5, y + 45 + fi * 8);
+        });
+      });
+
+      // ============ COMPETITIVE LANDSCAPE ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("Competitive Landscape", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 12;
+      
+      autoTable(doc, {
+        startY: y,
+        head: [["Competitor", "Company", "Price Range", "Market Share"]],
+        body: competitors.map(c => [c.name, c.company, c.price, c.marketShare]),
+        theme: "grid",
+        headStyles: { fillColor: brandNavy, fontSize: 9, textColor: white },
+        bodyStyles: { fontSize: 8, textColor: [40, 40, 60] },
+        alternateRowStyles: { fillColor: lightGray },
+        margin: { left: margin, right: margin },
+      });
+
+      // ============ GOVERNMENT ALIGNMENT ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("UAE Government Alignment", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 15;
+      
+      governmentInitiatives.forEach((initiative) => {
+        doc.setFillColor(...lightGray);
+        doc.roundedRect(margin, y, contentWidth, 22, 2, 2, "F");
+        
+        doc.setFontSize(10);
+        doc.setTextColor(...brandNavy);
+        doc.text(initiative.name, margin + 5, y + 8);
+        
+        doc.setFontSize(8);
+        doc.setTextColor(...gray);
+        const alignText = doc.splitTextToSize(initiative.alignment, contentWidth - 10);
+        doc.text(alignText[0], margin + 5, y + 16);
+        
+        y += 26;
+      });
+
+      // ============ TECHNICAL ARCHITECTURE ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("Technical Architecture", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 15;
+      
+      const archColWidth = (contentWidth - 15) / 4;
+      codeArchitecture.forEach((layer, index) => {
+        const x = margin + index * (archColWidth + 5);
+        doc.setFillColor(...lightGray);
+        doc.roundedRect(x, y, archColWidth, 65, 3, 3, "F");
+        
+        doc.setFontSize(9);
+        doc.setTextColor(...brandNavy);
+        doc.text(layer.layer, x + 3, y + 10);
+        
+        doc.setFontSize(7);
+        doc.setTextColor(...brandSea);
+        doc.text(layer.tech, x + 3, y + 18);
+        
+        doc.setFontSize(7);
+        doc.setTextColor(...gray);
+        layer.components.forEach((comp, ci) => {
+          doc.text(`• ${comp}`, x + 3, y + 28 + ci * 7);
+        });
+      });
+
+      // ============ MANUFACTURING & SUPPLY CHAIN ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("Manufacturing & Supply Chain", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 12;
+      
+      // Unit Cost Table
+      doc.setFontSize(12);
+      doc.setTextColor(...brandNavy);
+      doc.text("Unit Cost Analysis", margin, y);
+      y += 5;
+      
+      autoTable(doc, {
+        startY: y,
+        head: [["Product", "Manufacturing", "Packaging", "Shipping", "Total Cost", "Retail", "Margin"]],
+        body: manufacturingAnalysis.unitCosts.map(c => [c.product, c.manufacturing, c.packaging, c.shipping, c.total, c.retail, c.margin]),
+        theme: "grid",
+        headStyles: { fillColor: brandNavy, fontSize: 8, textColor: white },
+        bodyStyles: { fontSize: 8, textColor: [40, 40, 60] },
+        alternateRowStyles: { fillColor: lightGray },
+        margin: { left: margin, right: margin },
+      });
+      
+      y = (doc as any).lastAutoTable.finalY + 15;
+      
+      // Order Plan
+      doc.setFontSize(12);
+      doc.setTextColor(...brandNavy);
+      doc.text("Production Order Plan", margin, y);
+      y += 5;
+      
+      autoTable(doc, {
+        startY: y,
+        head: [["Phase", "Quantity", "Timeline", "Investment"]],
+        body: manufacturingAnalysis.orderPlan.map(p => [p.phase, p.quantity.toLocaleString(), p.timeline, p.investment]),
+        theme: "grid",
+        headStyles: { fillColor: brandSea, fontSize: 9, textColor: white },
+        bodyStyles: { fontSize: 9, textColor: [40, 40, 60] },
+        alternateRowStyles: { fillColor: lightGray },
+        margin: { left: margin, right: margin },
+      });
+
+      // ============ MARKETING BUDGET ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("Marketing Budget", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 15;
+      
+      marketingBudget.phases.forEach((phase) => {
+        doc.setFontSize(11);
+        doc.setTextColor(...brandNavy);
+        doc.text(`${phase.phase} — ${phase.budget}`, margin, y);
+        y += 7;
+        
+        phase.activities.forEach((activity) => {
+          doc.setFontSize(9);
+          doc.setTextColor(...gray);
+          doc.text(`• ${activity.item}`, margin + 5, y);
+          doc.text(activity.cost, pageWidth - margin, y, { align: "right" });
+          y += 6;
+        });
+        y += 8;
+      });
+      
+      // Total
+      doc.setFillColor(...brandNavy);
+      doc.roundedRect(margin, y, contentWidth, 20, 3, 3, "F");
+      doc.setFontSize(12);
+      doc.setTextColor(...white);
+      doc.text("Total Marketing Investment", margin + 10, y + 13);
+      doc.setTextColor(...brandGold);
+      doc.text(marketingBudget.totalBudget, pageWidth - margin - 10, y + 13, { align: "right" });
+
+      // ============ TEAM & MANPOWER ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("Team & Manpower", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 15;
+      
+      teamStructure.phases.forEach((phase) => {
+        doc.setFontSize(11);
+        doc.setTextColor(...brandNavy);
+        doc.text(`${phase.phase} — ${phase.headcount} people`, margin, y);
+        doc.setFontSize(9);
+        doc.setTextColor(...brandSea);
+        doc.text(`Monthly: ${phase.monthlyBurn} | Annual: ${phase.annualCost}`, margin, y + 6);
+        y += 12;
+        
+        phase.roles.forEach((role) => {
+          doc.setFontSize(8);
+          doc.setTextColor(...gray);
+          doc.text(`${role.count}x ${role.role}`, margin + 5, y);
+          doc.text(`${role.salary}/mo`, pageWidth - margin, y, { align: "right" });
+          y += 5;
+        });
+        y += 10;
+      });
+
+      // ============ SALES & SUPPORT ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("Sales & Support", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 12;
+      
+      doc.setFontSize(12);
+      doc.setTextColor(...brandNavy);
+      doc.text("Sales Channels", margin, y);
+      y += 5;
+      
+      autoTable(doc, {
+        startY: y,
+        head: [["Channel", "Commission", "Revenue Target"]],
+        body: salesSupport.salesChannels.map(c => [c.channel, c.commission, c.target]),
+        theme: "grid",
+        headStyles: { fillColor: brandNavy, fontSize: 9, textColor: white },
+        bodyStyles: { fontSize: 9, textColor: [40, 40, 60] },
+        alternateRowStyles: { fillColor: lightGray },
+        margin: { left: margin, right: margin },
+      });
+      
+      y = (doc as any).lastAutoTable.finalY + 15;
+      
+      doc.setFontSize(12);
+      doc.setTextColor(...brandNavy);
+      doc.text("Support Structure", margin, y);
+      y += 5;
+      
+      autoTable(doc, {
+        startY: y,
+        head: [["Tier", "Response Time", "Staff", "Cost"]],
+        body: salesSupport.supportStructure.map(t => [t.tier, t.response, t.staff.toString(), t.cost]),
+        theme: "grid",
+        headStyles: { fillColor: brandSea, fontSize: 9, textColor: white },
+        bodyStyles: { fontSize: 9, textColor: [40, 40, 60] },
+        alternateRowStyles: { fillColor: lightGray },
+        margin: { left: margin, right: margin },
+      });
+
+      // ============ FINANCIAL PROJECTIONS ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("Financial Projections", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 15;
+      
+      // Chart - Revenue bars
+      const chartX = margin + 10;
+      const chartWidth = contentWidth - 20;
+      const chartHeight = 80;
+      const barWidth = chartWidth / financialProjections.length - 10;
+      
+      // Chart background
+      doc.setFillColor(...lightGray);
+      doc.roundedRect(margin, y - 5, contentWidth, chartHeight + 30, 3, 3, "F");
+      
+      // Draw bars
+      financialProjections.forEach((proj, index) => {
+        const barHeight = (proj.revenue / 250) * chartHeight;
+        const bx = chartX + index * (barWidth + 10) + 5;
+        const by = y + chartHeight - barHeight;
+        
+        // Bar gradient effect (solid sea color)
+        doc.setFillColor(...brandSea);
+        if (barHeight > 0) {
+          doc.roundedRect(bx, by, barWidth, barHeight, 2, 2, "F");
+        }
+        
+        // Value label
+        doc.setFontSize(9);
+        doc.setTextColor(...brandNavy);
+        if (proj.revenue > 0) {
+          doc.text(`${proj.revenue}M`, bx + barWidth / 2, by - 3, { align: "center" });
+        }
+        
+        // Year label
+        doc.setFontSize(9);
+        doc.setTextColor(...gray);
+        doc.text(proj.year, bx + barWidth / 2, y + chartHeight + 10, { align: "center" });
+        doc.setFontSize(7);
+        doc.text(`${proj.users.toLocaleString()} users`, bx + barWidth / 2, y + chartHeight + 17, { align: "center" });
+      });
+      
+      y += chartHeight + 40;
+      
+      // Key Metrics
+      const keyMetrics = [
+        { label: "Total Investment", value: "AED 35M" },
+        { label: "Break-even", value: "Q2 2029" },
+        { label: "5-Year Revenue", value: "AED 423M" },
+        { label: "Target Valuation (2030)", value: "AED 500M" },
+      ];
+      
+      const metricBoxWidth = (contentWidth - 15) / 4;
+      keyMetrics.forEach((metric, i) => {
+        const x = margin + i * (metricBoxWidth + 5);
+        doc.setFillColor(...brandNavy);
+        doc.roundedRect(x, y, metricBoxWidth, 22, 3, 3, "F");
+        doc.setFontSize(7);
+        doc.setTextColor(180, 190, 210);
+        doc.text(metric.label, x + metricBoxWidth / 2, y + 8, { align: "center" });
+        doc.setFontSize(11);
+        doc.setTextColor(...brandGold);
+        doc.text(metric.value, x + metricBoxWidth / 2, y + 17, { align: "center" });
+      });
+
+      // Save
+      doc.save("Bold_and_Beyond_Business_Plan_2026-2030.pdf");
+    } catch (error) {
+      console.error("PDF export error:", error);
+    } finally {
+      setIsExporting(false);
+    }
+  }, []);
 
   return (
     <GlassContainer gradient="sea" className="pb-20">
+      {/* Export PDF Button - Fixed */}
+      <div className="fixed top-4 right-4 z-50">
+        <button
+          onClick={exportToPDF}
+          disabled={isExporting}
+          className="flex items-center gap-2 bg-brand-navy text-white px-5 py-3 rounded-full font-medium shadow-lg hover:bg-brand-navy/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isExporting ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span>Generating...</span>
+            </>
+          ) : (
+            <>
+              <Download className="h-4 w-4" />
+              <span>Export PDF</span>
+            </>
+          )}
+        </button>
+      </div>
+
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center">
         <div className="container mx-auto px-4 py-20">
@@ -527,7 +1208,7 @@ export default function BusinessPlanPage() {
             <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
               <Watch className="h-5 w-5 text-brand-navy" />
               <span className="text-sm font-medium text-brand-navy">
-                Business Plan 2025-2029
+                Business Plan 2026-2030
               </span>
             </div>
             
@@ -542,20 +1223,6 @@ export default function BusinessPlanPage() {
               to create a comprehensive wellness experience.
             </p>
 
-            <div className="flex flex-wrap justify-center gap-4">
-              <a
-                href="#timeline"
-                className="inline-flex items-center gap-2 bg-brand-navy text-white px-6 py-3 rounded-full font-medium hover:bg-brand-navy/90 transition-all"
-              >
-                View Timeline <ChevronRight className="h-4 w-4" />
-              </a>
-              <a
-                href="#products"
-                className="inline-flex items-center gap-2 bg-white/80 text-brand-navy px-6 py-3 rounded-full font-medium hover:bg-white transition-all"
-              >
-                Explore Products
-              </a>
-            </div>
           </motion.div>
         </div>
 
@@ -820,16 +1487,6 @@ export default function BusinessPlanPage() {
                   ))}
                 </ul>
 
-                <button
-                  className={cn(
-                    "mt-6 w-full py-3 rounded-full font-medium transition-all",
-                    product.popular
-                      ? "bg-brand-navy text-white hover:bg-brand-navy/90"
-                      : "bg-white/80 text-brand-navy hover:bg-white"
-                  )}
-                >
-                  Pre-order Now
-                </button>
               </GlassCard>
             </motion.div>
           ))}
@@ -1455,7 +2112,7 @@ export class HealthSyncService {
         </div>
 
         <GlassCard className="p-6 text-center bg-gradient-to-r from-purple-50 to-pink-50">
-          <p className="text-gray-600 mb-2">Total Marketing Investment (2025-2027)</p>
+          <p className="text-gray-600 mb-2">Total Marketing Investment (2027-2028)</p>
           <p className="text-3xl font-bold text-purple-600">{marketingBudget.totalBudget}</p>
         </GlassCard>
       </section>
@@ -1635,7 +2292,7 @@ export class HealthSyncService {
             Financial Projections
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            5-year growth trajectory (in millions AED)
+            5-year growth trajectory from 2026-2030 (in millions AED)
           </p>
         </div>
 
@@ -1685,9 +2342,9 @@ export class HealthSyncService {
           <div className="grid md:grid-cols-4 gap-4 pt-6 border-t border-gray-200">
             {[
               { label: "Total Investment Needed", value: "AED 35M", icon: DollarSign },
-              { label: "Break-even", value: "Q2 2028", icon: TrendingUp },
+              { label: "Break-even", value: "Q2 2029", icon: TrendingUp },
               { label: "5-Year Revenue", value: "AED 423M", icon: Award },
-              { label: "Target Valuation (2029)", value: "AED 500M", icon: Rocket },
+              { label: "Target Valuation (2030)", value: "AED 500M", icon: Rocket },
             ].map((metric, index) => (
               <div key={index} className="text-center">
                 <metric.icon className="h-6 w-6 text-palette-sea mx-auto mb-2" />
@@ -1699,35 +2356,11 @@ export class HealthSyncService {
         </GlassCard>
       </section>
 
-      {/* Call to Action */}
-      <section className="container mx-auto px-4 py-16">
-        <GlassCard className="p-8 md:p-12 text-center bg-gradient-to-br from-brand-navy/90 to-palette-sea/90">
-          <h2 className="text-2xl md:text-3xl font-display font-bold text-white mb-4">
-            Join the Bold & Beyond Journey
-          </h2>
-          <p className="text-white/80 max-w-2xl mx-auto mb-8">
-            We are seeking strategic investors and partners to bring Bold Band 
-            to the UAE market. Be part of the wellness revolution.
-          </p>
-          
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 bg-white text-brand-navy px-8 py-3 rounded-full font-medium hover:bg-white/90 transition-all"
-            >
-              Contact Us <ChevronRight className="h-4 w-4" />
-            </Link>
-            <button className="inline-flex items-center gap-2 bg-white/20 text-white border border-white/30 px-8 py-3 rounded-full font-medium hover:bg-white/30 transition-all">
-              Download Full Business Plan
-            </button>
-          </div>
-        </GlassCard>
-      </section>
 
       {/* Footer */}
       <footer className="container mx-auto px-4 py-8 text-center">
         <p className="text-sm text-gray-600">
-          © 2025 Bold & Beyond. Confidential Business Plan.
+          © 2026 Bold & Beyond. Confidential Business Plan.
         </p>
         <p className="text-xs text-gray-500 mt-2">
           This document contains proprietary information. Distribution is restricted.

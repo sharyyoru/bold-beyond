@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, ActivityIndicator, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Platform, ActivityIndicator, View, Text } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useState, useRef } from 'react';
 
@@ -7,7 +7,20 @@ const APP_URL = 'https://bold-beyond.vercel.app/appx';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const webViewRef = useRef(null);
+
+  const handleError = (syntheticEvent) => {
+    const { nativeEvent } = syntheticEvent;
+    console.error('WebView error:', nativeEvent);
+    setError(nativeEvent.description || 'Failed to load app');
+    setLoading(false);
+  };
+
+  const handleHttpError = (syntheticEvent) => {
+    const { nativeEvent } = syntheticEvent;
+    console.error('HTTP error:', nativeEvent);
+  };
 
   const handleNavigationStateChange = (navState) => {
     // Track navigation if needed
@@ -37,25 +50,37 @@ export default function App() {
         </View>
       )}
       
-      <WebView
-        ref={webViewRef}
-        source={{ uri: APP_URL }}
-        style={styles.webview}
-        onLoadStart={() => setLoading(true)}
-        onLoadEnd={() => setLoading(false)}
-        onNavigationStateChange={handleNavigationStateChange}
-        onShouldStartLoadWithRequest={handleShouldStartLoadWithRequest}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        mediaPlaybackRequiresUserAction={false}
-        allowsInlineMediaPlayback={true}
-        allowsBackForwardNavigationGestures={true}
-        cacheEnabled={true}
-        pullToRefreshEnabled={true}
-        bounces={true}
-        scalesPageToFit={true}
-        userAgent="BoldAndBeyond/1.0 (iOS; Mobile)"
-      />
+      {error ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Unable to load app</Text>
+          <Text style={styles.errorDetail}>{error}</Text>
+        </View>
+      ) : (
+        <WebView
+          ref={webViewRef}
+          source={{ uri: APP_URL }}
+          style={styles.webview}
+          onLoadStart={() => setLoading(true)}
+          onLoadEnd={() => setLoading(false)}
+          onError={handleError}
+          onHttpError={handleHttpError}
+          onNavigationStateChange={handleNavigationStateChange}
+          onShouldStartLoadWithRequest={handleShouldStartLoadWithRequest}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          mediaPlaybackRequiresUserAction={false}
+          allowsInlineMediaPlayback={true}
+          allowsBackForwardNavigationGestures={true}
+          cacheEnabled={true}
+          startInLoadingState={true}
+          bounces={true}
+          mixedContentMode="compatibility"
+          userAgent={`BoldAndBeyond/1.0 (${Platform.OS}; Mobile)`}
+          allowFileAccess={true}
+          allowUniversalAccessFromFileURLs={true}
+          originWhitelist={['*']}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -63,7 +88,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
   },
   webview: {
     flex: 1,
@@ -76,7 +101,24 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     zIndex: 10,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#ef4444',
+    marginBottom: 10,
+  },
+  errorDetail: {
+    fontSize: 14,
+    color: '#64748b',
+    textAlign: 'center',
   },
 });

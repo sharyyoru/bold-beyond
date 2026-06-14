@@ -16,8 +16,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.boldandbeyond.app",
-      "buildNumber": "3",
+      "bundleIdentifier": "boldandbeyond001",
+      "buildNumber": "6",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "Bold & Beyond needs camera access for profile photos and wellness check-ins",
