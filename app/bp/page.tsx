@@ -536,6 +536,7 @@ export default function BusinessPlanPage() {
 
       // Load logo image
       let logoDataUrl: string | null = null;
+      let logoAspect = 1; // width / height
       try {
         const logoImg = new Image();
         logoImg.crossOrigin = "anonymous";
@@ -544,9 +545,12 @@ export default function BusinessPlanPage() {
           logoImg.onerror = () => reject();
           logoImg.src = "/new-assets/bnb-white.png";
         });
+        if (logoImg.naturalHeight > 0) {
+          logoAspect = logoImg.naturalWidth / logoImg.naturalHeight;
+        }
         const canvas = document.createElement("canvas");
-        canvas.width = logoImg.width;
-        canvas.height = logoImg.height;
+        canvas.width = logoImg.naturalWidth;
+        canvas.height = logoImg.naturalHeight;
         const ctx = canvas.getContext("2d");
         if (ctx) {
           ctx.drawImage(logoImg, 0, 0);
@@ -566,10 +570,12 @@ export default function BusinessPlanPage() {
         
         // Logo in header
         if (logoDataUrl) {
-          doc.addImage(logoDataUrl, "PNG", margin, 2, 8, 8);
+          const headerLogoHeight = 7;
+          const headerLogoWidth = headerLogoHeight * logoAspect;
+          doc.addImage(logoDataUrl, "PNG", margin, 2.5, headerLogoWidth, headerLogoHeight);
           doc.setFontSize(8);
           doc.setTextColor(...white);
-          doc.text("BOLD & BEYOND", margin + 10, 8);
+          doc.text("BOLD & BEYOND", margin + headerLogoWidth + 3, 8);
         } else {
           doc.setFontSize(8);
           doc.setTextColor(...white);
@@ -605,7 +611,9 @@ export default function BusinessPlanPage() {
       
       // Logo on cover page
       if (logoDataUrl) {
-        doc.addImage(logoDataUrl, "PNG", margin, 30, 24, 24);
+        const coverLogoHeight = 22;
+        const coverLogoWidth = coverLogoHeight * logoAspect;
+        doc.addImage(logoDataUrl, "PNG", margin, 30, coverLogoWidth, coverLogoHeight);
       } else {
         doc.setFontSize(10);
         doc.setTextColor(...brandSea);
