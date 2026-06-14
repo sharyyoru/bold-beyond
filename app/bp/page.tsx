@@ -507,6 +507,142 @@ const financialProjections = [
   { year: "2030", revenue: 250, users: 800000, investment: 0 },
 ];
 
+// Market Penetration & Sizing (grounded in 2026 market research)
+const marketSizing = [
+  { label: "Global Wearables (2026)", value: "USD 96.8B", note: "20.1% CAGR to 2035" },
+  { label: "MENA Wearables (2026)", value: "USD 4.3B", note: "Fastest-growing region" },
+  { label: "UAE Serviceable Market", value: "AED 2.5B", note: "10M+ connected residents" },
+  { label: "Target Share by 2030", value: "6–8%", note: "AED 150–200M revenue" },
+];
+
+// Phased Go-To-Market / Market Penetration Strategy
+const marketPenetration = [
+  {
+    step: "Phase 1 — Beachhead (D2C First)",
+    timeline: "Jul 2027 – Sep 2027",
+    objective: "Establish brand control, capture first-party data, and validate pricing through our owned store before paying marketplace fees.",
+    actions: [
+      "Launch boldandbeyond.com store with Bold Band Essential & Pro",
+      "Seed 2,000 units to existing Bold & Beyond app users (warm base)",
+      "Founder-led PR push + UAE tech media coverage",
+      "Collect reviews, refine messaging, and lock unit economics",
+    ],
+  },
+  {
+    step: "Phase 2 — Marketplace Expansion",
+    timeline: "Oct 2027 – Mar 2028",
+    objective: "Win discovery and trust by listing where UAE shoppers already buy electronics: Noon and Amazon.ae.",
+    actions: [
+      "List on Noon.com & Amazon.ae with FBN/FBA fulfilment",
+      "Optimise listings (A+ content, Arabic + English, sponsored ads)",
+      "Match D2C pricing; use marketplaces for reach, store for margin",
+      "Target top-10 ranking in 'fitness tracker' category",
+    ],
+  },
+  {
+    step: "Phase 3 — Retail & Telecom Distribution",
+    timeline: "Apr 2028 – Dec 2028",
+    objective: "Build physical presence and trust through trusted electronics retailers and telecom bundles.",
+    actions: [
+      "Secure shelf space at Sharaf DG & Virgin Megastore",
+      "Carrefour & Lulu Hypermarket placement for mass reach",
+      "du and e& (Etisalat) instalment & bundle deals",
+      "In-store demo units and trained brand ambassadors",
+    ],
+  },
+  {
+    step: "Phase 4 — Regional & Category Scale",
+    timeline: "2029 – 2030",
+    objective: "Expand across the GCC and grow share through new SKUs, B2B wellness, and ecosystem lock-in.",
+    actions: [
+      "Enter KSA (Noon SA, Amazon.sa) and Qatar markets",
+      "Launch corporate & insurer wellness programs (B2B2C)",
+      "Introduce Bold Band Ultra + accessories for higher AOV",
+      "Subscription wellness tier to drive recurring revenue",
+    ],
+  },
+];
+
+// Sales Platform Strategy
+const salesPlatforms = [
+  { name: "boldandbeyond.com (D2C)", type: "Owned", commission: "0%", margin: "70–76%", priority: "Primary", target: "45%", notes: "Highest margin, full data ownership, subscription upsell" },
+  { name: "Noon.com", type: "Marketplace", commission: "15%", margin: "55–60%", priority: "High", target: "18%", notes: "#1 regional marketplace; Fulfilled-by-Noon logistics" },
+  { name: "Amazon.ae", type: "Marketplace", commission: "15%", margin: "55–60%", priority: "High", target: "12%", notes: "Trusted reach; FBA Prime delivery + global expansion path" },
+  { name: "Sharaf DG / Virgin", type: "Retail", commission: "20%", margin: "48–52%", priority: "Medium", target: "10%", notes: "Premium electronics footfall, demo experience" },
+  { name: "Carrefour / Lulu", type: "Retail", commission: "22%", margin: "45–50%", priority: "Medium", target: "8%", notes: "Mass-market reach across UAE hypermarkets" },
+  { name: "du / e& Bundles", type: "Telecom", commission: "25%", margin: "42–48%", priority: "Medium", target: "5%", notes: "Instalment plans lower purchase friction" },
+  { name: "Instagram & TikTok Shop", type: "Social", commission: "8%", margin: "62–66%", priority: "Growth", target: "2%", notes: "Creator-driven impulse purchases, Gen-Z reach" },
+];
+
+// Marketing Strategy Pillars
+const marketingStrategy = [
+  {
+    pillar: "Performance Marketing",
+    icon: Target,
+    description: "Always-on paid acquisition across Meta, Google, TikTok and Snapchat, optimised to a target blended CAC of AED 90–120 and 3.5x+ ROAS.",
+    tactics: ["Meta & TikTok video ads", "Google Shopping & Search", "Retargeting & abandoned cart", "Marketplace sponsored ads"],
+  },
+  {
+    pillar: "Influencer & Creator",
+    icon: Users,
+    description: "Tiered creator program with UAE fitness, wellness and lifestyle voices — from nano-creators for authenticity to macro-influencers for reach.",
+    tactics: ["50+ nano/micro creators per quarter", "Flagship macro-influencer partners", "Affiliate / commission codes", "UGC content library"],
+  },
+  {
+    pillar: "Content & Community",
+    icon: MessageSquare,
+    description: "Build a wellness brand, not just a device. Owned content, the Bold & Beyond app community, and CRM nurture drive retention and word-of-mouth.",
+    tactics: ["Wellness blog & SEO", "Email & WhatsApp CRM flows", "In-app challenges & streaks", "Referral program"],
+  },
+  {
+    pillar: "Retail & Experiential",
+    icon: Building2,
+    description: "Bring the brand to life offline through mall activations, pop-ups and in-store demos that convert high-intent shoppers and build trust.",
+    tactics: ["Mall pop-ups (Dubai Mall, MoE)", "In-store demo stations", "Corporate wellness events", "PR & launch event"],
+  },
+];
+
+// Marketing Funnel
+const marketingFunnel = [
+  { stage: "Awareness", goal: "Reach 5M+ UAE residents", channels: "Paid social, influencers, PR", metric: "Impressions / CPM" },
+  { stage: "Consideration", goal: "Drive store & listing traffic", channels: "Search, retargeting, content", metric: "CTR / Sessions" },
+  { stage: "Conversion", goal: "Achieve 2.5–3.5% conversion", channels: "Offers, reviews, bundles", metric: "CAC / ROAS" },
+  { stage: "Retention", goal: "Build recurring engagement", channels: "App, CRM, subscription", metric: "LTV / Churn" },
+];
+
+// Inventory & Fulfilment Strategy
+const inventoryStrategy = {
+  overview: "We operate a lean, demand-driven inventory model — manufacturing in staged production runs and holding stock close to customers across owned, marketplace and 3PL warehouses to balance availability with cash efficiency.",
+  pillars: [
+    {
+      title: "Staged Manufacturing",
+      icon: Factory,
+      points: ["Pilot 1K → scale to 100K in tranches", "Re-order based on 8–10 week lead times", "Avoid over-committing capital early"],
+    },
+    {
+      title: "Central 3PL Hub (Dubai)",
+      icon: Package,
+      points: ["Bonded warehouse in JAFZA / Dubai South", "Single source of truth for stock", "Fast last-mile across UAE (24–48h)"],
+    },
+    {
+      title: "Marketplace Fulfilment",
+      icon: Truck,
+      points: ["Fulfilled-by-Noon (FBN) for Noon orders", "Amazon FBA for Prime delivery", "Buffer stock per channel to prevent stockouts"],
+    },
+    {
+      title: "Demand Planning",
+      icon: BarChart3,
+      points: ["Rolling 90-day demand forecast", "Safety stock = 6 weeks of sell-through", "Seasonal build-up before Ramadan & GITEX"],
+    },
+  ],
+  metrics: [
+    { metric: "Inventory Turnover", target: "6–8x / year" },
+    { metric: "Stockout Rate", target: "< 2%" },
+    { metric: "Days of Inventory", target: "45–60 days" },
+    { metric: "Sell-Through Rate", target: "> 85% / quarter" },
+  ],
+};
+
 export default function BusinessPlanPage() {
   const [activeTimeline, setActiveTimeline] = useState(1);
   const [activeCompetitor, setActiveCompetitor] = useState<number | null>(null);
@@ -679,7 +815,10 @@ export default function BusinessPlanPage() {
         { title: "Marketing Budget", page: "10" },
         { title: "Team & Manpower", page: "11" },
         { title: "Sales & Support", page: "12" },
-        { title: "Financial Projections", page: "13" },
+        { title: "Market Penetration & Go-To-Market", page: "13" },
+        { title: "Selling Across Platforms & Marketing", page: "14" },
+        { title: "Marketing Funnel & Inventory", page: "15" },
+        { title: "Financial Projections", page: "16" },
       ];
       
       tocItems.forEach((item, index) => {
@@ -1096,6 +1235,201 @@ export default function BusinessPlanPage() {
         bodyStyles: { fontSize: 9, textColor: [40, 40, 60] },
         alternateRowStyles: { fillColor: lightGray },
         margin: { left: margin, right: margin },
+      });
+
+      // ============ MARKET PENETRATION ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("Market Penetration & Go-To-Market", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 14;
+      
+      // Market sizing boxes
+      const sizeBoxWidth = (contentWidth - 15) / 4;
+      marketSizing.forEach((item, i) => {
+        const x = margin + i * (sizeBoxWidth + 5);
+        doc.setFillColor(...lightGray);
+        doc.roundedRect(x, y, sizeBoxWidth, 26, 3, 3, "F");
+        doc.setFontSize(6.5);
+        doc.setTextColor(...gray);
+        doc.text(doc.splitTextToSize(item.label, sizeBoxWidth - 4), x + sizeBoxWidth / 2, y + 7, { align: "center" });
+        doc.setFontSize(12);
+        doc.setTextColor(...brandSea);
+        doc.text(item.value, x + sizeBoxWidth / 2, y + 16, { align: "center" });
+        doc.setFontSize(6);
+        doc.setTextColor(...gray);
+        doc.text(doc.splitTextToSize(item.note, sizeBoxWidth - 4), x + sizeBoxWidth / 2, y + 22, { align: "center" });
+      });
+      y += 34;
+      
+      // Phased penetration strategy table
+      doc.setFontSize(12);
+      doc.setTextColor(...brandNavy);
+      doc.text("Phased Penetration Strategy", margin, y);
+      y += 4;
+      
+      autoTable(doc, {
+        startY: y,
+        head: [["Phase", "Timeline", "Objective & Key Actions"]],
+        body: marketPenetration.map(p => [
+          p.step,
+          p.timeline,
+          p.objective + "\n\nKey actions:\n• " + p.actions.join("\n• "),
+        ]),
+        theme: "grid",
+        headStyles: { fillColor: brandNavy, fontSize: 9, textColor: white },
+        bodyStyles: { fontSize: 7.5, textColor: [40, 40, 60], valign: "top" },
+        columnStyles: { 0: { cellWidth: 38, fontStyle: "bold" }, 1: { cellWidth: 28 } },
+        alternateRowStyles: { fillColor: lightGray },
+        margin: { left: margin, right: margin },
+      });
+
+      // ============ SELLING ACROSS PLATFORMS ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(22);
+      doc.setTextColor(...brandNavy);
+      doc.text("Selling Across Platforms", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 30, 1, "F");
+      y += 12;
+      
+      autoTable(doc, {
+        startY: y,
+        head: [["Platform", "Type", "Fee", "Net Margin", "Mix", "Role"]],
+        body: salesPlatforms.map(p => [p.name, p.type, p.commission, p.margin, p.target, p.notes]),
+        theme: "grid",
+        headStyles: { fillColor: brandNavy, fontSize: 8, textColor: white },
+        bodyStyles: { fontSize: 7.5, textColor: [40, 40, 60] },
+        columnStyles: { 5: { cellWidth: 45 } },
+        alternateRowStyles: { fillColor: lightGray },
+        margin: { left: margin, right: margin },
+      });
+      
+      y = (doc as any).lastAutoTable.finalY + 14;
+      
+      // Marketing Strategy
+      doc.setFontSize(16);
+      doc.setTextColor(...brandNavy);
+      doc.text("Marketing Strategy", margin, y);
+      y += 4;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 24, 0.8, "F");
+      y += 8;
+      
+      doc.setFontSize(9);
+      doc.setTextColor(60, 60, 80);
+      const mktIntro = doc.splitTextToSize(
+        "A full-funnel, brand-led approach combining performance marketing for efficient acquisition with influencer, content and experiential channels that build a wellness brand customers trust and stay loyal to.",
+        contentWidth
+      );
+      doc.text(mktIntro, margin, y);
+      y += mktIntro.length * 4.5 + 4;
+      
+      const pillarColWidth = (contentWidth - 5) / 2;
+      marketingStrategy.forEach((pillar, i) => {
+        const col = i % 2;
+        const row = Math.floor(i / 2);
+        const x = margin + col * (pillarColWidth + 5);
+        const py = y + row * 38;
+        doc.setFillColor(...lightGray);
+        doc.roundedRect(x, py, pillarColWidth, 34, 3, 3, "F");
+        doc.setFontSize(9.5);
+        doc.setTextColor(...brandNavy);
+        doc.text(pillar.pillar, x + 4, py + 7);
+        doc.setFontSize(7);
+        doc.setTextColor(...gray);
+        const desc = doc.splitTextToSize(pillar.description, pillarColWidth - 8);
+        doc.text(desc.slice(0, 4), x + 4, py + 13);
+        doc.setFontSize(6.5);
+        doc.setTextColor(...brandSea);
+        doc.text(doc.splitTextToSize(pillar.tactics.join("  •  "), pillarColWidth - 8), x + 4, py + 30);
+      });
+
+      // ============ MARKETING FUNNEL & INVENTORY ============
+      doc.addPage();
+      currentPage++;
+      drawPageHeader(currentPage);
+      
+      y = 25;
+      doc.setFontSize(16);
+      doc.setTextColor(...brandNavy);
+      doc.text("Full-Funnel Marketing Approach", margin, y);
+      y += 5;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 24, 0.8, "F");
+      y += 10;
+      
+      autoTable(doc, {
+        startY: y,
+        head: [["Stage", "Goal", "Channels", "Key Metric"]],
+        body: marketingFunnel.map(f => [f.stage, f.goal, f.channels, f.metric]),
+        theme: "grid",
+        headStyles: { fillColor: brandSea, fontSize: 9, textColor: white },
+        bodyStyles: { fontSize: 8, textColor: [40, 40, 60] },
+        alternateRowStyles: { fillColor: lightGray },
+        margin: { left: margin, right: margin },
+      });
+      
+      y = (doc as any).lastAutoTable.finalY + 16;
+      
+      // Inventory & Fulfilment
+      doc.setFontSize(16);
+      doc.setTextColor(...brandNavy);
+      doc.text("Inventory & Fulfilment", margin, y);
+      y += 4;
+      doc.setFillColor(...brandSea);
+      doc.rect(margin, y, 24, 0.8, "F");
+      y += 8;
+      
+      doc.setFontSize(9);
+      doc.setTextColor(60, 60, 80);
+      const invIntro = doc.splitTextToSize(inventoryStrategy.overview, contentWidth);
+      doc.text(invIntro, margin, y);
+      y += invIntro.length * 4.5 + 4;
+      
+      const invColWidth = (contentWidth - 15) / 4;
+      inventoryStrategy.pillars.forEach((pillar, i) => {
+        const x = margin + i * (invColWidth + 5);
+        doc.setFillColor(...lightGray);
+        doc.roundedRect(x, y, invColWidth, 42, 3, 3, "F");
+        doc.setFontSize(8);
+        doc.setTextColor(...brandNavy);
+        doc.text(doc.splitTextToSize(pillar.title, invColWidth - 4), x + 3, y + 7);
+        doc.setFontSize(6.5);
+        doc.setTextColor(...gray);
+        let py = y + 16;
+        pillar.points.forEach((point) => {
+          const wrapped = doc.splitTextToSize(`• ${point}`, invColWidth - 6);
+          doc.text(wrapped, x + 3, py);
+          py += wrapped.length * 3.2 + 1.5;
+        });
+      });
+      y += 50;
+      
+      // Inventory KPIs
+      doc.setFillColor(...brandNavy);
+      doc.roundedRect(margin, y, contentWidth, 22, 3, 3, "F");
+      const invMetricWidth = contentWidth / 4;
+      inventoryStrategy.metrics.forEach((metric, i) => {
+        const x = margin + i * invMetricWidth;
+        doc.setFontSize(7);
+        doc.setTextColor(180, 190, 210);
+        doc.text(metric.metric, x + invMetricWidth / 2, y + 8, { align: "center" });
+        doc.setFontSize(11);
+        doc.setTextColor(...brandGold);
+        doc.text(metric.target, x + invMetricWidth / 2, y + 16, { align: "center" });
       });
 
       // ============ FINANCIAL PROJECTIONS ============
@@ -2286,6 +2620,229 @@ export class HealthSyncService {
                 <div key={i} className="text-center p-2 bg-gray-50 rounded-lg">
                   <p className="text-xs text-gray-500">{kpi.metric}</p>
                   <p className="text-sm font-bold text-brand-navy">{kpi.target}</p>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        </div>
+      </section>
+
+      {/* Market Penetration & Go-To-Market Section */}
+      <section id="market-penetration" className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-brand-navy mb-4">
+            Market Penetration & Go-To-Market
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            How we enter the UAE wearables market, scale across platforms, and capture share
+          </p>
+        </div>
+
+        {/* Market Sizing */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          {marketSizing.map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <GlassCard className="p-5 h-full text-center">
+                <p className="text-xs text-gray-500 mb-1">{item.label}</p>
+                <p className="text-2xl font-bold text-palette-sea mb-1">{item.value}</p>
+                <p className="text-xs text-gray-400">{item.note}</p>
+              </GlassCard>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Phased Penetration Strategy */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold text-brand-navy mb-6 flex items-center gap-3">
+            <Target className="h-6 w-6 text-palette-sea" />
+            Phased Penetration Strategy
+          </h3>
+          <div className="space-y-4">
+            {marketPenetration.map((phase, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <GlassCard className="p-6">
+                  <div className="flex flex-col md:flex-row md:items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-palette-sea to-palette-sky flex items-center justify-center">
+                        <span className="text-lg font-bold text-white">{index + 1}</span>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center gap-3 mb-2">
+                        <h4 className="font-bold text-brand-navy">{phase.step}</h4>
+                        <span className="text-xs font-medium text-palette-sea bg-palette-sea/10 px-3 py-1 rounded-full">
+                          {phase.timeline}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-4">{phase.objective}</p>
+                      <div className="grid sm:grid-cols-2 gap-2">
+                        {phase.actions.map((action, i) => (
+                          <div key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                            <CheckCircle2 className="h-4 w-4 text-palette-sea flex-shrink-0 mt-0.5" />
+                            <span>{action}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </GlassCard>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Sales Platforms */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold text-brand-navy mb-6 flex items-center gap-3">
+            <ShoppingCart className="h-6 w-6 text-palette-sea" />
+            Selling Across Platforms
+          </h3>
+          <GlassCard className="p-6 overflow-x-auto">
+            <table className="w-full min-w-[640px]">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-3 px-3 text-sm font-bold text-brand-navy">Platform</th>
+                  <th className="text-left py-3 px-3 text-sm font-bold text-brand-navy">Type</th>
+                  <th className="text-center py-3 px-3 text-sm font-bold text-brand-navy">Fee</th>
+                  <th className="text-center py-3 px-3 text-sm font-bold text-brand-navy">Net Margin</th>
+                  <th className="text-center py-3 px-3 text-sm font-bold text-brand-navy">Revenue Mix</th>
+                  <th className="text-left py-3 px-3 text-sm font-bold text-brand-navy">Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                {salesPlatforms.map((platform, index) => (
+                  <tr key={index} className="border-b border-gray-100 hover:bg-white/50 transition-colors">
+                    <td className="py-3 px-3 text-sm font-medium text-brand-navy">{platform.name}</td>
+                    <td className="py-3 px-3 text-sm text-gray-600">
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{platform.type}</span>
+                    </td>
+                    <td className="py-3 px-3 text-sm text-center text-orange-500 font-medium">{platform.commission}</td>
+                    <td className="py-3 px-3 text-sm text-center text-green-600 font-bold">{platform.margin}</td>
+                    <td className="py-3 px-3 text-sm text-center font-bold text-palette-sea">{platform.target}</td>
+                    <td className="py-3 px-3 text-xs text-gray-500">{platform.notes}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </GlassCard>
+        </div>
+
+        {/* Marketing Strategy */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold text-brand-navy mb-2 flex items-center gap-3">
+            <Megaphone className="h-6 w-6 text-palette-sea" />
+            Marketing Strategy
+          </h3>
+          <p className="text-gray-600 mb-6 max-w-3xl">
+            A full-funnel, brand-led approach combining performance marketing for efficient
+            acquisition with influencer, content and experiential channels that build a
+            wellness brand customers trust and stay loyal to.
+          </p>
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            {marketingStrategy.map((pillar, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <GlassCard className="p-6 h-full">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                      <pillar.icon className="h-5 w-5 text-white" />
+                    </div>
+                    <h4 className="font-bold text-brand-navy">{pillar.pillar}</h4>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">{pillar.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {pillar.tactics.map((tactic, i) => (
+                      <span key={i} className="text-xs bg-purple-50 text-purple-600 px-3 py-1.5 rounded-full font-medium">
+                        {tactic}
+                      </span>
+                    ))}
+                  </div>
+                </GlassCard>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Marketing Funnel */}
+          <GlassCard className="p-6">
+            <h4 className="font-bold text-brand-navy mb-4">Full-Funnel Approach</h4>
+            <div className="grid md:grid-cols-4 gap-4">
+              {marketingFunnel.map((stage, index) => (
+                <div key={index} className="relative">
+                  <div className="bg-white/60 rounded-2xl p-5 h-full">
+                    <span className="text-xs font-bold text-palette-sea uppercase tracking-wide">{stage.stage}</span>
+                    <p className="text-sm font-medium text-brand-navy mt-2 mb-3">{stage.goal}</p>
+                    <p className="text-xs text-gray-500 mb-1"><span className="font-medium">Channels:</span> {stage.channels}</p>
+                    <p className="text-xs text-gray-500"><span className="font-medium">Metric:</span> {stage.metric}</p>
+                  </div>
+                  {index < marketingFunnel.length - 1 && (
+                    <div className="hidden md:block absolute top-1/2 -right-2 transform -translate-y-1/2 z-10">
+                      <ChevronRight className="h-4 w-4 text-gray-300" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        </div>
+
+        {/* Inventory Strategy */}
+        <div>
+          <h3 className="text-xl font-bold text-brand-navy mb-2 flex items-center gap-3">
+            <Package className="h-6 w-6 text-palette-sea" />
+            Inventory & Fulfilment
+          </h3>
+          <p className="text-gray-600 mb-6 max-w-3xl">{inventoryStrategy.overview}</p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {inventoryStrategy.pillars.map((pillar, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <GlassCard className="p-5 h-full">
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-3">
+                    <pillar.icon className="h-5 w-5 text-white" />
+                  </div>
+                  <h4 className="font-bold text-brand-navy text-sm mb-3">{pillar.title}</h4>
+                  <ul className="space-y-2">
+                    {pillar.points.map((point, i) => (
+                      <li key={i} className="flex items-start gap-2 text-xs text-gray-600">
+                        <span className="w-1.5 h-1.5 rounded-full bg-palette-sea mt-1.5 flex-shrink-0" />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </GlassCard>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Inventory KPIs */}
+          <GlassCard className="p-6 bg-gradient-to-r from-blue-50 to-cyan-50">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {inventoryStrategy.metrics.map((metric, index) => (
+                <div key={index} className="text-center">
+                  <p className="text-xs text-gray-500 mb-1">{metric.metric}</p>
+                  <p className="text-lg font-bold text-blue-600">{metric.target}</p>
                 </div>
               ))}
             </div>
