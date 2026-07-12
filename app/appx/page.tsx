@@ -36,6 +36,7 @@ import {
   MapPin,
   Bell,
   Target,
+  Watch,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -97,6 +98,7 @@ const humanOSStats = [
 const navMenuItems = [
   { id: "home", label: "Home", icon: Home, href: "/appx" },
   { id: "human-os", label: "Human OS", icon: Brain, href: "/appx/human-os", highlighted: true },
+  { id: "wearables", label: "Wearables", icon: Watch, href: "/appx/wearables", badge: true },
   { id: "help", label: "Help", icon: HelpCircle, href: "/appx/wellness-chat", badge: true },
   { id: "activities", label: "Activities", icon: ClipboardList, href: "/appx/activities" },
   { id: "profile", label: "Profile", icon: User, href: "/appx/profile" },

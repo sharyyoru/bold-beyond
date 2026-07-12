@@ -22,7 +22,11 @@
         "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "Bold & Beyond needs camera access for profile photos and wellness check-ins",
         "NSPhotoLibraryUsageDescription": "Bold & Beyond needs photo library access to upload profile pictures",
-        "NSMicrophoneUsageDescription": "Bold & Beyond needs microphone access for video calls with therapists"
+        "NSMicrophoneUsageDescription": "Bold & Beyond needs microphone access for video calls with therapists",
+        "NSBluetoothAlwaysUsageDescription": "Bold & Beyond uses Bluetooth to connect to your Bold Band and sync health data.",
+        "NSBluetoothPeripheralUsageDescription": "Bold & Beyond uses Bluetooth to discover and connect to your Bold Band.",
+        "NSHealthShareUsageDescription": "Bold & Beyond reads health data you choose to share from Apple Health.",
+        "NSHealthUpdateUsageDescription": "Bold & Beyond writes steps, heart rate, sleep, SpO2, stress, temperature and ECG data to Apple Health."
       }
     },
     "android": {
@@ -30,8 +34,30 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1a5f4a"
       },
-      "package": "com.boldandbeyond.app"
+      "package": "com.boldandbeyond.app",
+      "permissions": [
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_HEALTH",
+        "android.permission.HIGH_SAMPLING_RATE_SENSORS"
+      ]
     },
+    "plugins": [
+      [
+        "react-native-ble-plx",
+        {
+          "isPermissionRequired": true,
+          "bluetoothBackgroundMode": ["peripheral", "central"]
+        }
+      ],
+      "./plugins/withWearableAar"
+    ],
     "extra": {
       "eas": {
         "projectId": "ad9755bc-992e-40e7-a99d-4195931f4acd"

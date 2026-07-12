@@ -37,6 +37,27 @@ next-env.d.ts
 /android
 /ios
 
+# Mobile app
+/mobile-app/node_modules
+/mobile-app/.expo
+/mobile-app/android/app/build
+/mobile-app/android/app/libs
+/mobile-app/android/.gradle
+/mobile-app/android/build
+
+# Wearable tooling / temp
+/tools
+/band-apk
+/docs/wearables/*-temp
+/docs/wearables/v8-android-sdk/v8_kotlion
+/docs/wearables/v8-android-sdk/*.apk
+/docs/wearables/v4-android-sdk/2501.apk
+/docs/wearables/v4-android-sdk/2501test
+/docs/wearables/v4-ios-sdk/V4/Ble SDK Demo
+/docs/wearables/v5-android-sdk/2436test
+/docs/wearables/v5-android-sdk/*.apk
+/docs/wearables/v5-android-sdk/*test*.zip
+
 # IDE
 .idea
 .vscode
