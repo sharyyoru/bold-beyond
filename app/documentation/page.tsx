@@ -35,6 +35,9 @@ import {
   Cpu,
   Activity,
   Bell,
+  Globe2,
+  Stethoscope,
+  Terminal,
 } from "lucide-react";
 
 // Documentation sections
@@ -138,6 +141,20 @@ const docSections = [
     description: "Provider profiles and service offerings",
   },
   {
+    id: "main-site",
+    title: "Main Marketing Site",
+    icon: Globe2,
+    color: "#0EA5E9",
+    description: "Public-facing pages: about, blog, careers, clinics, contact, and more",
+  },
+  {
+    id: "appx-modules",
+    title: "Appx Module Map",
+    icon: Box,
+    color: "#6366F1",
+    description: "Every route inside the consumer Appx, grouped by category",
+  },
+  {
     id: "admin",
     title: "Admin Portal",
     icon: Shield,
@@ -187,6 +204,13 @@ const docSections = [
     description: "Provider portal for managing appointments, orders, and services",
   },
   {
+    id: "provider-portal",
+    title: "Provider/Clinic Portal",
+    icon: Stethoscope,
+    color: "#0891B2",
+    description: "Clinic staff portal for schedule, patients, orders, and services",
+  },
+  {
     id: "authentication",
     title: "Authentication & Security",
     icon: Shield,
@@ -206,6 +230,13 @@ const docSections = [
     icon: Code,
     color: "#EC4899",
     description: "Sanity CMS queries and API endpoints",
+  },
+  {
+    id: "tech-reference",
+    title: "Technical Reference",
+    icon: Terminal,
+    color: "#334155",
+    description: "Full catalog of API routes and lib/ helper functions",
   },
 ];
 
@@ -1289,6 +1320,125 @@ const sectionContent: Record<string, React.ReactNode> = {
     </div>
   ),
 
+  "main-site": (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Globe2 className="h-6 w-6" />
+          Main Marketing Site
+        </h3>
+        <p className="opacity-90">Public, unauthenticated pages that live outside the Appx — served from the <code className="bg-white/20 px-1.5 py-0.5 rounded">app/(explore)</code> route group.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        {[
+          { path: "/", label: "Home", desc: "Hero, 4 Pillars, Signature Features, AI Coach preview" },
+          { path: "/about", label: "About", desc: "Company story and mission" },
+          { path: "/blog", label: "Blog", desc: "Sanity-backed article listing + slug pages" },
+          { path: "/careers", label: "Careers", desc: "Open roles and culture" },
+          { path: "/clinics", label: "Clinics", desc: "Partner clinic directory + slug detail pages" },
+          { path: "/contact", label: "Contact", desc: "Contact form and support info" },
+          { path: "/download", label: "Download", desc: "App store / play store links" },
+          { path: "/experts", label: "Experts", desc: "Expert directory + slug profile pages" },
+          { path: "/faq", label: "FAQ", desc: "Frequently asked questions" },
+          { path: "/help", label: "Help", desc: "Support center" },
+          { path: "/human-os", label: "Human OS", desc: "Marketing landing for the Human Alignment System" },
+          { path: "/products", label: "Products", desc: "Public product catalog + slug detail pages" },
+          { path: "/services", label: "Services", desc: "Public service catalog + slug detail pages" },
+          { path: "/privacy", label: "Privacy Policy", desc: "Legal privacy page" },
+          { path: "/terms", label: "Terms", desc: "Legal terms page" },
+          { path: "/cancellation", label: "Cancellation Policy", desc: "Legal cancellation info" },
+        ].map((p) => (
+          <div key={p.path} className="bg-white rounded-xl p-4 border border-gray-100 flex items-start justify-between gap-3">
+            <div>
+              <p className="font-medium text-gray-900 text-sm">{p.label}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{p.desc}</p>
+            </div>
+            <code className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded whitespace-nowrap">{p.path}</code>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-slate-900 rounded-xl p-5 text-white">
+        <h4 className="font-semibold mb-2">🗂️ Technical Notes</h4>
+        <ul className="text-sm text-slate-300 space-y-1">
+          <li>• Root layout: <code className="bg-slate-800 px-1.5 py-0.5 rounded">app/layout.tsx</code>; explore layout: <code className="bg-slate-800 px-1.5 py-0.5 rounded">app/(explore)/layout.tsx</code></li>
+          <li>• Blog/Products/Services/Experts/Clinics use dynamic <code className="bg-slate-800 px-1.5 py-0.5 rounded">[slug]</code> routes backed by Sanity CMS</li>
+          <li>• Home page hero uses <code className="bg-slate-800 px-1.5 py-0.5 rounded">Hero3DBand</code> (React Three Fiber) dynamically imported client-side only</li>
+        </ul>
+      </div>
+    </div>
+  ),
+
+  "appx-modules": (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-[#6366F1] to-[#4F46E5] rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Box className="h-6 w-6" />
+          Appx Module Map
+        </h3>
+        <p className="opacity-90">Every route inside the authenticated consumer app, grouped by category. Root: <code className="bg-white/20 px-1.5 py-0.5 rounded">app/appx</code>.</p>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">🧭 Discovery</h4>
+        <div className="grid md:grid-cols-2 gap-2 text-sm text-gray-600">
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx</code> — Home feed</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/search</code> — Global search</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/services</code> + <code className="bg-gray-100 px-1.5 py-0.5 rounded">[slug]</code> — Service catalog</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/products</code> + <code className="bg-gray-100 px-1.5 py-0.5 rounded">[slug]</code> — Product catalog</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/providers</code> + <code className="bg-gray-100 px-1.5 py-0.5 rounded">[slug]</code> — Provider directory</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/programs</code> + <code className="bg-gray-100 px-1.5 py-0.5 rounded">[id]</code> + <code className="bg-gray-100 px-1.5 py-0.5 rounded">lesson/[lessonId]</code> — Wellness programs</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">🛒 Booking & Commerce</h4>
+        <div className="grid md:grid-cols-2 gap-2 text-sm text-gray-600">
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/cart</code> — Provider-specific cart</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/checkout/[providerId]</code> — Stripe checkout</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/order/success</code> / <code className="bg-gray-100 px-1.5 py-0.5 rounded">/failed</code> — Order results</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/review/[appointmentId]</code> — Post-appointment review</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">🧠 Wellness Tools</h4>
+        <div className="grid md:grid-cols-2 gap-2 text-sm text-gray-600">
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/coach</code> — AI Coach</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/human-os</code> — Human OS dashboard</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/intake</code> — Onboarding intake questionnaire</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/wellness-chat</code> — Chat-based check-in</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/wellness-checkin</code> — Structured check-in form</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/wellness-tracker</code> — Progress visualization</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/wearables</code> — Wearable device sync (band-bridge)</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/activities</code> — Activity history</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">👤 Account</h4>
+        <div className="grid md:grid-cols-2 gap-2 text-sm text-gray-600">
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/(auth)/login</code> / <code className="bg-gray-100 px-1.5 py-0.5 rounded">signup</code> / <code className="bg-gray-100 px-1.5 py-0.5 rounded">welcome</code></p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/onboarding</code> + <code className="bg-gray-100 px-1.5 py-0.5 rounded">calibrating</code></p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/profile</code> + <code className="bg-gray-100 px-1.5 py-0.5 rounded">favorites</code></p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/wallet</code> — Balance, refunds, payment methods</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/notifications</code> — Notification center</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/appx/privacy</code> / <code className="bg-gray-100 px-1.5 py-0.5 rounded">/terms</code></p>
+        </div>
+      </div>
+
+      <div className="bg-slate-900 rounded-xl p-5 text-white">
+        <h4 className="font-semibold mb-2">🗂️ Technical Notes</h4>
+        <ul className="text-sm text-slate-300 space-y-1">
+          <li>• Auth/session handled via <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/supabase.ts</code> (<code className="bg-slate-800 px-1.5 py-0.5 rounded">createAppClient</code>) + middleware in <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/supabase/middleware.ts</code></li>
+          <li>• Commerce flows call <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/checkout</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/orders/create</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/wallet</code></li>
+          <li>• Wellness tools read/write via <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/human-os/*</code> and <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/human-os/*</code></li>
+        </ul>
+      </div>
+    </div>
+  ),
+
   admin: (
     <div className="space-y-6">
       <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-6 text-white">
@@ -1319,6 +1469,36 @@ const sectionContent: Record<string, React.ReactNode> = {
             <li>• View all partners</li>
           </ul>
         </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">📝 Content & Discounts</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/admin/content</code> — CMS content shortcuts</li>
+            <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/admin/discounts</code> — Promo codes & discount rules</li>
+            <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/admin/reports</code> — Platform-wide reporting</li>
+            <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/admin/settings</code> — Global platform settings</li>
+          </ul>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">🏗️ Onboarding & Applications</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/admin/onboarding</code> — New admin onboarding flow</li>
+            <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/admin/partner-applications</code> — Review incoming partner applications</li>
+            <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/admin/partners</code> — Full partner list & management</li>
+            <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/admin/therapists</code> — Therapist/expert roster</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">🧪 Users & Test Content</h4>
+        <ul className="space-y-2 text-sm text-gray-600">
+          <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/admin/users</code> — Full user directory and account management</li>
+          <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/admin/test-questions</code> — Manage onboarding intake questions</li>
+        </ul>
       </div>
 
       <div className="bg-white rounded-xl p-5 border border-gray-100">
@@ -1726,10 +1906,13 @@ const sectionContent: Record<string, React.ReactNode> = {
       </div>
 
       <div className="bg-white rounded-xl p-5 border border-gray-100">
-        <h4 className="font-semibold text-gray-900 mb-3">🔗 Access</h4>
-        <p className="text-sm text-gray-600 mb-3">
-          Partners can access their dashboard at <code className="bg-gray-100 px-2 py-0.5 rounded">/partners/dashboard</code>
-        </p>
+        <h4 className="font-semibold text-gray-900 mb-3">🔗 Access & Onboarding Flow</h4>
+        <ul className="space-y-2 text-sm text-gray-600 mb-3">
+          <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/partners</code> — Landing page for prospective partners</li>
+          <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/partners/apply</code> — Partner application form (feeds <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/partner-applications</code>, reviewed in Admin)</li>
+          <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/partners/login</code> — Partner authentication</li>
+          <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/partners/dashboard</code> — Main dashboard (Overview/Appointments/Orders/Services/Products/Reviews)</li>
+        </ul>
         <div className="bg-slate-900 rounded-lg p-4 text-sm">
           <p className="text-slate-400 mb-2">Demo Credentials:</p>
           <p className="text-teal-400">Email: serenity@demo.com</p>
@@ -1742,8 +1925,66 @@ const sectionContent: Record<string, React.ReactNode> = {
         <ul className="text-sm text-slate-600 space-y-1">
           <li>• <code>provider_accounts</code> - Links auth users to Sanity providers</li>
           <li>• <code>/api/sanity/mutate</code> - API route for Sanity CMS writes</li>
+          <li>• <code>/api/partner-applications</code> - Receives new partner applications</li>
           <li>• Services/products created go directly to Sanity</li>
           <li>• Ratings/reviews fetched from Sanity in real-time</li>
+        </ul>
+      </div>
+    </div>
+  ),
+
+  "provider-portal": (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-[#0891B2] to-[#0E7490] rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Stethoscope className="h-6 w-6" />
+          Provider/Clinic Portal
+        </h3>
+        <p className="opacity-90">Operational portal for clinic staff to run day-to-day activity — distinct from the Partner Dashboard used for business management. Root: <code className="bg-white/20 px-1.5 py-0.5 rounded">app/portal</code>.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">📅 Schedule</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/portal/schedule</code></li>
+            <li>• Day/week view of upcoming appointments</li>
+            <li>• Staff assignment per booking</li>
+          </ul>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">🧑‍⚕️ Patients</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/portal/patients</code></li>
+            <li>• Patient/customer records for the clinic</li>
+            <li>• Appointment & order history per patient</li>
+          </ul>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">🛍️ Orders</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/portal/orders</code></li>
+            <li>• Fulfillment queue for product orders</li>
+          </ul>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 border border-gray-100">
+          <h4 className="font-semibold text-gray-900 mb-3">✨ Services</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/portal/services</code></li>
+            <li>• Clinic's active service listing</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-slate-900 rounded-xl p-5 text-white">
+        <h4 className="font-semibold mb-2">🗂️ Technical Notes</h4>
+        <ul className="text-sm text-slate-300 space-y-1">
+          <li>• Shared layout: <code className="bg-slate-800 px-1.5 py-0.5 rounded">app/portal/layout.tsx</code></li>
+          <li>• Appointment data sourced from <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/appointments/cancel</code> and <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/appointments/reschedule</code></li>
+          <li>• Order fulfillment uses <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/admin/orders</code> and <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/orders/cancel</code></li>
         </ul>
       </div>
     </div>
@@ -1877,6 +2118,87 @@ const provider = await sanityClient.fetch(queries.providerBySlug, { slug });
 import { urlFor } from "@/lib/sanity";
 <Image src={urlFor(service.image).width(400).url()} />`}
         </pre>
+      </div>
+    </div>
+  ),
+
+  "tech-reference": (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-[#334155] to-[#1E293B] rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Terminal className="h-6 w-6" />
+          Technical Reference
+        </h3>
+        <p className="opacity-90">Full catalog of the 25 Next.js API routes and the shared <code className="bg-white/20 px-1.5 py-0.5 rounded">lib/</code> helper modules used across the main site, Appx, and vendor portals.</p>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">📅 Booking & Appointments</h4>
+        <div className="space-y-1 text-sm text-gray-600">
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/booking/availability</code> — Compute open slots (uses <code className="bg-gray-100 px-1.5 py-0.5 rounded">lib/availability.ts</code>)</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/appointments/cancel</code> — Cancel an appointment + trigger refund logic</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/appointments/reschedule</code> — Propose a new time</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/appointments/reschedule/respond</code> — Accept/decline a reschedule request</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">💳 Checkout, Orders & Wallet</h4>
+        <div className="space-y-1 text-sm text-gray-600">
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/checkout</code> — Generic Stripe checkout session</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/checkout/booking</code> — Checkout for service bookings</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/checkout/products</code> — Checkout for product orders</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/orders/create</code> — Create an order record post-payment</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/orders/cancel</code> — Cancel an order</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/admin/orders</code> — Admin/portal order listing & management</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/user/orders</code> — Current user's order history</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/wallet</code> — Wallet balance, top-ups, refunds</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/webhooks/stripe</code> — Stripe webhook handler (payment confirmation)</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">🧠 Human OS</h4>
+        <div className="space-y-1 text-sm text-gray-600">
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/human-os/decision</code> — Decision engine output (uses <code className="bg-gray-100 px-1.5 py-0.5 rounded">lib/human-os/decision-engine.ts</code>)</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/human-os/health-map</code> — Health map data (uses <code className="bg-gray-100 px-1.5 py-0.5 rounded">lib/human-os/health-map.ts</code>)</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/human-os/network</code> — Network effects data (uses <code className="bg-gray-100 px-1.5 py-0.5 rounded">lib/human-os/network-effects.ts</code>)</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/human-os/user-value</code> — User value scoring (uses <code className="bg-gray-100 px-1.5 py-0.5 rounded">lib/human-os/data-moat.ts</code>)</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">🔔 Notifications, Reminders & Misc</h4>
+        <div className="space-y-1 text-sm text-gray-600">
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/notifications</code> — Fetch/create notifications</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/reminders/process</code> — Cron-style job to send appointment reminders</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/activities</code> — Activity feed/history</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/regulation-tools</code> — Emotional regulation tool content</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/partner-applications</code> — Submit/list partner applications</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/debug/sanity</code> — Sanity connectivity debug endpoint</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">🎨 Sanity CMS Writes</h4>
+        <div className="space-y-1 text-sm text-gray-600">
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/sanity/mutate</code> — Create/update Sanity documents (used by Partner Dashboard)</p>
+          <p>• <code className="bg-gray-100 px-1.5 py-0.5 rounded">/api/sanity/upload</code> — Upload images/assets to Sanity</p>
+        </div>
+      </div>
+
+      <div className="bg-slate-900 rounded-xl p-5 text-white">
+        <h4 className="font-semibold mb-3">📦 Shared lib/ Modules</h4>
+        <div className="space-y-2 text-sm text-slate-300">
+          <p>• <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/supabase.ts</code> — <code className="bg-slate-800 px-1.5 py-0.5 rounded">createAppClient</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">createAdminClient</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">createPartnerClient</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">createSupabaseAdmin</code> — scoped Supabase clients per portal</p>
+          <p>• <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/supabase/server.ts</code> / <code className="bg-slate-800 px-1.5 py-0.5 rounded">middleware.ts</code> — server-side session handling for App Router</p>
+          <p>• <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/sanity.ts</code> — <code className="bg-slate-800 px-1.5 py-0.5 rounded">sanityClient</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">queries</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">urlFor</code> — GROQ queries and image URL builder</p>
+          <p>• <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/availability.ts</code> — slot computation used by <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/booking/availability</code></p>
+          <p>• <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/favorites.ts</code> — add/remove/list favorites helpers</p>
+          <p>• <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/band-bridge.ts</code> — wearable device data bridge (used by <code className="bg-slate-800 px-1.5 py-0.5 rounded">/appx/wearables</code>)</p>
+          <p>• <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/human-os/*</code> — <code className="bg-slate-800 px-1.5 py-0.5 rounded">decision-engine.ts</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">health-map.ts</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">network-effects.ts</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">data-moat.ts</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">wellness-data.ts</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">types.ts</code></p>
+          <p>• <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/utils.ts</code> — generic helpers (e.g. <code className="bg-slate-800 px-1.5 py-0.5 rounded">cn()</code> classnames merge)</p>
+        </div>
       </div>
     </div>
   ),
