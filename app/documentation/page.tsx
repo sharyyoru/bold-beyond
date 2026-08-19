@@ -18,11 +18,9 @@ import {
   Shield,
   Sparkles,
   ChevronRight,
-  ChevronDown,
   Search,
   Menu,
   X,
-  ExternalLink,
   Copy,
   Check,
   Play,
@@ -32,7 +30,6 @@ import {
   Building2,
   GitBranch,
   Box,
-  Cpu,
   Activity,
   Bell,
   Globe2,
@@ -153,6 +150,13 @@ const docSections = [
     icon: Box,
     color: "#6366F1",
     description: "Every route inside the consumer Appx, grouped by category",
+  },
+  {
+    id: "live-biometric-intelligence",
+    title: "Live Biometric Intelligence",
+    icon: Activity,
+    color: "#10B981",
+    description: "Band data ingestion, emotional snapshot scoring, and AI suggestions",
   },
   {
     id: "admin",
@@ -1434,6 +1438,65 @@ const sectionContent: Record<string, React.ReactNode> = {
           <li>• Auth/session handled via <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/supabase.ts</code> (<code className="bg-slate-800 px-1.5 py-0.5 rounded">createAppClient</code>) + middleware in <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/supabase/middleware.ts</code></li>
           <li>• Commerce flows call <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/checkout</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/orders/create</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/wallet</code></li>
           <li>• Wellness tools read/write via <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/human-os/*</code> and <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/human-os/*</code></li>
+        </ul>
+      </div>
+    </div>
+  ),
+
+  "live-biometric-intelligence": (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-6 text-white">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Activity className="h-6 w-6" />
+          Live Biometric Intelligence
+        </h3>
+        <p className="opacity-90">
+          Combines wearable band data, self-reported check-ins, and behavior into a live Emotional Load Index (ELI) with personalized suggestions.
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-emerald-200">
+          <h4 className="font-semibold text-gray-900 mb-3">📡 Data Sources</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <strong>Band biometrics</strong> — HR, HRV, sleep, steps, SpO₂, temperature, stress, ECG</li>
+            <li>• <strong>Self-reported check-ins</strong> — mood, stress, energy, sleep, mind clarity</li>
+            <li>• <strong>Behavior signals</strong> — check-in streaks, completed programs, coach interactions</li>
+            <li>• <strong>Chat sentiment</strong> — optional emotion score from wellness-chat text</li>
+          </ul>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 border border-teal-200">
+          <h4 className="font-semibold text-gray-900 mb-3">🧠 Emotional Snapshot</h4>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li>• <strong>Valence</strong> — pleasant vs unpleasant state</li>
+            <li>• <strong>Activation</strong> — low vs high arousal</li>
+            <li>• <strong>Regulation</strong> — dysregulated vs regulated (driven by HRV)</li>
+            <li>• <strong>Fatigue</strong> — recovered vs exhausted</li>
+            <li>• <strong>ELI Score</strong> — 0-100 composite Emotional Load Index</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl p-5 border border-gray-100">
+        <h4 className="font-semibold text-gray-900 mb-3">🎯 Suggestion Engine</h4>
+        <p className="text-sm text-gray-600 mb-3">
+          Two-layer intelligence:
+        </p>
+        <ul className="space-y-2 text-sm text-gray-600">
+          <li>• <strong>Rule-based layer</strong> — maps low HRV, poor sleep, low mood, etc. to programs, breathing exercises, or providers.</li>
+          <li>• <strong>AI routing layer</strong> — feeds the computed state into <code className="bg-gray-100 px-1.5 py-0.5 rounded">lib/human-os/decision-engine.ts</code> to match providers/programs.</li>
+        </ul>
+      </div>
+
+      <div className="bg-slate-900 rounded-xl p-5 text-white">
+        <h4 className="font-semibold mb-2">🗂️ Technical Notes</h4>
+        <ul className="text-sm text-slate-300 space-y-1">
+          <li>• Scoring engine: <code className="bg-slate-800 px-1.5 py-0.5 rounded">lib/biometric-emotion.ts</code></li>
+          <li>• API routes: <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/biometric-emotion/snapshot</code> and <code className="bg-slate-800 px-1.5 py-0.5 rounded">/api/biometric-emotion/suggest</code></li>
+          <li>• Tables: <code className="bg-slate-800 px-1.5 py-0.5 rounded">biometric_readings</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">emotional_snapshots</code> (RLS-protected)</li>
+          <li>• UI surfaces: <code className="bg-slate-800 px-1.5 py-0.5 rounded">/appx/wearables</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">/appx/live-measure</code>, <code className="bg-slate-800 px-1.5 py-0.5 rounded">/appx/wellness-tracker</code></li>
+          <li>• Mock bridge data produces the same snapshot shape as real SDK data for easy preview.</li>
         </ul>
       </div>
     </div>

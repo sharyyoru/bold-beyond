@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  ArrowLeft, Calendar, TrendingUp, Brain, Heart, Moon, Zap, 
-  Smile, Activity, ChevronDown, Award, Flame, Clock, Star, Shield, Target
+  ArrowLeft, Calendar, Brain, Heart, Moon, Zap, 
+  Smile, Activity, ChevronDown, Star
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,19 @@ interface Recommendation {
   link: string;
 }
 
+interface BiometricSnapshot {
+  id: string;
+  snapshot_at: string;
+  eli_score: number;
+  emotion_label: string;
+  emotional_state: {
+    valence: number;
+    activation: number;
+    regulation: number;
+    fatigue: number;
+  };
+}
+
 const wellnessMetrics = [
   { key: "mind", label: "Mind", icon: Brain, color: "#0D9488", bgColor: "bg-teal-50" },
   { key: "body", label: "Body", icon: Activity, color: "#D4A853", bgColor: "bg-amber-50" },
@@ -56,15 +69,16 @@ export default function WellbeingTrackerPage() {
   });
   const [weeklyData, setWeeklyData] = useState<DailyScore[]>([]);
   const [checkInStreak, setCheckInStreak] = useState(0);
-  const [selectedDateRange, setSelectedDateRange] = useState("This Week");
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [overallImprovement, setOverallImprovement] = useState(0);
   const [avgMoodScore, setAvgMoodScore] = useState(0);
   const [stressReduction, setStressReduction] = useState(0);
   const [energyLevel, setEnergyLevel] = useState(0);
+  const [biometricSnapshots, setBiometricSnapshots] = useState<BiometricSnapshot[]>([]);
 
   useEffect(() => {
     fetchWellbeingData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchWellbeingData = async () => {
@@ -105,6 +119,15 @@ export default function WellbeingTrackerPage() {
         .eq("user_id", user.id)
         .gte("created_at", oneWeekAgo.toISOString())
         .order("created_at", { ascending: true });
+
+      // Fetch recent biometric snapshots
+      const { data: biometricData } = await supabase
+        .from("emotional_snapshots")
+        .select("id, snapshot_at, eli_score, emotion_label, emotional_state")
+        .eq("user_id", user.id)
+        .order("snapshot_at", { ascending: false })
+        .limit(7);
+      setBiometricSnapshots((biometricData as BiometricSnapshot[]) ?? []);
 
       // Calculate streak
       const { data: allCheckIns } = await supabase
@@ -172,9 +195,9 @@ export default function WellbeingTrackerPage() {
     }
   };
 
-  const calculateDayScore = (checkIn: any) => {
+  const calculateDayScore = (checkIn: { wellness_scores?: Record<string, unknown> }) => {
     const scores = checkIn.wellness_scores || {};
-    const values = Object.values(scores).filter(v => typeof v === 'number') as number[];
+    const values = Object.values(scores).filter((v): v is number => typeof v === 'number');
     return values.length > 0 ? Math.round(values.reduce((a, b) => a + b, 0) / values.length) : 60;
   };
 
@@ -249,7 +272,6 @@ export default function WellbeingTrackerPage() {
   };
 
   const getOverallScore = () => {
-    const values = Object.values(wellnessScores);
     // For stress, lower is better, so we invert it
     const adjustedStress = 100 - wellnessScores.stress;
     const sum = wellnessScores.mind + wellnessScores.body + wellnessScores.sleep + 
@@ -340,7 +362,7 @@ export default function WellbeingTrackerPage() {
               <div className="text-6xl">🏆</div>
             </div>
             <div className="relative z-10">
-              <h2 className="text-lg font-bold">You've checked in {checkInStreak} days in a row!</h2>
+              <h2 className="text-lg font-bold">You&apos;ve checked in {checkInStreak} days in a row!</h2>
               <p className="text-sm text-white/80 mt-1">
                 Track your growth, celebrate your streaks, and keep moving forward.
               </p>
@@ -419,6 +441,70 @@ export default function WellbeingTrackerPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Biometric-Emotion Timeline */}
+        {biometricSnapshots.length > 0 && (
+          <Card className="border-0 shadow-md">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">Biometric Mood Timeline</h3>
+                <Link href="/appx/live-measure" className="text-xs text-brand-teal font-medium">
+                  View live measure →
+                </Link>
+              </div>
+              <p className="text-sm text-gray-500 mb-4">
+                Band-inferred emotional states layered over your self-reported check-ins.
+              </p>
+              <div className="space-y-3">
+                {biometricSnapshots.slice(0, 5).map((snap, i) => (
+                  <div
+                    key={snap.id || i}
+                    className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold ${
+                          snap.eli_score >= 70
+                            ? "bg-rose-500"
+                            : snap.eli_score >= 45
+                            ? "bg-amber-500"
+                            : "bg-emerald-500"
+                        }`}
+                      >
+                        {snap.eli_score}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900 capitalize">
+                          {snap.emotion_label.replace(/-/g, " ")}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(snap.snapshot_at).toLocaleString(undefined, {
+                            weekday: "short",
+                            month: "short",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "2-digit",
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 text-[10px]">
+                      <span className="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">
+                        V {Math.round(snap.emotional_state.valence * 100)}
+                      </span>
+                      <span className="px-2 py-1 rounded-full bg-sky-100 text-sky-700">
+                        R {Math.round(snap.emotional_state.regulation * 100)}
+                      </span>
+                      <span className="px-2 py-1 rounded-full bg-violet-100 text-violet-700">
+                        F {Math.round(snap.emotional_state.fatigue * 100)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Wellbeing Dimensions */}
         <Card className="border-0 shadow-md">

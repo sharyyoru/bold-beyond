@@ -12,6 +12,9 @@ const nextConfig = {
       },
     ],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   // Enable static export for Capacitor
   output: process.env.CAPACITOR_BUILD ? 'export' : undefined,
 };

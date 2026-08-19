@@ -15,20 +15,23 @@ import {
   BluetoothOff,
   RefreshCw,
   ChevronRight,
-  Droplets,
-  Battery,
   Info,
+  Brain,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import {
   getBandBridge,
   BandDevice,
   BandDataMessage,
 } from "@/lib/band-bridge";
+import {
+  BandMetricReading,
+  EmotionalSnapshot,
+  Suggestion,
+} from "@/lib/biometric-emotion";
 import Link from "next/link";
 
 interface MetricReading {
@@ -54,7 +57,6 @@ const METRICS = [
 ];
 
 export default function WearablesPage() {
-  const [bridgeReady, setBridgeReady] = useState(false);
   const [isMock, setIsMock] = useState(false);
   const [btSupported, setBtSupported] = useState(false);
   const [btEnabled, setBtEnabled] = useState(false);
@@ -65,7 +67,12 @@ export default function WearablesPage() {
   const [syncing, setSyncing] = useState<string | null>(null);
   const [logs, setLogs] = useState<string[]>([]);
   const [readings, setReadings] = useState<Record<string, MetricReading>>({});
+  const [snapshot, setSnapshot] = useState<EmotionalSnapshot | null>(null);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [snapshotLoading, setSnapshotLoading] = useState(false);
   const bridgeRef = useRef<ReturnType<typeof getBandBridge> | null>(null);
+
+  const rawReadingsRef = useRef<Record<string, unknown[]>>({});
 
   const log = useCallback((message: string) => {
     setLogs((prev) => [message, ...prev].slice(0, 50));
@@ -74,11 +81,13 @@ export default function WearablesPage() {
   useEffect(() => {
     const bridge = getBandBridge();
     bridgeRef.current = bridge;
-    setBridgeReady(true);
     setIsMock(bridge.isMock());
 
     bridge.isBluetoothSupported().then(setBtSupported).catch(() => setBtSupported(false));
     bridge.isBluetoothEnabled().then(setBtEnabled).catch(() => setBtEnabled(false));
+
+    // Load latest emotional snapshot
+    fetchLatestSnapshot();
 
     const unsubscribe = bridge.subscribe((msg: BandDataMessage) => {
       if (msg.type === "deviceFound" && msg.device) {
@@ -146,12 +155,72 @@ export default function WearablesPage() {
       const rows = Array.isArray(result) ? result : [];
       const last = rows[rows.length - 1] as Record<string, unknown> | undefined;
       updateReading(key, rows, last);
+      storeRawReading(key, rows);
       log(`Synced ${key}: ${rows.length} record(s)`);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
       log(`Sync ${key} error: ${message}`);
     } finally {
       setSyncing(null);
+    }
+  };
+
+  const storeRawReading = (key: string, rows: Record<string, unknown>[]) => {
+    if (!rawReadingsRef.current[key]) rawReadingsRef.current[key] = [];
+    rawReadingsRef.current[key].push(...rows);
+  };
+
+  const fetchLatestSnapshot = async () => {
+    try {
+      const res = await fetch("/api/biometric-emotion/snapshot");
+      const json = await res.json();
+      if (json.success && json.snapshot) {
+        setSnapshot(json.snapshot);
+        setSuggestions(json.snapshot.suggestions || []);
+      }
+    } catch (err) {
+      console.error("Failed to load snapshot:", err);
+    }
+  };
+
+  const computeAndPersistSnapshot = async () => {
+    if (!connectedId) return;
+    setSnapshotLoading(true);
+    try {
+      const readings: BandMetricReading[] = Object.entries(rawReadingsRef.current)
+        .flatMap(([type, rows]) =>
+          rows.map((row) => ({
+            type: type as BandMetricReading["type"],
+            value: row as Record<string, unknown>,
+            recordedAt:
+              (row as Record<string, string>).recordedAt ||
+              (row as Record<string, string>).date ||
+              new Date().toISOString(),
+          }))
+        );
+
+      const res = await fetch("/api/biometric-emotion/snapshot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          readings,
+          deviceId: connectedId,
+          profile: { dailyStepGoal: 8000 },
+        }),
+      });
+      const json = await res.json();
+      if (json.success && json.snapshot) {
+        setSnapshot(json.snapshot);
+        setSuggestions(json.snapshot.suggestions || []);
+        log(`Computed snapshot: ${json.snapshot.label} (ELI ${json.snapshot.eliScore})`);
+      } else if (json.error) {
+        log(`Snapshot error: ${json.error}`);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      log(`Snapshot error: ${message}`);
+    } finally {
+      setSnapshotLoading(false);
     }
   };
 
@@ -210,6 +279,7 @@ export default function WearablesPage() {
     for (const m of METRICS) {
       await handleSync(m.key);
     }
+    await computeAndPersistSnapshot();
   };
 
   return (
@@ -356,6 +426,124 @@ export default function WearablesPage() {
             </CardContent>
           </Card>
         </motion.div>
+
+        {/* Emotional Snapshot */}
+        <AnimatePresence>
+          {(snapshot || snapshotLoading) && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ delay: 0.08 }}
+              className="mb-6"
+            >
+              <Card className="border-none shadow-glass bg-gradient-to-br from-white to-brand-teal/5 backdrop-blur-sm overflow-hidden">
+                <CardContent className="p-5">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-medium text-brand-navy/50 uppercase tracking-wide mb-1">
+                        Live Emotional Snapshot
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <h2 className="text-2xl font-display font-bold text-brand-navy">
+                          {snapshot ? snapshot.label.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : "Analyzing..."}
+                        </h2>
+                        {snapshot && (
+                          <Badge
+                            className={
+                              snapshot.eliScore >= 70
+                                ? "bg-rose-100 text-rose-700 border-rose-200"
+                                : snapshot.eliScore >= 45
+                                ? "bg-amber-100 text-amber-700 border-amber-200"
+                                : "bg-emerald-100 text-emerald-700 border-emerald-200"
+                            }
+                          >
+                            ELI {snapshot.eliScore}
+                          </Badge>
+                        )}
+                      </div>
+                      {snapshot && (
+                        <p className="text-sm text-brand-navy/60 mt-1">
+                          Inferred from band + your latest check-in.
+                        </p>
+                      )}
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-brand-teal/30 text-brand-teal hover:bg-brand-teal/5 gap-2"
+                      onClick={computeAndPersistSnapshot}
+                      disabled={!connectedId || snapshotLoading || !!syncing}
+                    >
+                      {snapshotLoading ? (
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Brain className="w-4 h-4" />
+                      )}
+                      {snapshotLoading ? "Analyzing..." : "Analyze now"}
+                    </Button>
+                  </div>
+
+                  {snapshot && (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5">
+                      {[
+                        { label: "Valence", value: snapshot.dimensions.valence, color: "bg-emerald-500" },
+                        { label: "Activation", value: snapshot.dimensions.activation, color: "bg-rose-500" },
+                        { label: "Regulation", value: snapshot.dimensions.regulation, color: "bg-sky-500" },
+                        { label: "Fatigue", value: snapshot.dimensions.fatigue, color: "bg-violet-500" },
+                      ].map((dim) => (
+                        <div
+                          key={dim.label}
+                          className="p-3 rounded-xl bg-white/60 border border-slate-100"
+                        >
+                          <p className="text-xs text-brand-navy/50 mb-1">{dim.label}</p>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden">
+                              <div
+                                className={`h-full ${dim.color} rounded-full`}
+                                style={{ width: `${Math.round(dim.value * 100)}%` }}
+                              />
+                            </div>
+                            <span className="text-xs font-semibold text-brand-navy">
+                              {Math.round(dim.value * 100)}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {suggestions.length > 0 && (
+                    <div className="mt-5 pt-4 border-t border-slate-100">
+                      <p className="text-xs font-medium text-brand-navy/50 uppercase tracking-wide mb-3">
+                        Suggested for you
+                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {suggestions.slice(0, 4).map((s) => (
+                          <Link
+                            key={s.id}
+                            href={s.link || "#"}
+                            className="group flex items-start gap-3 p-3 rounded-xl bg-white/70 hover:bg-white border border-slate-100 hover:border-brand-teal/30 transition-all"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-brand-teal/10 text-brand-teal flex items-center justify-center shrink-0 group-hover:bg-brand-teal group-hover:text-white transition-colors">
+                              <ChevronRight className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-brand-navy group-hover:text-brand-teal-dark">
+                                {s.title}
+                              </p>
+                              <p className="text-xs text-brand-navy/60 mt-0.5">{s.reason}</p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Metrics Grid */}
         <motion.div
