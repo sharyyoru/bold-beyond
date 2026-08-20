@@ -39,29 +39,45 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: snapshot, error } = await supabase
-      .from("emotional_snapshots")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("snapshot_at", { ascending: false })
-      .limit(1)
-      .single();
+    let snapshot = null;
+    try {
+      const { data, error } = await supabase
+        .from("emotional_snapshots")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("snapshot_at", { ascending: false })
+        .limit(1)
+        .single();
+      if (error && error.code !== "PGRST116") {
+        console.warn("Snapshot fetch warning:", error.message);
+      } else {
+        snapshot = data ?? null;
+      }
+    } catch (dbError) {
+      console.warn("Snapshot fetch failed:", dbError);
+    }
 
-    const { data: recentReadings } = await supabase
-      .from("biometric_readings")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("synced_at", { ascending: false })
-      .limit(20);
-
-    if (error && error.code !== "PGRST116") {
-      throw error;
+    let recentReadings: Record<string, unknown>[] = [];
+    try {
+      const { data, error } = await supabase
+        .from("biometric_readings")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("synced_at", { ascending: false })
+        .limit(20);
+      if (error) {
+        console.warn("Readings fetch warning:", error.message);
+      } else {
+        recentReadings = data ?? [];
+      }
+    } catch (dbError) {
+      console.warn("Readings fetch failed:", dbError);
     }
 
     return NextResponse.json({
       success: true,
       snapshot,
-      recentReadings: recentReadings ?? [],
+      recentReadings,
     });
   } catch (error: unknown) {
     console.error("Snapshot GET error:", error);
@@ -101,19 +117,26 @@ export async function POST(request: NextRequest) {
       const { error: insertError } = await supabase
         .from("biometric_readings")
         .insert(recordsToInsert);
-      if (insertError) throw insertError;
+      if (insertError) console.warn("Could not persist readings:", insertError.message);
     }
 
     // Enrich with latest self-reported check-in
-    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const { data: latestCheckin } = await supabase
-      .from("wellness_checkins")
-      .select("id, answers, created_at")
-      .eq("user_id", user.id)
-      .gte("created_at", oneDayAgo)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .single();
+    let latestCheckin: { id?: string; answers?: Record<string, unknown>; created_at?: string } | null = null;
+    try {
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const { data, error } = await supabase
+        .from("wellness_checkins")
+        .select("id, answers, created_at")
+        .eq("user_id", user.id)
+        .gte("created_at", oneDayAgo)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+      if (!error) latestCheckin = data ?? null;
+      else console.warn("Could not fetch latest check-in:", error.message);
+    } catch (checkinError) {
+      console.warn("Check-in fetch failed:", checkinError);
+    }
 
     let selfReportedMood: number | undefined;
     let selfReportedStress: number | undefined;
@@ -129,19 +152,27 @@ export async function POST(request: NextRequest) {
     }
 
     // Count recent missed check-ins (last 7 days)
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-    const { data: recentCheckins } = await supabase
-      .from("wellness_checkins")
-      .select("created_at")
-      .eq("user_id", user.id)
-      .gte("created_at", sevenDaysAgo);
-
-    const uniqueDays = new Set(
-      (recentCheckins ?? []).map((c) =>
-        new Date(c.created_at).toISOString().split("T")[0]
-      )
-    );
-    const missedCheckins = Math.max(0, 7 - uniqueDays.size);
+    let missedCheckins = 0;
+    try {
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const { data: recentCheckins, error } = await supabase
+        .from("wellness_checkins")
+        .select("created_at")
+        .eq("user_id", user.id)
+        .gte("created_at", sevenDaysAgo);
+      if (!error && recentCheckins) {
+        const uniqueDays = new Set(
+          recentCheckins.map((c) =>
+            new Date(c.created_at).toISOString().split("T")[0]
+          )
+        );
+        missedCheckins = Math.max(0, 7 - uniqueDays.size);
+      } else if (error) {
+        console.warn("Could not fetch recent check-ins:", error.message);
+      }
+    } catch (checkinsError) {
+      console.warn("Recent check-ins fetch failed:", checkinsError);
+    }
 
     const normalized = normalizeBandReadings(readings, {
       dailyStepGoal: profile.dailyStepGoal,
@@ -167,22 +198,27 @@ export async function POST(request: NextRequest) {
       missedCheckins,
     });
 
-    // Persist snapshot
-    const { data: persisted, error: snapshotError } = await supabase
-      .from("emotional_snapshots")
-      .insert({
-        user_id: user.id,
-        snapshot_at: snapshot.generatedAt,
-        inputs: snapshot.inputs,
-        emotional_state: snapshot.dimensions,
-        emotion_label: snapshot.label,
-        eli_score: snapshot.eliScore,
-        suggestions: snapshot.suggestions,
-      })
-      .select()
-      .single();
-
-    if (snapshotError) throw snapshotError;
+    // Persist snapshot (best-effort)
+    let persisted = null;
+    try {
+      const { data, error: snapshotError } = await supabase
+        .from("emotional_snapshots")
+        .insert({
+          user_id: user.id,
+          snapshot_at: snapshot.generatedAt,
+          inputs: snapshot.inputs,
+          emotional_state: snapshot.dimensions,
+          emotion_label: snapshot.label,
+          eli_score: snapshot.eliScore,
+          suggestions: snapshot.suggestions,
+        })
+        .select()
+        .single();
+      if (!snapshotError) persisted = data ?? null;
+      else console.warn("Could not persist snapshot:", snapshotError.message);
+    } catch (persistError) {
+      console.warn("Snapshot persistence failed:", persistError);
+    }
 
     return NextResponse.json({
       success: true,

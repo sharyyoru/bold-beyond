@@ -63,9 +63,14 @@ export default function LiveMeasurePage() {
           .limit(7),
       ]);
 
-      const snapshotJson = await snapshotRes.json();
-      if (snapshotJson.success && snapshotJson.snapshot) {
-        setSnapshot(snapshotJson.snapshot);
+      if (!snapshotRes.ok) {
+        const text = await snapshotRes.text().catch(() => "Unknown error");
+        console.warn("Snapshot API error:", snapshotRes.status, text);
+      } else {
+        const snapshotJson = await snapshotRes.json();
+        if (snapshotJson.success && snapshotJson.snapshot) {
+          setSnapshot(snapshotJson.snapshot);
+        }
       }
 
       if (!trendRes.error && trendRes.data) {

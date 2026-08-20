@@ -63,23 +63,30 @@ async function buildSnapshotFromLatest(request: NextRequest): Promise<{
   }
 
   // Otherwise fetch latest stored snapshot
-  const { data: latest } = await supabase
-    .from("emotional_snapshots")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("snapshot_at", { ascending: false })
-    .limit(1)
-    .single();
+  let latest: Record<string, unknown> | null = null;
+  try {
+    const { data, error } = await supabase
+      .from("emotional_snapshots")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("snapshot_at", { ascending: false })
+      .limit(1)
+      .single();
+    if (!error) latest = data ?? null;
+    else console.warn("Could not fetch latest snapshot:", error.message);
+  } catch (snapshotError) {
+    console.warn("Latest snapshot fetch failed:", snapshotError);
+  }
 
   if (!latest) return null;
 
   const snapshot: EmotionalSnapshot = {
-    eliScore: latest.eli_score ?? 50,
-    dimensions: latest.emotional_state as EmotionalSnapshot["dimensions"],
-    label: latest.emotion_label ?? "settled-neutral",
-    inputs: latest.inputs as EmotionalSnapshot["inputs"],
-    suggestions: (latest.suggestions as EmotionalSnapshot["suggestions"]) ?? [],
-    generatedAt: latest.snapshot_at ?? new Date().toISOString(),
+    eliScore: Number(latest.eli_score ?? 50),
+    dimensions: (latest.emotional_state ?? {}) as EmotionalSnapshot["dimensions"],
+    label: String(latest.emotion_label ?? "settled-neutral"),
+    inputs: (latest.inputs ?? {}) as EmotionalSnapshot["inputs"],
+    suggestions: (latest.suggestions ?? []) as EmotionalSnapshot["suggestions"],
+    generatedAt: String(latest.snapshot_at ?? new Date().toISOString()),
   };
 
   return { snapshot, source: "latest-stored" };
